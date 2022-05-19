@@ -17,7 +17,7 @@ $ composer require maturest/trigram -vvv
 php artisan vendor:publish --provider="Maturest\Trigram\DestinyServiceProvider"
 ```
 
-> 初始化
+> 六爻自动装卦
 
 ```
 use Maturest\Trigram\DestinyService;
@@ -31,85 +31,76 @@ $extends = [
 ];
 
 $destiny = DestinyService::getInstance($date,$trigram,$extends);
-```
 
-> 是否显卦
+// 判断是否显卦
+$isAvailable = $destiny->isAvailable();
 
-```
-$destiny->isAvailable();
-```
+// 获取装卦图
+$result = $destiny->getTrigramPic();
 
-
-> 标空亡
-
-```
-$destiny->whiteDeath();
-```
-
-> 部地支
+/*
+    [
+        'pic_url' => 'xxxx.png', // 装卦图
+        'is_dangerous' => $this->resultDiZhi['is_dangerous'] ?? false, // 是否卦变
+        'dangerous_note' => $this->resultDiZhi['dangerous_note'] ?? '', // 卦变化煞提示
+    ];
+*/
 
 ```
-$destiny->deployDiZhi();
-```
 
-> 本卦详情
+> 钱包密码
 
 ```
-$destiny->getYaoDetail();
+use Maturest\Trigram\WalletPassword;
+
+// 初始化
+$walletPassword = new WalletPassword();
+
+// 阳历生日的钱包密码
+$res_solar = $walletPassword->getResultBySolar('1990-11-20');
+
+// 阴历生日的钱包密码
+$res_lunar = $walletPassword->getResultByLunar('1990-10-04');
+
+array:2 [▼
+  "banknotes" => 2900 //新钞数量
+  "wallet" => array:5 [▼  //钱包属性
+    "month" => "10"
+    "primary" => array:1 [▼  //主要颜色
+      0 => "yellow"
+    ]
+    "secondary" => array:2 [▼ //辅助颜色
+      0 => "black"
+      1 => "gray"
+    ]
+    "note" => "黄色为主，黑色、灰色为辅" //备注说明
+    "img" => "wallet/ybg.png" //示例图片
+  ]
+]
 ```
 
-> 空亡
+> 最强方位
 
 ```
-$destiny->handleWhiteDeath();
-```
+use Maturest\Trigram\Orientation;
 
-> 暗动
+// 初始化
+$orientation = new Orientation();
 
-```
-$destiny->handleDarkOn();
-```
+// 阳历生日的最强方位
+$res_solar = $orientation->getResultBySolar('1990-11-20');
 
-> 六冲
+// 阴历生日的最强方位
+$res_lunar = $orientation->getResultByLunar('1990-10-04');
 
-```
-$destiny->handleRelationSixCong();
-```
-
-> 六合
-
-```
-$destiny->handleRelationSixHe();
-```
-
-> 汇局
-
-```
-$destiny->handleRelationConvergeSet();
-```
-
-> 入墓
-
-```
-$destiny->handleEnterTomb();
-```
-
-> 进退神
-
-```
-$destiny->handleDilemma();
-```
-
-> 伏爻
-
-```
-$destiny->handleVoltTrigram();
-```
-
-> 画关系
-
-```
-$destiny->draw();
+/*
+array:4 [▼
+  "zhi" => "午", //年份的地支
+  "strong" => "坐南朝北", //最强方位 
+  "weakness" => "坐北朝南", //最弱方位
+  "img" => "orientation/north.png", //朝向图片
+]
+*/
 ```
 
 ## 异常
@@ -120,9 +111,12 @@ $destiny->draw();
 
 ## TODO
 
+- [x] 六爻自动装卦
 - [x] 提供 ServiceProvider
 - [x] 增加异常处理
 - [x] 版本语义化
+- [x] 增加钱包密码
+- [x] 增加最强方位
 - [ ] 单元测试
 - [ ] GitHub Actions 自动化测试
 - [ ] StyleCI 自动化测试
