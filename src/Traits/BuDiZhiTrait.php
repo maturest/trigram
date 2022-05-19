@@ -3,6 +3,7 @@
 
 namespace Maturest\Trigram\Traits;
 
+use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
@@ -142,7 +143,7 @@ trait BuDiZhiTrait
     {
         try {
             $date = Carbon::parse($this->date)->toDateString();
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             throw new InvalidArgumentException('日期参数不合法');
         }
 
