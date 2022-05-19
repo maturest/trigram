@@ -134,6 +134,11 @@ class WalletPassword
     {
         [$year, $month, $day] = explode('-', $date);
         $result = (new Calendar())->lunar2solar($year, $month, $day, $isLeapMonth);
+
+        if ($result == -1) {
+            throw new InvalidArgumentException('阴历日期格式有误');
+        }
+
         return $result;
     }
 
