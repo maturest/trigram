@@ -101,7 +101,7 @@ class WalletPassword
 
     /**
      * 通过阴历日期获取钱包密码
-     * @param string $date 阴历日期 如：2000-05-08 20:56:30
+     * @param string $date 阴历日期 如：2000-05-08
      * @param bool $isLeapMonth 标记是否是闰月
      * @return array
      * @throws InvalidArgumentException
@@ -110,9 +110,7 @@ class WalletPassword
     {
         try {
             //1、获取年的干支
-            $date = date('Y-m-d', strtotime($date));
-            [$year, $month, $day] = explode('-', $date);
-            $calendar = (new Calendar())->lunar2solar($year, $month, $day, $isLeapMonth);
+            $calendar = $this->lunar($date, $isLeapMonth);
 
             //2、获取干支所对应的新钞数量
             $banknotes = $this->getNewBanknotes($calendar['gzYear']);
@@ -124,6 +122,19 @@ class WalletPassword
         }
 
         return compact('banknotes', 'wallet');
+    }
+
+    /**
+     * 获取阴历日期的数据
+     * @param $date
+     * @param bool $isLeapMonth
+     * @return int|Services\JSON
+     */
+    protected function lunar($date, $isLeapMonth = false)
+    {
+        [$year, $month, $day] = explode('-', $date);
+        $result = (new Calendar())->lunar2solar($year, $month, $day, $isLeapMonth);
+        return $result;
     }
 
     /**
@@ -177,9 +188,7 @@ class WalletPassword
     {
         try {
             //1、获取年的干支
-            $format = Carbon::parse($date)->format('Y-n-j');
-            [$year, $month, $day] = explode('-', $format);
-            $calendar = (new Calendar())->solar2lunar($year, $month, $day);
+            $calendar = $this->solar($date);
 
             //2、获取干支所对应的新钞数量
             $banknotes = $this->getNewBanknotes($calendar['gzYear']);
@@ -191,5 +200,18 @@ class WalletPassword
         }
 
         return compact('banknotes', 'wallet');
+    }
+
+    /**
+     * 获取阳历日期的数据
+     * @param $date
+     * @return int|Services\JSON
+     */
+    protected function solar($date)
+    {
+        $format = Carbon::parse($date)->format('Y-n-j');
+        [$year, $month, $day] = explode('-', $format);
+        $result = (new Calendar())->solar2lunar($year, $month, $day);
+        return $result;
     }
 }
