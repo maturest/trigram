@@ -6,10 +6,10 @@
 ## 安装
 
 ```shell
-$ composer require maturest/trigram -vvv
+$ composer require maturest/trigram
 ```
 
-## 用法
+## 使用
 
 > 发布静态资源
 
@@ -103,6 +103,41 @@ array:4 [▼
 */
 ```
 
+> 神数排盘
+
+```
+use Maturest\Trigram\Plate;
+
+// 初始化
+$plate = new Plate();
+
+// 阳历生日的排盘
+$res_solar = $plate->getResultBySolar('1999-11-11 19:05:36');
+
+// 阴历生日的排盘
+$res_lunar = $plate->getResultByLunar('1999-11-11 19:05:36');
+
+/*
+array:13 [▼
+  "front_nums" => array:9 [▶] // 先天数
+  "later_nums" => array:9 [▶] // 后天数
+  "front_gram_relation" => array:9 [▶] // 先天数克关系
+  "later_gram_relation" => array:9 [▶] // 后天数克关系
+  "gram_statistics" => array:3 [▶] // 克关系的统计
+  "front_wx" => array:9 [▶] // 先天数的五行
+  "later_wx" => array:9 [▶] // 后天数的五行
+  "front_lunar_solar" => array:9 [▶] // 先天数的阴阳
+  "later_lunar_solar" => array:9 [▶] // 后天数的阴阳
+  "front_raw_relation" => array:9 [▶] // 先天数生关系
+  "later_raw_relation" => array:9 [▶] // 后天数生关系
+  "front_prosper_relation" => array:9 [▶] // 先天数比旺关系
+  "later_prosper_relation" => array:9 [▶] // 后天数比旺关系
+]
+*/
+
+```
+
+
 ## 异常
 
 - InvalidArgumentException 参数不合法
@@ -117,10 +152,12 @@ array:4 [▼
 - [x] 版本语义化
 - [x] 增加钱包密码
 - [x] 增加最强方位
-- [x] 增加十二神数
-- [x] 增加手机号调整
-- [x] 增加开机密码
-- [x] 增加财富密码
+- [x] 增加神数排盘
+- [ ] 增加十二神数
+- [ ] 增加手机号调整
+- [ ] 增加开机密码
+- [ ] 增加财富密码
+- [ ] 增加穿衣指南
 - [ ] 单元测试
 - [ ] GitHub Actions 自动化测试
 - [ ] StyleCI 自动化测试
