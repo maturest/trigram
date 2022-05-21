@@ -57,7 +57,7 @@ class DestinyService
      */
     private function __construct($date, $gua, $extends = [])
     {
-        $this->calendar = new Calendar();
+        $this->calendar = app('calendar');
         $this->date = $date;
         $this->gua = $gua;
 
