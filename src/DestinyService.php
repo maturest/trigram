@@ -7,15 +7,15 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Maturest\Trigram\Exceptions\InvalidArgumentException;
 use Overtrue\ChineseCalendar\Calendar;
-use Maturest\Trigram\Traits\BuDiZhiTrait;
-use Maturest\Trigram\Traits\ConvergeSetTrait;
-use Maturest\Trigram\Traits\DilemmaTrait;
-use Maturest\Trigram\Traits\DrawTrait;
-use Maturest\Trigram\Traits\EnterTombTrait;
-use Maturest\Trigram\Traits\SixCongTrait;
-use Maturest\Trigram\Traits\SixHeTrait;
-use Maturest\Trigram\Traits\VoltTrigramTrait;
-use Maturest\Trigram\Traits\WhiteDeathTrait;
+use Maturest\Trigram\Traits\Destiny\BuDiZhiTrait;
+use Maturest\Trigram\Traits\Destiny\ConvergeSetTrait;
+use Maturest\Trigram\Traits\Destiny\DilemmaTrait;
+use Maturest\Trigram\Traits\Destiny\DrawTrait;
+use Maturest\Trigram\Traits\Destiny\EnterTombTrait;
+use Maturest\Trigram\Traits\Destiny\SixCongTrait;
+use Maturest\Trigram\Traits\Destiny\SixHeTrait;
+use Maturest\Trigram\Traits\Destiny\VoltTrigramTrait;
+use Maturest\Trigram\Traits\Destiny\WhiteDeathTrait;
 
 class DestinyService
 {

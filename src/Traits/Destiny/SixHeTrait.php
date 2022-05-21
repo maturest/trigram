@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Maturest\Trigram\Traits;
+namespace Maturest\Trigram\Traits\Destiny;
 
 
 trait SixHeTrait
