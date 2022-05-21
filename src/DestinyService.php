@@ -6,7 +6,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Maturest\Trigram\Exceptions\InvalidArgumentException;
-use Overtrue\ChineseCalendar\Calendar;
 use Maturest\Trigram\Traits\Destiny\BuDiZhiTrait;
 use Maturest\Trigram\Traits\Destiny\ConvergeSetTrait;
 use Maturest\Trigram\Traits\Destiny\DilemmaTrait;
@@ -19,11 +18,11 @@ use Maturest\Trigram\Traits\Destiny\WhiteDeathTrait;
 
 class DestinyService
 {
-
     use BuDiZhiTrait, WhiteDeathTrait, SixCongTrait, SixHeTrait, ConvergeSetTrait,
         EnterTombTrait, DilemmaTrait, VoltTrigramTrait, DrawTrait;
 
     private static $instance;
+
     public $draw = [
         'kong_wang' => ['coords' => [], 'radius' => 20], // 标空亡,给出具体的坐标原点，半径,文字图片是40x40 半径应为20 ，然后画圆
         'an_dong' => ['coords' => [], 'img' => 'dark_on/dark_on.png'], // 暗动，标注坐标原点,然后画箭头并写字 字体的坐标可以相对计算
@@ -35,17 +34,18 @@ class DestinyService
         'fu_yao' => [],//伏爻
     ];
 
-    // \ => 1 \\ => 2  o => 3  x => 4 123412 从左至右按顺序解释为：一爻 二爻 --- 六爻
     protected $calendar;
 
-    //用户问句
+    // \ => 1 \\ => 2  o => 3  x => 4 123412 从左至右按顺序解释为：一爻 二爻 --- 六爻
     protected $gua;
 
-    //用户姓名
+    //用户问句
     protected $question;
 
-    //卜卦类型
+    //用户姓名
     protected $userName;
+
+    //卜卦类型
     protected $trigramType;
 
     /**
