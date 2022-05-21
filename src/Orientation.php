@@ -6,9 +6,8 @@ namespace Maturest\Trigram;
 use Exception;
 use Illuminate\Support\Carbon;
 use Maturest\Trigram\Exceptions\InvalidArgumentException;
-use Maturest\Trigram\Services\Calendar;
 
-class Orientation
+class Orientation extends BaseService
 {
     protected $positions = [
         ['zhi' => '子', 'strong' => '坐北朝南', 'weakness' => '坐南朝北', 'img' => 'orientation/south.png'],
@@ -32,27 +31,13 @@ class Orientation
      */
     public function getResultBySolar($date)
     {
-        $calendar = $this->solar($date);
-        return $this->getPosition($calendar['gzYear']);
-    }
-
-    protected function solar($date)
-    {
-        try {
-            $format = Carbon::parse($date)->format('Y-n-j');
-            [$year, $month, $day] = explode('-', $format);
-            $result = (new Calendar())->solar2lunar($year, $month, $day);
-        } catch (Exception $exception) {
-            throw new InvalidArgumentException('阳历日期格式有误');
-        }
-
-        return $result;
+        $this->solar($date);
+        return $this->getPosition($this->date_detail['ganzhi_year']);
     }
 
     protected function getPosition($gz_year)
     {
-        $arr = mb_str_split($gz_year);
-        return collect($this->positions)->where('zhi', array_pop($arr))->first();
+        return collect($this->positions)->where('zhi', $this->dzYear($gz_year))->first();
     }
 
     /**
@@ -64,23 +49,11 @@ class Orientation
     public function getResultByLunar($date, $isLeapMonth = false)
     {
         try {
-            $calendar = $this->lunar($date, $isLeapMonth);
+            $this->lunar($date, $isLeapMonth);
         } catch (Exception $exception) {
             throw new InvalidArgumentException('阴历日期格式有误');
         }
 
-        return $this->getPosition($calendar['gzYear']);
-    }
-
-    protected function lunar($date, $isLeapMonth = false)
-    {
-        [$year, $month, $day] = explode('-', $date);
-        $result = (new Calendar())->lunar2solar($year, $month, $day, $isLeapMonth);
-
-        if ($result == -1) {
-            throw new Exception('阴历日期格式有误');
-        }
-
-        return $result;
+        return $this->getPosition($this->date_detail['ganzhi_year']);
     }
 }

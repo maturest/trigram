@@ -6,9 +6,8 @@ namespace Maturest\Trigram;
 use Exception;
 use Illuminate\Support\Carbon;
 use Maturest\Trigram\Exceptions\InvalidArgumentException;
-use Maturest\Trigram\Services\Calendar;
 
-class WalletPassword
+class WalletPassword extends BaseService
 {
     // 六十甲子纳音表
     protected $naYin = [
@@ -110,36 +109,18 @@ class WalletPassword
     {
         try {
             //1、获取年的干支
-            $calendar = $this->lunar($date, $isLeapMonth);
+            $this->lunar($date, $isLeapMonth);
 
             //2、获取干支所对应的新钞数量
-            $banknotes = $this->getNewBanknotes($calendar['gzYear']);
+            $banknotes = $this->getNewBanknotes($this->date_detail['ganzhi_year']);
 
             //3、获取钱包颜色以及图片
-            $wallet = $this->getWallet($calendar['lMonth']);
+            $wallet = $this->getWallet($this->date_detail['lunar_month']);
         } catch (Exception $exception) {
             throw new InvalidArgumentException('阴历日期格式有误');
         }
 
         return compact('banknotes', 'wallet');
-    }
-
-    /**
-     * 获取阴历日期的数据
-     * @param $date
-     * @param bool $isLeapMonth
-     * @return int|Services\JSON
-     */
-    protected function lunar($date, $isLeapMonth = false)
-    {
-        [$year, $month, $day] = explode('-', $date);
-        $result = (new Calendar())->lunar2solar($year, $month, $day, $isLeapMonth);
-
-        if ($result == -1) {
-            throw new InvalidArgumentException('阴历日期格式有误');
-        }
-
-        return $result;
     }
 
     /**
@@ -193,30 +174,17 @@ class WalletPassword
     {
         try {
             //1、获取年的干支
-            $calendar = $this->solar($date);
+            $this->solar($date);
 
             //2、获取干支所对应的新钞数量
-            $banknotes = $this->getNewBanknotes($calendar['gzYear']);
+            $banknotes = $this->getNewBanknotes($this->date_detail['ganzhi_year']);
 
             //3、获取钱包颜色以及图片
-            $wallet = $this->getWallet($calendar['lMonth']);
+            $wallet = $this->getWallet($this->date_detail['lunar_month']);
         } catch (Exception $exception) {
             throw new InvalidArgumentException('阳历日期格式有误');
         }
 
         return compact('banknotes', 'wallet');
-    }
-
-    /**
-     * 获取阳历日期的数据
-     * @param $date
-     * @return int|Services\JSON
-     */
-    protected function solar($date)
-    {
-        $format = Carbon::parse($date)->format('Y-n-j');
-        [$year, $month, $day] = explode('-', $format);
-        $result = (new Calendar())->solar2lunar($year, $month, $day);
-        return $result;
     }
 }
