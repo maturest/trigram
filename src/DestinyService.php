@@ -6,7 +6,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Maturest\Trigram\Exceptions\InvalidArgumentException;
-use Maturest\Trigram\Services\Calendar;
+use Overtrue\ChineseCalendar\Calendar;
 use Maturest\Trigram\Traits\BuDiZhiTrait;
 use Maturest\Trigram\Traits\ConvergeSetTrait;
 use Maturest\Trigram\Traits\DilemmaTrait;
@@ -48,6 +48,13 @@ class DestinyService
     protected $userName;
     protected $trigramType;
 
+    /**
+     * DestinyService constructor.
+     * @param $date 1996-01-01 05:26:38 阳历的日期
+     * @param $gua
+     * @param array $extends
+     * @throws InvalidArgumentException
+     */
     private function __construct($date, $gua, $extends = [])
     {
         $this->calendar = new Calendar();

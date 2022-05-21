@@ -142,18 +142,18 @@ trait BuDiZhiTrait
     public function parseDate()
     {
         try {
-            $date = Carbon::parse($this->date)->toDateString();
+            $date = Carbon::parse($this->date)->format('Y-n-j-G');
         } catch (Exception $exception) {
             throw new InvalidArgumentException('日期参数不合法');
         }
 
-        [$year, $month, $day] = explode('-', $date);
-        $result = $this->calendar->solar2lunar($year, $month, $day);
-        $this->gzMonth = mb_substr($result['gzMonth'], -1, 1) . '月';
-        $this->diZhiMonth = mb_substr($result['gzMonth'], -1, 1);
-        $this->gzDay = $result['gzDay'] . '日';
+        [$year, $month, $day, $hour] = explode('-', $date);
+        $result = $this->calendar->solar($year, $month, $day, $hour);
+        $this->gzMonth = mb_substr($result['ganzhi_month'], -1, 1) . '月';
+        $this->diZhiMonth = mb_substr($result['ganzhi_month'], -1, 1);
+        $this->gzDay = $result['ganzhi_day'] . '日';
 
-        [$tian_gan, $dizhi] = mb_str_split($result['gzDay']);
+        [$tian_gan, $dizhi] = mb_str_split($result['ganzhi_day']);
 
         // 标记卜卦日期 地支
         $this->diZhiDay = $dizhi;
