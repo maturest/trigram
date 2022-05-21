@@ -4,10 +4,9 @@
 namespace Maturest\Trigram;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Contracts\Support\DeferrableProvider;
 use Overtrue\ChineseCalendar\Calendar;
 
-class DestinyServiceProvider extends ServiceProvider implements DeferrableProvider
+class DestinyServiceProvider extends ServiceProvider
 {
     protected $defer = true;
 
@@ -18,11 +17,6 @@ class DestinyServiceProvider extends ServiceProvider implements DeferrableProvid
         ]);
     }
 
-    public function provides()
-    {
-        return [Calendar::class];
-    }
-
     public function register()
     {
         $this->app->singleton(Calendar::class, function ($app) {
@@ -30,5 +24,10 @@ class DestinyServiceProvider extends ServiceProvider implements DeferrableProvid
         });
 
         $this->app->alias(Calendar::class,'calendar');
+    }
+
+    public function provides()
+    {
+        return [Calendar::class,'calendar'];
     }
 }
