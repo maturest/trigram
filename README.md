@@ -140,7 +140,12 @@ array:13 [▼
 >十二神数
 
 ```
+use Maturest\Trigram\TwelveGodNums;
 
+$twelveGodNums = new TwelveGodNums();
+$gram_nums = ['11-4','10-4','10-5'];
+$clearFail = $twelveGodNums->clearBigFail($gram_nums);
+$drawSuccess = $twelveGodNums->drawBigSuccess($gram_nums,2);
 ```
 
 

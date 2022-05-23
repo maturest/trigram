@@ -94,7 +94,7 @@ trait BigFailScene
                 //2、取出大败局
                 $fail = $this->defuses[$key];
                 return $orientation.'：'.$fail.'。';
-            })->toArray();
+            })->values()->toArray();
 
         return $rows;
     }

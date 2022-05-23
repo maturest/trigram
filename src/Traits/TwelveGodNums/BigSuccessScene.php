@@ -118,7 +118,7 @@ trait BigSuccessScene
                 $str = '摆放?颗?珠子，用?托盘装';
                 $arr = $this->drawSuccess[$key];
                 return $orientation.'：'.Str::replaceArray('?',$arr,$str);
-            })->toArray();
+            })->values()->toArray();
 
         return $rows;
     }
