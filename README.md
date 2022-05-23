@@ -142,10 +142,18 @@ array:13 [▼
 ```
 use Maturest\Trigram\TwelveGodNums;
 
+//初始化
 $twelveGodNums = new TwelveGodNums();
+
+//神数相克数组
 $gram_nums = ['11-4','10-4','10-5'];
+
+//清理大败局
 $clearFail = $twelveGodNums->clearBigFail($gram_nums);
+
+//摆放大成局
 $drawSuccess = $twelveGodNums->drawBigSuccess($gram_nums,2);
+
 ```
 
 
