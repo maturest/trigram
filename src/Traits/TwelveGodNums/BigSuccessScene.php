@@ -112,7 +112,7 @@ trait BigSuccessScene
     {
         $rows = collect($this->bigSuccessScenes)->where('sex',$sex)
             ->whereIn('num',$gram_nums)
-            ->groupBy('draw')
+            ->groupBy('draw_key')
             ->map(function($item,$key){
                 $orientation = collect($item)->sortBy('sort')->pluck('orientation')->implode('、');
                 $str = '摆放?颗?珠子，用?托盘装';
