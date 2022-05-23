@@ -82,7 +82,7 @@ trait BigFailScene
      * @param array $gram_nums 克关系数组
      * @return mixed
      */
-    protected function clearBigFail(array $gram_nums)
+    public function clearBigFail(array $gram_nums)
     {
         // 1、找出相克的数组所对应的数据
         $rows = collect($this->bigFailScenes)

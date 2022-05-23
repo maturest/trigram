@@ -108,7 +108,7 @@ trait BigSuccessScene
      * @param array $gram_nums 克关系数组
      * @param int $sex 性别 1男 2女
      */
-    protected function drawBigSuccess(array $gram_nums,$sex = 1)
+    public function drawBigSuccess(array $gram_nums,$sex = 1)
     {
         $rows = collect($this->bigSuccessScenes)->where('sex',$sex)
             ->whereIn('num',$gram_nums)
