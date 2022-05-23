@@ -114,7 +114,7 @@ trait BigSuccessScene
             ->whereIn('num',$gram_nums)
             ->groupBy('draw_key')
             ->map(function($item,$key){
-                $orientation = collect($item)->sortBy('sort')->pluck('orientation')->implode('、');
+                $orientation = collect($item)->sortBy('sort')->pluck('orientation')->unique()->implode('、');
                 $str = '摆放?颗?珠子，用?托盘装';
                 $arr = $this->drawSuccess[$key];
                 return $orientation.'：'.Str::replaceArray('?',$arr,$str);

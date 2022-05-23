@@ -90,7 +90,7 @@ trait BigFailScene
             ->groupBy('defuse_key')
             ->map(function ($item, $key) {
                 //1、取出方向,按排序权重进行排序
-                $orientation = collect($item)->sortBy('sort')->pluck('orientation')->implode('、');
+                $orientation = collect($item)->sortBy('sort')->pluck('orientation')->unique()->implode('、');
                 //2、取出大败局
                 $fail = $this->defuses[$key];
                 return $orientation.'：'.$fail.'。';
