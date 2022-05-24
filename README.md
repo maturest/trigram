@@ -156,6 +156,49 @@ $drawSuccess = $twelveGodNums->drawBigSuccess($gram_nums,2);
 
 ```
 
+> 手机号码调整
+
+```
+use Maturest\Trigram\PhoneAdjust;
+
+// 初始化
+$phoneAdjust = new PhoneAdjust();
+
+// 获取可用的手机号列表
+$list = $phoneAdjust->getPhoneList();
+```
+
+> 开机密码
+
+```
+use Maturest\Trigram\PowerOnPassword;
+
+// 初始化
+$power = new PowerOnPassword();
+
+// 默认获取6位的开机密码
+$res = $power->getPasswordByNum();
+
+// 获取4位的开机密码
+$res = $power->getPasswordByNum(4);
+```
+
+> 财富密码
+
+```
+use Maturest\Trigram\WealthPassword;
+
+// 初始化
+$wealth = new WealthPassword();
+
+// 默认获取6位的财富密码
+$res = $wealth->getPasswordByNum();
+
+// 获取4位的财富密码
+$res = $wealth->getPasswordByNum(4);
+```
+
+
 
 ## 异常
 
@@ -173,9 +216,9 @@ $drawSuccess = $twelveGodNums->drawBigSuccess($gram_nums,2);
 - [x] 增加最强方位
 - [x] 增加神数排盘
 - [x] 增加十二神数
-- [ ] 增加手机号调整
-- [ ] 增加开机密码
-- [ ] 增加财富密码
+- [x] 增加手机号调整
+- [x] 增加开机密码
+- [x] 增加财富密码
 - [ ] 增加穿衣指南
 - [ ] 单元测试
 - [ ] GitHub Actions 自动化测试
