@@ -39,11 +39,11 @@ $isAvailable = $destiny->isAvailable();
 $result = $destiny->getTrigramPic();
 
 /*
-    [
-        'pic_url' => 'xxxx.png', // 装卦图
-        'is_dangerous' => $this->resultDiZhi['is_dangerous'] ?? false, // 是否卦变
-        'dangerous_note' => $this->resultDiZhi['dangerous_note'] ?? '', // 卦变化煞提示
-    ];
+array:3 [▼
+  "pic_url" => "http://customer.test/64draw/trigrams/test.png" // 图片链接地址
+  "is_dangerous" => false  // 是否卦变
+  "dangerous_note" => ""   // 卦变提示内容
+];
 */
 
 ```
