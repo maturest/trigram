@@ -4,7 +4,7 @@
 namespace Maturest\Trigram;
 
 
-class PowerOn
+class PowerOnPassword extends BasePassword
 {
 
 }
