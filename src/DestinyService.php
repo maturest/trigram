@@ -83,7 +83,7 @@ class DestinyService
         if (self::$instance instanceof self) {
             return self::$instance;
         }
-        self::$instance = new self($date, $gua, $extends);
+        self::$instance = new self($date, $gua, $extends, $watermark);
         return self::$instance;
     }
 
