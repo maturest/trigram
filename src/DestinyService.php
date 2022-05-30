@@ -51,6 +51,9 @@ class DestinyService
     //服务归属人
     protected $owner;
 
+    //是否需要水印
+    protected $watermark;
+
     /**
      * DestinyService constructor.
      * @param $date 1996-01-01 05:26:38 阳历的日期
@@ -58,11 +61,12 @@ class DestinyService
      * @param array $extends
      * @throws InvalidArgumentException
      */
-    private function __construct($date, $gua, $extends = [])
+    private function __construct($date, $gua, $extends = [], $watermark = true)
     {
         $this->calendar = app('calendar');
         $this->date = $date;
         $this->gua = $gua;
+        $this->watermark = $watermark;
 
         if (!empty($extends)) {
             $this->question = $extends['question'] ?? '';

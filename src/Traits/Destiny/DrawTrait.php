@@ -110,6 +110,10 @@ trait DrawTrait
     public function initBgObject()
     {
         $drawBg = public_path($this->relativePath . 'bg.png');
+        if ($this->watermark) {
+            $drawBg = public_path($this->relativePath . 'bg_watermark.png');
+        }
+
         $this->fileExists($drawBg);
         $this->bgObject = Image::make($drawBg);
     }
@@ -337,7 +341,7 @@ trait DrawTrait
 
     public function drawQuestionsAndName()
     {
-        if($this->question || $this->trigramType){
+        if ($this->question || $this->trigramType) {
             //1、先画个圆圈，然后写个占字
             $this->bgObject->circle(20, 570, 180, function ($draw) {
                 $draw->background('#7a7a7a');
@@ -350,7 +354,7 @@ trait DrawTrait
         if ($this->question || $this->trigramType) {
 
             //2、将卜卦类型与问句结合，然后最多拆分为两列
-            $str = $this->trigramType ? $this->trigramType. ' ' . $this->question : $this->question;
+            $str = $this->trigramType ? $this->trigramType . ' ' . $this->question : $this->question;
             $fonts = array_chunk(mb_str_split($str), 33);
             $size = 14;
             $color = '#666666';
@@ -380,9 +384,9 @@ trait DrawTrait
         }
 
         //4、写上归属人
-        if($this->owner){
-            $str = '归属人：'.$this->owner;
-            $this->writeFont($str,167,846,24,'#999999');
+        if ($this->owner) {
+            $str = '归属人：' . $this->owner;
+            $this->writeFont($str, 167, 846, 24, '#999999');
         }
     }
 
