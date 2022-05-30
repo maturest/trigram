@@ -78,7 +78,7 @@ class DestinyService
         $this->parseDate();
     }
 
-    public static function getInstance($date, $gua, $extends = [])
+    public static function getInstance($date, $gua, $extends = [], $watermark = true)
     {
         if (self::$instance instanceof self) {
             return self::$instance;
