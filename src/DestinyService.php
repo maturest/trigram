@@ -48,6 +48,9 @@ class DestinyService
     //卜卦类型
     protected $trigramType;
 
+    //服务归属人
+    protected $owner;
+
     /**
      * DestinyService constructor.
      * @param $date 1996-01-01 05:26:38 阳历的日期
@@ -65,6 +68,7 @@ class DestinyService
             $this->question = $extends['question'] ?? '';
             $this->userName = $extends['userName'] ?? '';
             $this->trigramType = $extends['trigramType'] ?? '';
+            $this->owner = $extends['owner'] ?? '';
         }
 
         $this->parseDate();
