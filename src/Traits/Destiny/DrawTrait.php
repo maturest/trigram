@@ -79,6 +79,8 @@ trait DrawTrait
     {
         //初始化画布
         $this->initBgObject();
+        //是否添加水印
+        $this->addWaterMark();
         //1、部地支
         $this->drawDiZhi();
         //1.2 添加问句和姓名
@@ -110,12 +112,17 @@ trait DrawTrait
     public function initBgObject()
     {
         $drawBg = public_path($this->relativePath . 'bg.png');
-        if ($this->watermark) {
-            $drawBg = public_path($this->relativePath . 'bg_watermark.png');
-        }
-
         $this->fileExists($drawBg);
         $this->bgObject = Image::make($drawBg);
+    }
+
+    public function addWaterMark()
+    {
+        if($this->watermark){
+            $watermark = public_path($this->relativePath . 'watermark.png');
+            $this->fileExists($watermark);
+            $this->bgObject->insert($watermark,'top-left',77,15);
+        }
     }
 
     public function fileExists($file)
