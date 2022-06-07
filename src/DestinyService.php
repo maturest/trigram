@@ -80,11 +80,13 @@ class DestinyService
 
     public static function getInstance($date, $gua, $extends = [], $watermark = true)
     {
-        if (self::$instance instanceof self) {
-            return self::$instance;
+        if (static::$instance instanceof static) {
+            return static::$instance;
         }
-        self::$instance = new self($date, $gua, $extends, $watermark);
-        return self::$instance;
+
+        static::$instance = new static($date, $gua, $extends, $watermark);
+
+        return static::$instance;
     }
 
     /**
