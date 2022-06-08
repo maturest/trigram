@@ -199,10 +199,13 @@ trait ConvergeSetTrait
                     //标记是否为破
                     $torn = $this->markIsTorn($hui_ju['jx'], $dz_arr);
 
+                    $jx_point = collect($dz_arr)->where('dz',$hui_ju['jx'])->first();
+
                     $hg = [
                         'hui_ju' => '汇' . $row['six_qin'] . '局',
                         'torn' => $torn,
                         'jx' => $hui_ju['jx'],
+                        'jx_position' => $jx_point['column'].$jx_point['row'],
                     ];
 
                     $res[$type][] = $hg;
