@@ -88,17 +88,17 @@ trait GodNums
         $hour = intval(date('Gi', strtotime($date)));
         // 十二时辰
         $hours = [
-            ['hours' => [100, 300], 'front_num' => 2],
-            ['hours' => [300, 500], 'front_num' => 3],
-            ['hours' => [500, 700], 'front_num' => 4],
-            ['hours' => [700, 900], 'front_num' => 5],
-            ['hours' => [900, 1100], 'front_num' => 6],
-            ['hours' => [1100, 1300], 'front_num' => 7],
-            ['hours' => [1300, 1500], 'front_num' => 8],
-            ['hours' => [1500, 1700], 'front_num' => 9],
-            ['hours' => [1700, 1900], 'front_num' => 10],
-            ['hours' => [1900, 2100], 'front_num' => 11],
-            ['hours' => [2100, 2300], 'front_num' => 12],
+            ['hours' => [101, 300], 'front_num' => 2],
+            ['hours' => [301, 500], 'front_num' => 3],
+            ['hours' => [501, 700], 'front_num' => 4],
+            ['hours' => [701, 900], 'front_num' => 5],
+            ['hours' => [901, 1100], 'front_num' => 6],
+            ['hours' => [1101, 1300], 'front_num' => 7],
+            ['hours' => [1301, 1500], 'front_num' => 8],
+            ['hours' => [1501, 1700], 'front_num' => 9],
+            ['hours' => [1701, 1900], 'front_num' => 10],
+            ['hours' => [1901, 2100], 'front_num' => 11],
+            ['hours' => [2101, 2300], 'front_num' => 12],
         ];
 
         $row = collect($hours)->first(function ($item, $key) use ($hour) {
