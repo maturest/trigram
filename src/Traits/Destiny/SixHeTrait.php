@@ -104,7 +104,7 @@ trait SixHeTrait
 
     public function getSixHeByBenGua()
     {
-        $dongs = $this->getBenDong(true);
+        $dongs = $this->getBenDong();
 
         $he = [];
 
@@ -112,6 +112,11 @@ trait SixHeTrait
 
         if ($count > 1) {
             foreach ($dongs as $key => $dong) {
+                //六合暗动不能是起始点
+                if($dong['is_an_dong']){
+                    continue;
+                }
+
                 // 每从地支里拿出来一个，就要与对应的比
                 $start = $key + 1;
                 for ($i = $start; $i < $count; $i++) {
@@ -158,9 +163,14 @@ trait SixHeTrait
 
     public function getSixHeDay2Ben()
     {
-        $dongs = $this->getBenDong(true);
+        $dongs = $this->getBenDong();
         $he = [];
         foreach ($dongs as $dong) {
+
+            if($dong['is_an_dong']){
+                continue;
+            }
+
             if ($this->isHeRelation($this->diZhiDay, $dong['dz'])) {
                 $he[] = '62-' . $dong['column'] . $dong['row'];
             }
@@ -191,9 +201,14 @@ trait SixHeTrait
 
     public function getSixHeMonth2Ben()
     {
-        $dongs = $this->getBenDong(true);
+        $dongs = $this->getBenDong();
         $he = [];
         foreach ($dongs as $dong) {
+
+            if($dong['is_an_dong']){
+                continue;
+            }
+
             if ($this->isHeRelation($this->diZhiMonth, $dong['dz'])) {
                 $he[] = '61-' . $dong['column'] . $dong['row'];
             }
