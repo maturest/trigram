@@ -129,16 +129,20 @@ trait EnterTombTrait
 
     public function getAllBenPositions()
     {
-        return $this->getBenDong();
+        return $this->getBenDong(true);
     }
 
     /**
      * 获取本卦中的动爻
      */
-    public function getBenDong()
+    public function getBenDong($only_dong = false)
     {
-        $dongs = array_values(Arr::where($this->benGuaDetail, function ($item, $key) {
-            return $item['is_dong'] || $item['is_an_dong'];
+        $dongs = array_values(Arr::where($this->benGuaDetail, function ($item, $key) use ($only_dong) {
+            if($only_dong){
+                return $item['is_dong'];
+            }else{
+                return $item['is_dong'] || $item['is_an_dong'];
+            }
         }));
 
         $dongs = array_reverse($dongs);

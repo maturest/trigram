@@ -104,7 +104,7 @@ trait SixHeTrait
 
     public function getSixHeByBenGua()
     {
-        $dongs = $this->getBenDong();
+        $dongs = $this->getBenDong(true);
 
         $he = [];
 
@@ -158,7 +158,7 @@ trait SixHeTrait
 
     public function getSixHeDay2Ben()
     {
-        $dongs = $this->getBenDong();
+        $dongs = $this->getBenDong(true);
         $he = [];
         foreach ($dongs as $dong) {
             if ($this->isHeRelation($this->diZhiDay, $dong['dz'])) {
@@ -191,7 +191,7 @@ trait SixHeTrait
 
     public function getSixHeMonth2Ben()
     {
-        $dongs = $this->getBenDong();
+        $dongs = $this->getBenDong(true);
         $he = [];
         foreach ($dongs as $dong) {
             if ($this->isHeRelation($this->diZhiMonth, $dong['dz'])) {
