@@ -4,7 +4,7 @@
 namespace Maturest\Trigram;
 
 use Illuminate\Support\ServiceProvider;
-use Overtrue\ChineseCalendar\Calendar;
+use Maturest\ChineseCalendar\Calendar;
 
 class DestinyServiceProvider extends ServiceProvider
 {

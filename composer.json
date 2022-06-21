@@ -10,7 +10,7 @@
     ],
     "require": {
         "intervention/image": "^2.5",
-        "overtrue/chinese-calendar": "^1.0"
+        "maturest/chinese-calendar": "^1.0"
     },
     "autoload": {
         "psr-4": {
