@@ -140,7 +140,7 @@ class WalletPassword extends BaseService
      * @param $gz_year
      * @return mixed
      */
-    protected function getNaYin($gz_year)
+    public function getNaYin($gz_year)
     {
         return collect($this->naYin)->where('gz', $gz_year)->first();
     }

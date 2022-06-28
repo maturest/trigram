@@ -57,10 +57,21 @@ class Plate extends BaseService
         //获取所对应的五行
         $wx = $this->getWxByNums($front_nums,$later_nums);
 
+        //天运
+        $fate = $this->getFateByGz(new WalletPassword());
 
-        return array_merge(compact('front_nums','later_nums'),$grams,$wx,$yin_yang,$raws,$prosper);
+        return array_merge(compact('front_nums','later_nums'),$grams,$wx,$yin_yang,$raws,$prosper,$fate);
     }
 
+    /**
+     * 获取 六十甲子纳音表
+     * @param WalletPassword $walletPassword
+     * @return array
+     */
+    public function getFateByGz(WalletPassword $walletPassword)
+    {
+        return ['fate'=>$walletPassword->getNaYin($this->date_detail['ganzhi_year'])];
+    }
 
 
     public function getResultByLunar($date, $isLeapMonth = false)
