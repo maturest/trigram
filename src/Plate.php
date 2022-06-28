@@ -3,8 +3,8 @@
 
 namespace Maturest\Trigram;
 
-use Maturest\Trigram\Traits\GodNums\Gram;
 use Maturest\Trigram\Traits\GodNums\GodNums;
+use Maturest\Trigram\Traits\GodNums\Gram;
 use Maturest\Trigram\Traits\GodNums\Prosper;
 use Maturest\Trigram\Traits\GodNums\Raw;
 use Maturest\Trigram\Traits\GodNums\Wx;
@@ -12,7 +12,7 @@ use Maturest\Trigram\Traits\GodNums\YinYang;
 
 class Plate extends BaseService
 {
-    use Gram,GodNums,Wx,YinYang,Raw,Prosper;
+    use Gram, GodNums, Wx, YinYang, Raw, Prosper;
 
     public function getResultBySolar($date)
     {
@@ -24,7 +24,7 @@ class Plate extends BaseService
         $laterNums = $this->laterNums($frontNums);
 
         //3、十二神数排盘
-        $relations = $this->relations($frontNums,$laterNums);
+        $relations = $this->relations($frontNums, $laterNums);
 
         return $relations;
     }
@@ -35,7 +35,7 @@ class Plate extends BaseService
      * @param $laterNums
      * @return array
      */
-    protected function relations($frontNums,$laterNums)
+    protected function relations($frontNums, $laterNums)
     {
         // 生成新的先天数组
         $front_nums = $this->createNewArr($frontNums);
@@ -43,24 +43,24 @@ class Plate extends BaseService
         $later_nums = $this->createNewArr($laterNums);
 
         // 获取 克关系 的数据
-        $grams = $this->getGramRelation($frontNums,$front_nums,$laterNums,$later_nums);
+        $grams = $this->getGramRelation($frontNums, $front_nums, $laterNums, $later_nums);
 
         // 获取 阴阳 的数据
-        $yin_yang = $this->getYinYangRelation($front_nums,$later_nums);
+        $yin_yang = $this->getYinYangRelation($front_nums, $later_nums);
 
         //获取 生 关系
-        $raws = $this->getRawRelation($frontNums,$front_nums,$laterNums,$later_nums);
+        $raws = $this->getRawRelation($frontNums, $front_nums, $laterNums, $later_nums);
 
         //获取 比旺 关系
-        $prosper = $this->getProsperRelation($frontNums,$front_nums,$laterNums,$later_nums);
+        $prosper = $this->getProsperRelation($frontNums, $front_nums, $laterNums, $later_nums);
 
         //获取所对应的五行
-        $wx = $this->getWxByNums($front_nums,$later_nums);
+        $wx = $this->getWxByNums($front_nums, $later_nums);
 
         //天运
         $fate = $this->getFateByGz(new WalletPassword());
 
-        return array_merge(compact('front_nums','later_nums'),$grams,$wx,$yin_yang,$raws,$prosper,$fate);
+        return array_merge(compact('front_nums', 'later_nums'), $grams, $wx, $yin_yang, $raws, $prosper, $fate);
     }
 
     /**
@@ -70,21 +70,22 @@ class Plate extends BaseService
      */
     public function getFateByGz(WalletPassword $walletPassword)
     {
-        return ['fate'=>$walletPassword->getNaYin($this->date_detail['ganzhi_year'])];
+        $row = $walletPassword->getNaYin($this->date_detail['ganzhi_year']);
+        return ['fate' => $row['fate'] ?? ''];
     }
 
 
     public function getResultByLunar($date, $isLeapMonth = false)
     {
         //1、获取阳历生日对应的日期详情
-        $this->lunar($date,$isLeapMonth);
+        $this->lunar($date, $isLeapMonth);
 
         //2、获取先天数和后天数
         $frontNums = $this->frontNums($date);
         $laterNums = $this->laterNums($frontNums);
 
         //3、十二神数排盘
-        $relations = $this->relations($frontNums,$laterNums);
+        $relations = $this->relations($frontNums, $laterNums);
 
         return $relations;
     }
