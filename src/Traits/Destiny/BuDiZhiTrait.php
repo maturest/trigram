@@ -177,7 +177,8 @@ trait BuDiZhiTrait
             return $trigram_date->isSameDay($value['time']);
         });
 
-        if ($solar_term) {
+        // 如果存在并且卜卦时间早于节气时间临界点的
+        if ($solar_term && $trigram_date->lt($solar_term['time'])) {
             $last_day = Carbon::parse($this->date)->subDay()->format('Y-n-j-G');
             [$year, $month, $day, $hour] = explode('-', $last_day);
             $last_day_res = $this->calendar->solar($year, $month, $day, $hour);
