@@ -160,7 +160,31 @@ trait BuDiZhiTrait
         //  标记卜卦日期 天干
         $this->tianGanDay = $tian_gan;
 
+        //处理二十四节气时间临界点问题
+        $this->dealWithSolarTerms();
+
         return $this;
+    }
+
+    public function dealWithSolarTerms()
+    {
+        // 此时根据二十节气临界点去找寻对应的月地支
+        $json = file_get_contents(public_path('data/solar_terms.json'));
+        $solar_terms = json_decode($json, true);
+        // 先看是否存在与当前日期同一天的二十四节气
+        $trigram_date = Carbon::parse($this->date);
+        $solar_term = collect($solar_terms)->first(function ($value, $key) use ($trigram_date) {
+            return $trigram_date->isSameDay($value['time']);
+        });
+
+        if ($solar_term) {
+            $last_day = Carbon::parse($this->date)->subDay()->format('Y-n-j-G');
+            [$year, $month, $day, $hour] = explode('-', $last_day);
+            $last_day_res = $this->calendar->solar($year, $month, $day, $hour);
+
+            $this->gzMonth = mb_substr($last_day_res['ganzhi_month'], -1, 1) . '月';
+            $this->diZhiMonth = mb_substr($last_day_res['ganzhi_month'], -1, 1);
+        }
     }
 
 
