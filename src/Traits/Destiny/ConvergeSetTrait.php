@@ -234,16 +234,25 @@ trait ConvergeSetTrait
                 //如果是本爻，本爻与本爻，本爻与自己的化爻，本爻与日令，月令相比较
                 if ($jx['column'] == 4) {
                     $res = $this->isTornBen($dz, $dz_arr, $jx);
+                    if($res){
+                        return $res;
+                    }
                 }
 
                 // 如果将星位置在化爻
                 if ($jx['column'] == 5) {
                     $res = $this->isTornHua($dz, $dz_arr, $jx);
+                    if($res){
+                        return $res;
+                    }
                 }
 
                 //如果将星在日令 月令位置
                 if ($jx['column'] == 6) {
                     $res = $this->isTornLing($dz, $dz_arr);
+                    if($res){
+                        return $res;
+                    }
                 }
             }
         }
@@ -261,7 +270,11 @@ trait ConvergeSetTrait
     public function isTornBen($dz, $dz_arr, $jx)
     {
         //取出本爻
-        $ben = collect($dz_arr)->where('column', $jx['column'])->toArray();
+        $ben = collect($this->benGuaDetail)->filter(function ($item, $key) {
+            return $item['is_dong'] || $item['is_an_dong'];
+        })->toArray();
+
+        $ben = collect($ben)->where('column', $jx['column'])->toArray();
         foreach ($ben as $value) {
             if ($this->isCongRelation($dz, $value['dz'])) {
                 return true;
