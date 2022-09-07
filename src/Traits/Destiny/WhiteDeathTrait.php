@@ -20,6 +20,14 @@ trait WhiteDeathTrait
         ['水', '火'],
     ];
 
+    protected $wxSheng = [
+        ['a'=>'木','b'=>'火'],
+        ['a'=>'火','b'=>'土'],
+        ['a'=>'土','b'=>'金'],
+        ['a'=>'金','b'=>'水'],
+        ['a'=>'水','b'=>'木'],
+    ];
+
     protected $kongWang;
 
     // 空亡数组
@@ -290,6 +298,28 @@ trait WhiteDeathTrait
     public function judgeIsDangerous($dz_one, $dz_two)
     {
         return in_array([$dz_one, $dz_two], $this->wxKe);
+    }
+
+    /**
+     * 判断两个五行是否相生，A 生 B = one 生 two
+     * @param $wx_one
+     * @param $wx_two
+     * @return bool
+     */
+    public function judgeIsGrow($wx_one,$wx_two)
+    {
+        return in_array(['a'=>$wx_one,'b'=>$wx_two],$this->wxSheng);
+    }
+
+    /**
+     * 获取谁生我
+     * @param $wx
+     * @return mixed
+     */
+    public function getWhoGrowMe($wx)
+    {
+        $row = collect($this->wxSheng)->where('b',$wx)->first();
+        return $row['a'];
     }
 
     /**

@@ -15,11 +15,14 @@ use Maturest\Trigram\Traits\Destiny\SixCongTrait;
 use Maturest\Trigram\Traits\Destiny\SixHeTrait;
 use Maturest\Trigram\Traits\Destiny\VoltTrigramTrait;
 use Maturest\Trigram\Traits\Destiny\WhiteDeathTrait;
+use Maturest\Trigram\Traits\Fortune\NumenTrait;
 
 class DestinyService
 {
     use BuDiZhiTrait, WhiteDeathTrait, SixCongTrait, SixHeTrait, ConvergeSetTrait,
         EnterTombTrait, DilemmaTrait, VoltTrigramTrait, DrawTrait;
+
+    use NumenTrait;
 
     private static $instance;
 
@@ -154,5 +157,15 @@ class DestinyService
     private function __clone()
     {
 
+    }
+
+    /**
+     * 年运势卦
+     */
+    public function fortune($god)
+    {
+        // 1、守护神与用神有关
+        $numen = $this->numen($god);
+        return compact($numen);
     }
 }
