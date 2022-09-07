@@ -129,9 +129,9 @@ class DestinyService
         return false;
     }
 
-    public function getTrigramPic()
+    public function getTrigramPic($draw = true)
     {
-        $pic_url = $this->whiteDeath()
+        $this->whiteDeath()
             ->deployDiZhi()
             ->handleWhiteDeath()
             ->getYaoDetail()
@@ -141,11 +141,14 @@ class DestinyService
             ->handleRelationConvergeSet()
             ->handleEnterTomb()
             ->handleDilemma()
-            ->handleVoltTrigram()
-            ->draw();
+            ->handleVoltTrigram();
+
+        if($draw){
+            $pic_url = $this->draw();
+        }
 
         return [
-            'pic_url' => $pic_url,
+            'pic_url' => $pic_url ?? '',
             'is_dangerous' => $this->resultDiZhi['is_dangerous'] ?? false,
             'dangerous_note' => $this->resultDiZhi['dangerous_note'] ?? '',
         ];
