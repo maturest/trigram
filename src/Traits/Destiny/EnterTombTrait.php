@@ -137,7 +137,7 @@ trait EnterTombTrait
      */
     public function getBenDong()
     {
-        $dongs = array_values(Arr::where($this->benGuaDetail, function ($item, $key){
+        $dongs = array_values(Arr::where($this->benGuaDetail, function ($item, $key) {
             return $item['is_dong'] || $item['is_an_dong'];
         }));
 
@@ -226,7 +226,7 @@ trait EnterTombTrait
                     }
 
                     //判断起点的地支是不是需要入墓
-                    if (in_array($start_position['dz'], $row['ru_mu']) && !in_array($start_position['column'].$start_position['row'], $jxs)) {
+                    if (in_array($start_position['dz'], $row['ru_mu']) && !in_array($start_position['column'] . $start_position['row'], $jxs)) {
                         $terminal_point = $end_position['column'] . $end_position['row'];
                         $start_point = $start_position['column'] . $start_position['row'];
                         $res[] = $start_point . '-' . $terminal_point;
@@ -268,7 +268,7 @@ trait EnterTombTrait
             if (in_array($tran['dz'], $mu_kus)) {
                 $row = collect($this->ruMu)->where('ru', $tran['dz'])->first();
                 $ben = collect($ben_positions)->where('row', $tran['row'])->first();
-                if (in_array($ben['dz'], $row['ru_mu']) && !in_array($ben['column'].$ben['row'], $jxs)) {
+                if (in_array($ben['dz'], $row['ru_mu']) && !in_array($ben['column'] . $ben['row'], $jxs)) {
                     $terminal_point = $tran['column'] . $tran['row'];
                     $start_point = $ben['column'] . $ben['row'];
                     $res[] = $start_point . '-' . $terminal_point;

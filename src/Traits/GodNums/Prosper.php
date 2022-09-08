@@ -22,47 +22,47 @@ trait Prosper
         12 => [1, 2, 12],
     ];
 
-    protected function getProsperRelation($frontNums,$new_front_nums,$laterNums,$new_later_nums)
+    protected function getProsperRelation($frontNums, $new_front_nums, $laterNums, $new_later_nums)
     {
-        $front_prosper_relation = $this->properRelation($frontNums,$new_front_nums);
-        $later_prosper_relation = $this->properRelation($laterNums,$new_later_nums);
-        return compact('front_prosper_relation','later_prosper_relation');
+        $front_prosper_relation = $this->properRelation($frontNums, $new_front_nums);
+        $later_prosper_relation = $this->properRelation($laterNums, $new_later_nums);
+        return compact('front_prosper_relation', 'later_prosper_relation');
     }
 
-    protected function properRelation($nums,$new_nums)
+    protected function properRelation($nums, $new_nums)
     {
         // 比旺关系
         $proper_relations = [];
 
         $max_key = count($new_nums) - 1;
         $last_position = '';
-        foreach($new_nums as $key => $num){
+        foreach ($new_nums as $key => $num) {
 
-            if ($key == $max_key){
+            if ($key == $max_key) {
                 $proper_relations[] = $last_position ?: '';
                 break;
             }
 
             $a = $key == 0 ? last($nums) : $new_nums[$key - 1];
-            $b = $new_nums[$key+1];
+            $b = $new_nums[$key + 1];
 
-            if($a == ''){
+            if ($a == '') {
                 $proper_relations[] = '';
                 continue;
             }
 
             // a 比旺 b
-            if(in_array($b,$this->prosper[$a])){
+            if (in_array($b, $this->prosper[$a])) {
                 $proper_relations[] = 'right';
-            }else if (in_array($a,$this->prosper[$b])){
+            } else if (in_array($a, $this->prosper[$b])) {
                 // b 比旺 a
-                if($key == 0){
+                if ($key == 0) {
                     $proper_relations[] = '';
                     $last_position = 'left';
-                }else{
+                } else {
                     $proper_relations[] = 'left';
                 }
-            }else{
+            } else {
                 // a 与 b 不存在比旺的关系
                 $proper_relations[] = '';
             }

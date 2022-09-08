@@ -15,6 +15,19 @@ trait Wx
     ];
 
     /**
+     * 获取先天数后天数所对应的五行
+     * @param $front_nums
+     * @param $later_nums
+     * @return array
+     */
+    protected function getWxByNums($front_nums, $later_nums)
+    {
+        $front_wx = $this->wx($front_nums);
+        $later_wx = $this->wx($later_nums);
+        return compact('front_wx', 'later_wx');
+    }
+
+    /**
      * 获取五行
      * @param $nums
      * @return array
@@ -31,18 +44,5 @@ trait Wx
         }
 
         return $wx;
-    }
-
-    /**
-     * 获取先天数后天数所对应的五行
-     * @param $front_nums
-     * @param $later_nums
-     * @return array
-     */
-    protected function getWxByNums($front_nums, $later_nums)
-    {
-        $front_wx = $this->wx($front_nums);
-        $later_wx = $this->wx($later_nums);
-        return compact('front_wx', 'later_wx');
     }
 }

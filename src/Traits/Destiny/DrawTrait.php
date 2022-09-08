@@ -116,19 +116,19 @@ trait DrawTrait
         $this->bgObject = Image::make($drawBg);
     }
 
-    public function addWaterMark()
-    {
-        if($this->watermark){
-            $watermark = public_path($this->relativePath . 'watermark.png');
-            $this->fileExists($watermark);
-            $this->bgObject->insert($watermark,'top-left',77,15);
-        }
-    }
-
     public function fileExists($file)
     {
         if (!file_exists($file)) {
             throw new ImagesNotFoundException($file . '文件未找到');
+        }
+    }
+
+    public function addWaterMark()
+    {
+        if ($this->watermark) {
+            $watermark = public_path($this->relativePath . 'watermark.png');
+            $this->fileExists($watermark);
+            $this->bgObject->insert($watermark, 'top-left', 77, 15);
         }
     }
 

@@ -6,23 +6,12 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Maturest\Trigram\Exceptions\InvalidArgumentException;
-use Maturest\Trigram\Traits\Destiny\BuDiZhiTrait;
-use Maturest\Trigram\Traits\Destiny\ConvergeSetTrait;
-use Maturest\Trigram\Traits\Destiny\DilemmaTrait;
-use Maturest\Trigram\Traits\Destiny\DrawTrait;
-use Maturest\Trigram\Traits\Destiny\EnterTombTrait;
-use Maturest\Trigram\Traits\Destiny\SixCongTrait;
-use Maturest\Trigram\Traits\Destiny\SixHeTrait;
-use Maturest\Trigram\Traits\Destiny\VoltTrigramTrait;
-use Maturest\Trigram\Traits\Destiny\WhiteDeathTrait;
-use Maturest\Trigram\Traits\Fortune\NumenTrait;
+use Maturest\Trigram\Traits\DestinyTrait;
+use Maturest\Trigram\Traits\FortuneTrait;
 
 class DestinyService
 {
-    use BuDiZhiTrait, WhiteDeathTrait, SixCongTrait, SixHeTrait, ConvergeSetTrait,
-        EnterTombTrait, DilemmaTrait, VoltTrigramTrait, DrawTrait;
-
-    use NumenTrait;
+    use DestinyTrait, FortuneTrait;
 
     private static $instance;
 
@@ -143,7 +132,7 @@ class DestinyService
             ->handleDilemma()
             ->handleVoltTrigram();
 
-        if($draw){
+        if ($draw) {
             $pic_url = $this->draw();
         }
 
@@ -155,20 +144,24 @@ class DestinyService
     }
 
     /**
+     * 年运势卦
+     */
+    public function fortune($god)
+    {
+        //1、守护神与用神有关
+        $numen = $this->getNumen($god);
+
+        //2、运势吉凶
+        $good_ill = $this->getGoodOrIll($god);
+
+        return compact('numen', 'good_ill');
+    }
+
+    /**
      * 私有化克隆方法
      */
     private function __clone()
     {
 
-    }
-
-    /**
-     * 年运势卦
-     */
-    public function fortune($god)
-    {
-        // 1、守护神与用神有关
-        $numen = $this->numen($god);
-        return compact($numen);
     }
 }

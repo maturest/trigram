@@ -23,11 +23,11 @@ class DestinyServiceProvider extends ServiceProvider
             return new Calendar();
         });
 
-        $this->app->alias(Calendar::class,'calendar');
+        $this->app->alias(Calendar::class, 'calendar');
     }
 
     public function provides()
     {
-        return [Calendar::class,'calendar'];
+        return [Calendar::class, 'calendar'];
     }
 }

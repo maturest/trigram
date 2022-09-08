@@ -8,6 +8,5 @@ use Maturest\Trigram\Traits\TwelveGodNums\BigSuccessScene;
 
 class TwelveGodNums
 {
-    use BigFailScene,BigSuccessScene;
-
+    use BigFailScene, BigSuccessScene;
 }

@@ -113,7 +113,7 @@ trait SixHeTrait
         if ($count > 1) {
             foreach ($dongs as $key => $dong) {
                 //六合暗动不能是起始点
-                if($dong['is_an_dong']){
+                if ($dong['is_an_dong']) {
                     continue;
                 }
 
@@ -167,7 +167,7 @@ trait SixHeTrait
         $he = [];
         foreach ($dongs as $dong) {
 
-            if($dong['is_an_dong']){
+            if ($dong['is_an_dong']) {
                 continue;
             }
 
@@ -205,7 +205,7 @@ trait SixHeTrait
         $he = [];
         foreach ($dongs as $dong) {
 
-            if($dong['is_an_dong']){
+            if ($dong['is_an_dong']) {
                 continue;
             }
 

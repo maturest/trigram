@@ -93,7 +93,7 @@ trait BigFailScene
                 $orientation = collect($item)->sortBy('sort')->pluck('orientation')->unique()->implode('、');
                 //2、取出大败局
                 $fail = $this->defuses[$key];
-                return $orientation.'：'.$fail.'。';
+                return $orientation . '：' . $fail . '。';
             })->values()->toArray();
 
         return $rows;

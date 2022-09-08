@@ -199,13 +199,13 @@ trait ConvergeSetTrait
                     //标记是否为破
                     $torn = $this->markIsTorn($hui_ju['jx'], $dz_arr);
 
-                    $jx_point = collect($dz_arr)->where('dz',$hui_ju['jx'])->first();
+                    $jx_point = collect($dz_arr)->where('dz', $hui_ju['jx'])->first();
 
                     $hg = [
                         'hui_ju' => '汇' . $row['six_qin'] . '局',
                         'torn' => $torn,
                         'jx' => $hui_ju['jx'],
-                        'jx_position' => $jx_point['column'].$jx_point['row'],
+                        'jx_position' => $jx_point['column'] . $jx_point['row'],
                     ];
 
                     $res[$type][] = $hg;
@@ -234,7 +234,7 @@ trait ConvergeSetTrait
                 //如果是本爻，本爻与本爻，本爻与自己的化爻，本爻与日令，月令相比较
                 if ($jx['column'] == 4) {
                     $res = $this->isTornBen($dz, $dz_arr, $jx);
-                    if($res){
+                    if ($res) {
                         return $res;
                     }
                 }
@@ -242,7 +242,7 @@ trait ConvergeSetTrait
                 // 如果将星位置在化爻
                 if ($jx['column'] == 5) {
                     $res = $this->isTornHua($dz, $dz_arr, $jx);
-                    if($res){
+                    if ($res) {
                         return $res;
                     }
                 }
@@ -250,7 +250,7 @@ trait ConvergeSetTrait
                 //如果将星在日令 月令位置
                 if ($jx['column'] == 6) {
                     $res = $this->isTornLing($dz, $dz_arr);
-                    if($res){
+                    if ($res) {
                         return $res;
                     }
                 }

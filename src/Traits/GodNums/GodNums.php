@@ -23,6 +23,20 @@ trait GodNums
     ];
 
     /**
+     * 获取后天数
+     * @param $frontNums
+     * @return mixed
+     */
+    public function laterNums($frontNums)
+    {
+        $laterNums = collect($frontNums)->map(function ($item, $key) {
+            return $item <= 6 ? ($item + 6) : ($item - 6);
+        })->toArray();
+
+        return $laterNums;
+    }
+
+    /**
      * 获取先天数
      * @param $calendar
      * @param $date
@@ -45,7 +59,7 @@ trait GodNums
     protected function frontYearNum($gz_year)
     {
         $row = collect($this->yearFrontNums)->where('dz', $this->dzYear($gz_year))->first();
-        return [ $row['front_num'] ?? 0];
+        return [$row['front_num'] ?? 0];
     }
 
     /**
@@ -55,7 +69,7 @@ trait GodNums
      */
     protected function frontMonthNum($month)
     {
-        return [ intval($month) ?: 0];
+        return [intval($month) ?: 0];
     }
 
     /**
@@ -113,20 +127,6 @@ trait GodNums
     }
 
     /**
-     * 获取后天数
-     * @param $frontNums
-     * @return mixed
-     */
-    public function laterNums($frontNums)
-    {
-        $laterNums = collect($frontNums)->map(function ($item, $key) {
-            return $item <= 6 ? ($item + 6) : ($item - 6);
-        })->toArray();
-
-        return $laterNums;
-    }
-
-    /**
      * 创建新的数组
      * @param $nums
      * @return array
@@ -136,7 +136,7 @@ trait GodNums
         $arr = [];
         //头部
         $arr[] = '';
-        foreach ($nums as $key => $num){
+        foreach ($nums as $key => $num) {
             $arr[] = $num;
             $arr[] = '';
         }

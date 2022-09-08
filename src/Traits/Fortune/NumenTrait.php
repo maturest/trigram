@@ -8,6 +8,59 @@ use Illuminate\Support\Str;
 trait NumenTrait
 {
     /**
+     * 获取守护神
+     * @param string $god
+     * @return string
+     */
+    public function getNumen($god = '世')
+    {
+        return $this->getLetters($this->getWxByGod($god));
+    }
+
+    /**
+     * 获取守护神条目
+     * @param $wxs
+     * @return string
+     */
+    public function getLetters($wxs)
+    {
+        $wxs = $this->getGrowMeWxs($wxs);
+        $letters = [
+            ['wx' => '火', 'letter' => '朝东拜神农大帝【常去寺庙跟守护神做链接，或多观想守护神】'],
+            ['wx' => '土', 'letter' => '朝南拜关圣帝君【常去寺庙跟守护神做链接，或多观想守护神】'],
+            ['wx' => '金', 'letter' => '朝西拜地藏王菩萨【常去寺庙跟守护神做链接，或多观想守护神】'],
+            ['wx' => '水', 'letter' => '朝西拜观世音菩萨【常去寺庙跟守护神做链接，或多观想守护神】'],
+            ['wx' => '木', 'letter' => '朝北拜玄天上帝【常去寺庙跟守护神做链接，或多观想守护神】'],
+        ];
+        return collect($letters)->whereIn('wx', $wxs)->implode('letter', ';');
+    }
+
+    /**
+     * 获取相应的来生五行
+     * @param $wxs
+     * @return mixed
+     */
+    public function getGrowMeWxs($wxs)
+    {
+        return collect($wxs)->map(function ($wx, $key) {
+            return $this->getWhoGrowMe($wx);
+        })->all();
+    }
+
+    /**
+     * 获取用神十二地支对应的五行
+     * @param $god
+     * @return array
+     */
+    public function getWxByGod($god)
+    {
+        if ($god == '世') {
+            return [$this->getWxByDz($this->getDzByShi())];
+        }
+        return $this->getWxBySixQin($god);
+    }
+
+    /**
      * 通过五行获取地支
      * @param $dz
      * @return mixed
@@ -27,19 +80,6 @@ trait NumenTrait
         $shi_ying = explode(',', $this->resultDiZhi['shi_ying']);
         $shi_index = array_search('世', $shi_ying);
         return $this->benGuaDetail[$shi_index]['dz'];
-    }
-
-    /**
-     * 获取用神十二地支对应的五行
-     * @param $god
-     * @return array
-     */
-    public function getWxByGod($god)
-    {
-        if ($god == '世') {
-            return [$this->getWxByDz($this->getDzByShi())];
-        }
-        return $this->getWxBySixQin($god);
     }
 
     /**
@@ -92,46 +132,15 @@ trait NumenTrait
     }
 
     /**
-     * 获取相应的来生五行
+     * 获取相应的来克五行
      * @param $wxs
      * @return mixed
      */
-    public function getGrowMeWxs($wxs)
+    public function getKeMeWxs($wxs)
     {
         return collect($wxs)->map(function ($wx, $key) {
-            return $this->getWhoGrowMe($wx);
+            return $this->getWhoKeMe($wx);
         })->all();
     }
-
-    /**
-     * 获取守护神条目
-     * @param $wxs
-     * @return string
-     */
-    public function getLetters($wxs)
-    {
-        $wxs = $this->getGrowMeWxs($wxs);
-        $letters = [
-            ['wx' => '火', 'letter' => '朝东拜神农大帝【常去寺庙跟守护神做链接，或多观想守护神】'],
-            ['wx' => '土', 'letter' => '朝南拜关圣帝君【常去寺庙跟守护神做链接，或多观想守护神】'],
-            ['wx' => '金', 'letter' => '朝西拜地藏王菩萨【常去寺庙跟守护神做链接，或多观想守护神】'],
-            ['wx' => '水', 'letter' => '朝西拜观世音菩萨【常去寺庙跟守护神做链接，或多观想守护神】'],
-            ['wx' => '木', 'letter' => '朝北拜玄天上帝【常去寺庙跟守护神做链接，或多观想守护神】'],
-        ];
-        $row = collect($letters)->whereIn('wx', $wxs)->pluck('letter')->all();
-        return implode(';', $row);
-    }
-
-    /**
-     * 获取守护神
-     * @param string $god
-     * @return string
-     */
-    public function getNumen($god = '世')
-    {
-        return $this->getLetters($this->getWxByGod($god));
-    }
-
-
 
 }
