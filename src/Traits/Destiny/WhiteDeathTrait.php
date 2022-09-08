@@ -323,6 +323,20 @@ trait WhiteDeathTrait
     }
 
     /**
+     * 获取谁克我
+     * @param $wx
+     * @return mixed
+     */
+    public function getWhoKeMe($wx)
+    {
+        $row = collect($this->wxKe)->first(function($value,$key)use($wx){
+           return $value[1] == $wx;
+        });
+        return $row[0];
+    }
+
+
+    /**
      * 获取卦变为凶卦的提示
      * @param $dz_one
      * @param $dz_two
