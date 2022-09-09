@@ -154,7 +154,10 @@ class DestinyService
         //2、运势吉凶
         $good_ill = $this->getGoodOrIll($god);
 
-        return compact('numen', 'good_ill');
+        //3、五行护持
+        $shield = $this->getShield($god);
+
+        return compact('numen', 'good_ill','shield');
     }
 
     /**
