@@ -157,6 +157,9 @@ class DestinyService
         //3、五行护持
         $shield = $this->getShield($god);
 
+        //4、幸运配饰
+        $accessory = '';
+
         return compact('numen', 'good_ill','shield');
     }
 

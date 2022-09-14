@@ -103,11 +103,17 @@ trait NumenTrait
     public function getWxByBenSixQin($god)
     {
         $res = [];
-        //如果六亲中包含用神，为防止出现多个六亲，循环遍历
+        //如果六亲中包含用神，为防止出现多个六亲，循环遍历,
         $tmp_arr = explode(',', $this->resultDiZhi['liu_qin']);
         foreach ($tmp_arr as $key => $value) {
             if ($value == $god) {
                 $res[] = $this->getWxByDz($this->benGuaDetail[$key]['dz']);
+
+                //用神多现取旺相者，动爻大于静爻，本爻大于化爻
+                if($this->benGuaDetail[$key]['is_dong'] || $this->benGuaDetail[$key]['is_an_dong']){
+                    $res = [$this->getWxByDz($this->benGuaDetail[$key]['dz'])];
+                    break;
+                }
             }
         }
         return array_unique($res);
@@ -123,9 +129,8 @@ trait NumenTrait
         $res = [];
         foreach ($this->draw['fu_yao'] as $fu_yao) {
             if (Str::startsWith($fu_yao, '伏' . $god)) {
-                $tmp_arr = str_split($fu_yao['position']);
-                $row = collect($this->benGuaDetail)->where('column', $tmp_arr[0])->where('row', $tmp_arr[1])->first();
-                $res[] = $this->getWxByDz($row['dz']);
+                $dz = mb_substr($fu_yao,-1);
+                $res[] = $this->getWxByDz($dz);
             }
         }
         return array_unique($res);
