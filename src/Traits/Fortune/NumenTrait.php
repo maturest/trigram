@@ -75,12 +75,55 @@ trait NumenTrait
      * 获取世对应的十二地支
      * @return mixed
      */
-    public function getDzByShi()
+    public function getDzByShi($set_position = true)
     {
         $shi_ying = explode(',', $this->resultDiZhi['shi_ying']);
         $shi_index = array_search('世', $shi_ying);
+
+        $position = [
+            'position' => $this->benGuaDetail[$shi_index]['column'] . $this->benGuaDetail[$shi_index]['row'],
+            'is_dong' => $this->benGuaDetail[$shi_index]['is_dong'],
+            'is_an_dong' => $this->benGuaDetail[$shi_index]['is_an_dong'],
+            'dz' => $this->benGuaDetail[$shi_index]['dz'],
+        ];
+
+        //设置用神的位置
+        if($set_position){
+            $this->setGodPosition($position);
+        }
+
+        //设置世爻的位置
+        if($set_position == false){
+            $this->setShiPosition($position);
+        }
+
+
         return $this->benGuaDetail[$shi_index]['dz'];
     }
+
+    /**
+     * 动态设置用神的位置
+     * @param $position
+     * @param bool $refresh
+     */
+    public function setGodPosition($position,$refresh = false)
+    {
+        if($refresh){
+            $this->god_position = [$position];
+            return;
+        }
+
+        $this->god_position = array_unique(array_merge($this->god_position,[$position]));
+    }
+
+    /**
+     * @param $position
+     */
+    public function setShiPosition($position)
+    {
+        $this->shi_position = [$position];
+    }
+
 
     /**
      * 通过六亲找寻对应的五行
@@ -107,11 +150,22 @@ trait NumenTrait
         $tmp_arr = explode(',', $this->resultDiZhi['liu_qin']);
         foreach ($tmp_arr as $key => $value) {
             if ($value == $god) {
+
+
+                $position = [
+                    'position' => $this->benGuaDetail[$key]['column'] . $this->benGuaDetail[$key]['row'],
+                    'is_dong' => $this->benGuaDetail[$key]['is_dong'],
+                    'is_an_dong' => $this->benGuaDetail[$key]['is_an_dong'],
+                    'dz' => $this->benGuaDetail[$key]['dz'],
+                ];
+                $this->setGodPosition($position);
+
                 $res[] = $this->getWxByDz($this->benGuaDetail[$key]['dz']);
 
                 //用神多现取旺相者，动爻大于静爻，本爻大于化爻
                 if($this->benGuaDetail[$key]['is_dong'] || $this->benGuaDetail[$key]['is_an_dong']){
                     $res = [$this->getWxByDz($this->benGuaDetail[$key]['dz'])];
+                    $this->setGodPosition($position,true);
                     break;
                 }
             }
@@ -128,9 +182,23 @@ trait NumenTrait
     {
         $res = [];
         foreach ($this->draw['fu_yao'] as $fu_yao) {
-            if (Str::startsWith($fu_yao, '伏' . $god)) {
-                $dz = mb_substr($fu_yao,-1);
+            if (Str::startsWith($fu_yao['fu_yao'], '伏' . $god)) {
+                $dz = mb_substr($fu_yao['fu_yao'],-1);
                 $res[] = $this->getWxByDz($dz);
+
+                $ben_yao =  collect($this->benGuaDetail)
+                    ->where('column',$fu_yao['position'][0])
+                    ->where('row',$fu_yao['position'][1])
+                    ->first();
+
+                $position = [
+                    'position' => $fu_yao['position'],
+                    'is_dong' => $ben_yao['is_dong'],
+                    'is_an_dong' => $ben_yao['is_an_dong'],
+                    'dz' =>$ben_yao['dz'],
+                ];
+
+                $this->setGodPosition($position);
             }
         }
         return array_unique($res);
