@@ -154,7 +154,7 @@ class DestinyService
         $this->setGodPositions($god_positions);
 
         //1、守护神与用神有关
-        $numen = $this->getNumen($god);
+        $numen = $this->getNumen();
 
         //2、运势吉凶
         $good_ill = $this->getGoodOrIll($god);
@@ -180,7 +180,9 @@ class DestinyService
 
 
     /**
+     * 获取用神的位置
      * @param string $god 用神
+     * @return array|array[]
      */
     public function getGodPositions($god)
     {
@@ -192,6 +194,11 @@ class DestinyService
         return $this->getGodPositionsWithSixQin($god);
     }
 
+    /**
+     * 通过六亲获取用神的位置
+     * @param $god
+     * @return array|array[]
+     */
     public function getGodPositionsWithSixQin($god)
     {
         if (Str::contains($this->resultDiZhi['liu_qin'], $god)) {
@@ -266,7 +273,6 @@ class DestinyService
         return array_unique($positions);
     }
 
-
     /**
      * 获取世应的位置
      * @param string $font
@@ -287,7 +293,6 @@ class DestinyService
         return $position;
     }
 
-
     /**
      * 通过十二地支获取五行
      * @param $dz
@@ -299,7 +304,6 @@ class DestinyService
         return $dz_wx['wx'];
     }
 
-
     /**
      * 全局动态设置用神的位置
      * @param $position
@@ -307,6 +311,17 @@ class DestinyService
     public function setGodPositions($positions)
     {
         $this->god_positions = $positions;
+    }
+
+
+    /**
+     * 获取用神的五行
+     * @return mixed|null
+     */
+    public function getGodWx()
+    {
+        $position = $this->god_positions[0];
+        return $position['wx'] ?? null;
     }
 
 }
