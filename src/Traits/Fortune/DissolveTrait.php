@@ -427,4 +427,246 @@ trait DissolveTrait
         }
         return false;
     }
+
+    /**
+     * 通过六亲找到对应的位置
+     * @param $six_qin
+     * @return array
+     */
+    public function getPositionsWithSixQin($six_qin)
+    {
+        $positions = [];
+
+        //本卦中的六亲
+        $tmp_arr = explode(',', $this->resultDiZhi['liu_qin']);
+        foreach ($tmp_arr as $key => $value) {
+            if ($value == $six_qin) {
+                $positions[] = [
+                    'position' => $this->benGuaDetail[$key]['column'] . $this->benGuaDetail[$key]['row'],
+                    'is_dong' => $this->benGuaDetail[$key]['is_dong'],
+                    'is_an_dong' => $this->benGuaDetail[$key]['is_an_dong'],
+                    'dz' => $this->benGuaDetail[$key]['dz'],
+                ];
+            }
+        }
+
+        //如果是伏爻
+        foreach ($this->draw['fu_yao'] as $fu_yao) {
+            if (Str::startsWith($fu_yao['fu_yao'], '伏' . $six_qin)) {
+                $ben_yao =  collect($this->benGuaDetail)
+                    ->where('column',$fu_yao['position'][0])
+                    ->where('row',$fu_yao['position'][1])
+                    ->first();
+
+                $positions[] = [
+                    'position' => $fu_yao['position'],
+                    'is_dong' => $ben_yao['is_dong'],
+                    'is_an_dong' => $ben_yao['is_an_dong'],
+                    'dz' =>$ben_yao['dz'],
+                ];
+            }
+        }
+
+        return array_unique($positions);
+    }
+
+    /**
+     * 月运势卦
+     * @param $god
+     * @return mixed
+     */
+    public function fortuneTrigram($god)
+    {
+        $god_wx = $this->getWxByGod($god)[0];
+
+        $letters = [
+            ['wx'=>'木','letter'=>'建议您在申月、酉月卜当月运势卦'],
+            ['wx'=>'火','letter'=>'建议您在亥月、子月卜当月运势卦'],
+            ['wx'=>'土','letter'=>'建议您在寅月、卯月卜当月运势卦'],
+            ['wx'=>'金','letter'=>'建议您在巳月、午月卜当月运势卦'],
+            ['wx'=>'水','letter'=>'建议您在丑月、辰月、未月、戌月卜当月运势卦'],
+        ];
+
+        $row = collect($letters)->where('wx',$god_wx)->first();
+        return $row['letter'];
+    }
+
+    /**
+     * 旅行卦
+     * 父爻的五行是动爻，并且被克，被冲或入墓
+     */
+    public function tripTrigram($six_qin = '父')
+    {
+        $positions = $this->getPositionsWithSixQin($six_qin);
+        foreach($positions as $position){
+            if($position['is_dong'] || $position['is_an_dong']){
+                if($this->getIsKeByPosition($position) || $this->getIsKeByPosition($position) || $this->getIsRuByPosition($position)){
+                    return '建议您出远门卜出行卦，注意交通工具安全，避免疲劳驾驶。';
+                }
+            }
+        }
+
+        return '';
+    }
+
+    /**
+     * 获取世应的位置
+     * @param string $font
+     * @return array
+     */
+    public function getShiOrYingPosition($font='世')
+    {
+        $shi_ying  = explode(',', $this->resultDiZhi['shi_ying']);
+        $index = array_search($font, $shi_ying);
+        $position = [
+            'position' => $this->benGuaDetail[$index]['column'] . $this->benGuaDetail[$index]['row'],
+            'is_dong' => $this->benGuaDetail[$index]['is_dong'],
+            'is_an_dong' => $this->benGuaDetail[$index]['is_an_dong'],
+            'dz' => $this->benGuaDetail[$index]['dz'],
+        ];
+        return $position;
+    }
+
+    /**
+     * 获取世或者应的六亲
+     * @param string $font
+     * @return false|int|string
+     */
+    public function getSixQinByShiOrYing($font='世')
+    {
+        $shi_ying = explode(',', $this->resultDiZhi['shi_ying']);
+        $six_qin = explode(',',$this->resultDiZhi['liu_qin']);
+        $arr = array_combine($six_qin,$shi_ying);
+        return array_search($font,$arr);
+    }
+
+    /**
+     * 净化磁场
+     */
+    public function cleanMagneticField()
+    {
+        $six_qin_ying = $this->getSixQinByShiOrYing('应');
+        $six_qin_shi = $this->getSixQinByShiOrYing('世');
+
+        if($six_qin_ying == '官' && in_array($six_qin_shi,['兄','子','财','官'])){
+            return '建议您卜卦择日净化住家磁场';
+        }
+
+        if($six_qin_ying == '兄' && in_array($six_qin_shi,['兄','财','官','父'])){
+            return '建议您卜卦择日净化住家磁场';
+        }
+
+        return '';
+    }
+
+    /**
+     * 婴灵
+     * 官是动爻并且与动爻的兄或子有合、冲、入，克关系
+     * @param $is_pregnant
+     * @return string
+     */
+    public function unborn($is_pregnant)
+    {
+        $guan_positions = $this->getPositionsWithSixQin('官');
+        $brother_positions = $this->getPositionsWithSixQin('兄');
+        $child_positions = $this->getPositionsWithSixQin('子');
+
+        if( ! $is_pregnant ){
+            foreach($guan_positions as $position){
+                //如果官爻是动爻
+                if($position['is_dong'] || $position['is_an_dong']){
+
+                    //判断是否有合的关系
+                    if($this->getIsHeByPosition($position)){
+                        if($this->isNeedUnborn($position,$brother_positions,'six_he')
+                            || $this->isNeedUnborn($position,$child_positions,'six_he')){
+                            return $this->cleanYinQi();
+                        }
+                    }
+
+                    //判断是否有冲的关系
+                    if($this->getIsCongByPosition($position)){
+                        if($this->isNeedUnborn($position,$brother_positions,'six_chong')
+                            || $this->isNeedUnborn($position,$child_positions,'six_chong')){
+                            return $this->cleanYinQi();
+                        }
+                    }
+
+                    //判断是否有入的关系
+                    if($this->getIsRuByPosition($position)){
+                        if($this->isNeedUnborn($position,$brother_positions,'ru_mu')
+                            || $this->isNeedUnborn($position,$child_positions,'ru_mu')){
+                            return $this->cleanYinQi();
+                        }
+                    }
+
+                    //判断是否有克的关系
+                    if($this->unbornKe($position,$brother_positions) || $this->unbornKe($position,$child_positions) ){
+                        return $this->cleanYinQi();
+                    }
+                }
+            }
+        }
+
+        return '';
+    }
+
+    /**
+     * @param array $position 官动爻的位置
+     * @param array $relation_positions 六亲的位置
+     * @param string $relation 关系
+     * @return bool
+     */
+    public function isNeedUnborn($position,$relation_positions,$relation='six_he')
+    {
+        foreach($this->draw[$relation] as $item){
+            $tmp_arr = explode('-',$item);
+            if(in_array($position['position'],$tmp_arr)){
+                $tmp_arr = array_diff($tmp_arr,[$position['position']]);
+                foreach($relation_positions as $relation_position){
+                    if(in_array($relation_position['position'],$tmp_arr) && ($relation_position['is_dong'] || $relation_position['is_an_dong'])){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 官爻的位置是否与兄或者子动爻相克
+     * @param $position
+     * @param $relation_positions
+     */
+    public function unbornKe($position,$relation_positions)
+    {
+        $wx = $this->getWxByDz($position['dz']);
+        $wx_ke_me = $this->getWhoKeMe($wx);
+        foreach ($relation_positions as $relation_position){
+            //如果是动爻
+            if($relation_position['is_dong'] || $relation_position['is_an_dong']){
+                if($this->getWxByDz($relation_position['dz']) == $wx_ke_me){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public function cleanYinQi()
+    {
+        $wxs = $this->getWxBySixQin('子');
+
+        $letters = [
+            ['wx'=>'木','letter'=>'建议您去庙里拜神农大帝让婴灵去报到。如不方便去庙里，可在安静的地方朝东拜神农大帝化土煞或者化身边的阴气'],
+            ['wx'=>'火','letter'=>'建议您去庙里拜关圣帝君让婴灵去报到。如不方便去庙里，可在安静的地方朝南拜关圣帝君化金煞或者化身边的阴气'],
+            ['wx'=>'土','letter'=>'建议您去庙里拜地藏王菩萨让婴灵去报到。如不方便去庙里，可在安静的地方朝西拜地藏王菩萨化水煞或者化身边的阴气'],
+            ['wx'=>'金','letter'=>'建议您去庙里拜观世音菩萨让婴灵去报到。如不方便去庙里，可在安静的地方朝西拜观世音菩萨化木煞或者化身边的阴气'],
+            ['wx'=>'水','letter'=>'建议您去庙里拜玄天上帝让婴灵去报到。如不方便去庙里，可在安静的地方朝北拜玄天上帝化火煞或者化身边的阴气'],
+        ];
+
+        $row = collect($letters)->where('wx',$wxs[0])->first();
+
+        return $row['letter'];
+    }
 }
