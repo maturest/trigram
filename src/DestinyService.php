@@ -160,7 +160,7 @@ class DestinyService
         $good_ill = $this->getGoodOrIll($god);
 
         //3、五行护持
-        $shield = $this->getShield($god);
+        $shield = $this->getShield();
 
         //4、幸运配饰
         $accessory = '';
