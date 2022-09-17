@@ -509,23 +509,7 @@ trait DissolveTrait
         return '';
     }
 
-    /**
-     * 获取世应的位置
-     * @param string $font
-     * @return array
-     */
-    public function getShiOrYingPosition($font='世')
-    {
-        $shi_ying  = explode(',', $this->resultDiZhi['shi_ying']);
-        $index = array_search($font, $shi_ying);
-        $position = [
-            'position' => $this->benGuaDetail[$index]['column'] . $this->benGuaDetail[$index]['row'],
-            'is_dong' => $this->benGuaDetail[$index]['is_dong'],
-            'is_an_dong' => $this->benGuaDetail[$index]['is_an_dong'],
-            'dz' => $this->benGuaDetail[$index]['dz'],
-        ];
-        return $position;
-    }
+
 
     /**
      * 获取世或者应的六亲

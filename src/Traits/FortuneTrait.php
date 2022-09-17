@@ -11,7 +11,7 @@ use Maturest\Trigram\Traits\Fortune\DissolveTrait;
 trait FortuneTrait
 {
     //用神的位置,数组
-    protected $god_position = [];
+    protected $god_positions = [];
 
     //世的位置
     protected $shi_position = [];

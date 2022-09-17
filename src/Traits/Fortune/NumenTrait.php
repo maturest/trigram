@@ -60,16 +60,7 @@ trait NumenTrait
         return $this->getWxBySixQin($god);
     }
 
-    /**
-     * 通过五行获取地支
-     * @param $dz
-     * @return mixed
-     */
-    public function getWxByDz($dz)
-    {
-        $dz_wx = collect($this->dzWx)->where('dz', $dz)->first();
-        return $dz_wx['wx'];
-    }
+
 
     /**
      * 获取世对应的十二地支
