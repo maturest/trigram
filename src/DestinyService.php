@@ -163,7 +163,7 @@ class DestinyService
         $shield = $this->getShield();
 
         //4、幸运配饰
-        $accessory = '';
+        $accessory = $this->getAcc($god);
 
         //5、化解之道
 

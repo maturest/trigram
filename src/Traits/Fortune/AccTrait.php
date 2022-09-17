@@ -11,17 +11,20 @@ trait AccTrait
     {
         if ($god == '财') {
             //子爻的五行颜色
-            $color_wx = $this->getWxBySixQin('子');
+            $zi_positions = $this->getGodPositionsWithSixQin('子');
+            $color_wx = $zi_positions[0]['wx'];
+
             //财爻的五行物件
-            $goods_wx = $this->getWxBySixQin('财');
+            $cai_positions = $this->getGodPositionsWithSixQin('财');
+            $goods_wx = $cai_positions[0]['wx'];
 
             return $this->getAccLetters($color_wx, $goods_wx);
         }
 
         //用神的五行颜色
-        $color_wx = $this->getWxByGod($god);
+        $color_wx = $this->getGodWx();
         //生用神的五行物件
-        $goods_wx = $this->getGrowMeWxs($color_wx);
+        $goods_wx = $this->getWhoGrowMe($color_wx);
 
         return $this->getAccLetters($color_wx, $goods_wx);
     }
@@ -44,9 +47,9 @@ trait AccTrait
             ['wx' => '水', 'good' => '1颗黑色珠子'],
         ];
 
-        $color = collect($colors)->where('wx', $color_wx[0])->first();
+        $color = collect($colors)->where('wx', $color_wx)->first();
 
-        $good = collect($goods)->where('wx', $goods_wx[0])->first();
+        $good = collect($goods)->where('wx', $goods_wx)->first();
 
         $string = '?锦囊内放?，建议您随身携带。';
 
