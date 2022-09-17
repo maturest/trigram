@@ -8,23 +8,21 @@ trait GoodIllTrait
 {
     /**
      * 运势吉凶
-     * @param $god
      * @return string
      */
     public function getGoodOrIll($god)
     {
-        $wxs = $this->getWxByGod($god);
-        return $this->getGoods($wxs, $god) . $this->getIlls($wxs, $god);
+        $wx = $this->getGodWx();
+        return $this->getGoods($wx,$god) . $this->getIlls($wx, $god);
     }
 
-    public function getGoods($wxs, $god)
+    public function getGoods($wx, $god)
     {
-        return $this->getGoodTime($wxs) . $this->recommendDo($god);
+        return $this->getGoodTime($wx) . $this->recommendDo($god);
     }
 
-    public function getGoodTime($wxs)
+    public function getGoodTime($wx)
     {
-        $wxs = $this->getGrowMeWxs($wxs);
         $letters = [
             ['wx' => '火', 'letter' => '适合在寅日、卯日做重大决定，清晨5点至7点，上午9点至中午1点前的黄金时间段可多思考做重要决策。'],
             ['wx' => '土', 'letter' => '适合在巳日、午日做重大决定，上午9点至中午1点前的黄金时间段可多思考做重要决策。'],
@@ -32,7 +30,8 @@ trait GoodIllTrait
             ['wx' => '水', 'letter' => '适合在申日、酉日做重大决定，下午3-7点的黄金时间段可多思考做重要决策。'],
             ['wx' => '木', 'letter' => '适合在子日、亥日做重大决定，晚上9点至凌晨1点前的黄金时间段可多思考做重要决策。'],
         ];
-        return collect($letters)->whereIn('wx', $wxs)->implode('letter', '');
+        $row =  collect($letters)->where('wx', $this->getWhoGrowMe($wx))->first();
+        return $row['letter'];
     }
 
     public function recommendDo($god)
@@ -48,14 +47,13 @@ trait GoodIllTrait
         return $row['letter'];
     }
 
-    public function getIlls($wxs, $god)
+    public function getIlls($wx, $god)
     {
-        return $this->getBadTime($wxs) . $this->recommendNotDo($god);
+        return $this->getBadTime($wx) . $this->recommendNotDo($god);
     }
 
-    public function getBadTime($wxs)
+    public function getBadTime($wx)
     {
-        $wxs = $this->getKeMeWxs($wxs);
         $letters = [
             ['wx' => '火', 'letter' => '避免在亥日、子日以及晚上9点至凌晨1点前做重大决定。'],
             ['wx' => '土', 'letter' => '避免在寅日、卯日以及清晨5点至7点。'],
@@ -63,7 +61,8 @@ trait GoodIllTrait
             ['wx' => '水', 'letter' => '避免在丑日、辰日、未日、戌日以及上午7-9点、下午1-3点、晚上7-9点的时间段做重大决定'],
             ['wx' => '木', 'letter' => '避免在申日、酉日以及下午3-7点的时间段做重大决定。'],
         ];
-        return collect($letters)->whereIn('wx', $wxs)->implode('letter', '');
+        $row = collect($letters)->where('wx', $this->getWhoKeMe($wx))->first();
+        return $row['letter'];
     }
 
     public function recommendNotDo($god)

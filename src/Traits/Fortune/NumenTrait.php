@@ -25,7 +25,7 @@ trait NumenTrait
     public function getLetters($wx)
     {
         $wx = $this->getWhoGrowMe($wx);
-        
+
         $letters = [
             ['wx' => '火', 'letter' => '朝东拜神农大帝【常去寺庙跟守护神做链接，或多观想守护神】'],
             ['wx' => '土', 'letter' => '朝南拜关圣帝君【常去寺庙跟守护神做链接，或多观想守护神】'],

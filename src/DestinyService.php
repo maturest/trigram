@@ -153,7 +153,7 @@ class DestinyService
         //全局设置用神的位置
         $this->setGodPositions($god_positions);
 
-        //1、守护神与用神有关
+        //1、守护神
         $numen = $this->getNumen();
 
         //2、运势吉凶
