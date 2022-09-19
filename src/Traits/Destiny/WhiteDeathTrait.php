@@ -473,11 +473,11 @@ trait WhiteDeathTrait
     public function getCoordsByDots($dots)
     {
         $coords = [];
-        foreach ($dots as $dot) {
-            $xy = collect($this->dotCoords)->where('position', $dot)->first();
+        foreach ($dots as $position) {
+            $xy = collect($this->dotCoords)->where('position', $position)->first();
             $x = Arr::get($xy, 'x');
             $y = Arr::get($xy, 'y');
-            $coords[] = compact('x', 'y');
+            $coords[] = compact('x', 'y','position');
         }
         return $coords;
     }

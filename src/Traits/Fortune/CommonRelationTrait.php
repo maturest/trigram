@@ -304,7 +304,7 @@ trait CommonRelationTrait
         $coords = $this->draw['kong_wang']['coords'];
 
         foreach ($coords as $coord) {
-            return $coord['x'] . $coord['y'] == $position['position'];
+            return $coord['position'] == $position['position'];
         }
 
         return false;

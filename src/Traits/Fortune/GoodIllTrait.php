@@ -8,12 +8,15 @@ trait GoodIllTrait
 {
     /**
      * 运势吉凶
-     * @return string
+     * @return array
      */
     public function goodOrIll($god)
     {
         $wx = $this->getGodWx();
-        return $this->getGoods($wx, $god) . $this->getIlls($wx, $god);
+        return [
+            $this->getGoods($wx, $god),
+            $this->getIlls($wx, $god)
+        ];
     }
 
     public function getGoods($wx, $god)
@@ -36,6 +39,7 @@ trait GoodIllTrait
 
     public function recommendDo($god)
     {
+        $god = $god == '世' ? $this->getSixQinByShiOrYing() : $god;
         $letters = [
             ['god' => '兄', 'letter' => '可做事业、投资、家庭等方面的重要规划，宜多与长辈、长者交流互动。'],
             ['god' => '子', 'letter' => '可做团队策划、合伙决策、兄弟姐妹家庭商议等重要决定，宜多与同辈交流互动。'],
@@ -67,6 +71,7 @@ trait GoodIllTrait
 
     public function recommendNotDo($god)
     {
+        $god = $god == '世' ? $this->getSixQinByShiOrYing() : $god;
         $letters = [
             ['god' => '兄', 'letter' => '怕会引发不必要的是非口角或官非。'],
             ['god' => '子', 'letter' => '怕会带来过大的压力及意外事件。'],
