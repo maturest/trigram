@@ -402,7 +402,7 @@ trait CommonRelationTrait
             }
         }
 
-        return array_unique($positions);
+        return array_unique($positions,SORT_REGULAR);
     }
 
     /**
