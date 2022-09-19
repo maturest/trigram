@@ -198,6 +198,15 @@ $res = $wealth->getPasswordByNum();
 $res = $wealth->getPasswordByNum(4);
 ```
 
+> 年运势卦
+
+```
+$destiny = DestinyService::getInstance($date,$trigram,$extends);
+
+$destiny->getTrigramPic(false);
+
+$fortune = $destiny->fortune($god, $year, $is_pregnant);
+```
 
 
 ## 异常
@@ -219,6 +228,7 @@ $res = $wealth->getPasswordByNum(4);
 - [x] 增加手机号调整
 - [x] 增加开机密码
 - [x] 增加财富密码
+- [x] 增加年运势卦
 - [ ] 增加穿衣指南
 - [ ] 单元测试
 - [ ] GitHub Actions 自动化测试
