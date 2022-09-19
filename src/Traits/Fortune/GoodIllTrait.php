@@ -10,10 +10,10 @@ trait GoodIllTrait
      * 运势吉凶
      * @return string
      */
-    public function getGoodOrIll($god)
+    public function goodOrIll($god)
     {
         $wx = $this->getGodWx();
-        return $this->getGoods($wx,$god) . $this->getIlls($wx, $god);
+        return $this->getGoods($wx, $god) . $this->getIlls($wx, $god);
     }
 
     public function getGoods($wx, $god)
@@ -30,7 +30,7 @@ trait GoodIllTrait
             ['wx' => '水', 'letter' => '适合在申日、酉日做重大决定，下午3-7点的黄金时间段可多思考做重要决策。'],
             ['wx' => '木', 'letter' => '适合在子日、亥日做重大决定，晚上9点至凌晨1点前的黄金时间段可多思考做重要决策。'],
         ];
-        $row =  collect($letters)->where('wx', $this->getWhoGrowMe($wx))->first();
+        $row = collect($letters)->where('wx', $this->getWhoGrowMe($wx))->first();
         return $row['letter'];
     }
 

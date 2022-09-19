@@ -12,7 +12,7 @@ trait NumenTrait
      * @param string $god
      * @return string
      */
-    public function getNumen()
+    public function numen()
     {
         return $this->getLetters($this->getGodWx());
     }

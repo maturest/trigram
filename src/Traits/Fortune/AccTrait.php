@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 
 trait AccTrait
 {
-    public function getAcc($god)
+    public function acc($god)
     {
         if ($god == '财') {
             //子爻的五行颜色

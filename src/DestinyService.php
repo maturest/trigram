@@ -145,8 +145,12 @@ class DestinyService
 
     /**
      * 年运势卦
+     * @param string $god 用神
+     * @param string $year 干支年
+     * @param boolean $is_pregnant 是否孕妇
+     * @return array
      */
-    public function fortune($god)
+    public function fortune($god, $year, $is_pregnant)
     {
         //获取用神的位置
         $god_positions = $this->getGodPositions($god);
@@ -154,20 +158,21 @@ class DestinyService
         $this->setGodPositions($god_positions);
 
         //1、守护神
-        $numen = $this->getNumen();
+        $numen = $this->numen();
 
         //2、运势吉凶
-        $good_ill = $this->getGoodOrIll($god);
+        $good_ill = $this->goodOrIll($god);
 
         //3、五行护持
-        $shield = $this->getShield();
+        $shield = $this->shield();
 
         //4、幸运配饰
-        $accessory = $this->getAcc($god);
+        $acc = $this->acc($god);
 
         //5、化解之道
+        $dissolve = $this->dissolve($year, $is_pregnant);
 
-        return compact('numen', 'good_ill','shield');
+        return compact('numen', 'good_ill', 'shield', 'acc', 'dissolve');
     }
 
     /**
@@ -177,151 +182,4 @@ class DestinyService
     {
 
     }
-
-
-    /**
-     * 获取用神的位置
-     * @param string $god 用神
-     * @return array|array[]
-     */
-    public function getGodPositions($god)
-    {
-        if($god == '世'){
-            return [
-                $this->getShiOrYingPosition($god),
-            ];
-        }
-        return $this->getGodPositionsWithSixQin($god);
-    }
-
-    /**
-     * 通过六亲获取用神的位置
-     * @param $god
-     * @return array|array[]
-     */
-    public function getGodPositionsWithSixQin($god)
-    {
-        if (Str::contains($this->resultDiZhi['liu_qin'], $god)) {
-            return $this->getGodPositionsWithBenSixQin($god);
-        }
-
-        return $this->getGodPositionByFuYao($god);
-    }
-
-    /**
-     * 获取本爻中六亲等于用神的位置
-     * @param $god
-     * @return array|array[]
-     */
-    public function getGodPositionsWithBenSixQin($god)
-    {
-        $positions = [];
-
-        //如果六亲中包含用神，可能出现多个六亲，循环遍历
-        $tmp_arr = explode(',', $this->resultDiZhi['liu_qin']);
-        foreach ($tmp_arr as $key => $value) {
-            if ($value == $god) {
-                $position = [
-                    'position' => $this->benGuaDetail[$key]['column'] . $this->benGuaDetail[$key]['row'],
-                    'is_dong' => $this->benGuaDetail[$key]['is_dong'],
-                    'is_an_dong' => $this->benGuaDetail[$key]['is_an_dong'],
-                    'dz' => $this->benGuaDetail[$key]['dz'],
-                    'wx' => $this->getWxByDz($this->benGuaDetail[$key]['dz']),
-                ];
-
-                //用神多现取旺相者，动爻大于静爻，本爻大于化爻
-                if($this->benGuaDetail[$key]['is_dong'] || $this->benGuaDetail[$key]['is_an_dong']){
-                    return [
-                        $position,
-                    ];
-                }
-
-                $positions[] = $position;
-            }
-        }
-
-        return array_unique($positions);
-    }
-
-    /**
-     * 获取伏爻的用神的位置
-     * @param $god
-     * @return array
-     */
-    public function getGodPositionByFuYao($god)
-    {
-        $positions = [];
-        foreach ($this->draw['fu_yao'] as $fu_yao) {
-            if (Str::startsWith($fu_yao['fu_yao'], '伏' . $god)) {
-                $dz = mb_substr($fu_yao['fu_yao'],-1);
-
-                $ben_yao =  collect($this->benGuaDetail)
-                    ->where('column',$fu_yao['position'][0])
-                    ->where('row',$fu_yao['position'][1])
-                    ->first();
-
-                $positions[] = [
-                    'position' => $fu_yao['position'],
-                    'is_dong' => $ben_yao['is_dong'],
-                    'is_an_dong' => $ben_yao['is_an_dong'],
-                    'dz' => $ben_yao['dz'],
-                    'wx' => $this->getWxByDz($dz),
-                ];
-            }
-        }
-
-        return array_unique($positions);
-    }
-
-    /**
-     * 获取世应的位置
-     * @param string $font
-     * @return array
-     */
-    public function getShiOrYingPosition($font='世')
-    {
-        $shi_ying  = explode(',', $this->resultDiZhi['shi_ying']);
-        $index = array_search($font, $shi_ying);
-        $position = [
-            'position' => $this->benGuaDetail[$index]['column'] . $this->benGuaDetail[$index]['row'],
-            'is_dong' => $this->benGuaDetail[$index]['is_dong'],
-            'is_an_dong' => $this->benGuaDetail[$index]['is_an_dong'],
-            'dz' => $this->benGuaDetail[$index]['dz'],
-            'wx' => $this->getWxByDz($this->benGuaDetail[$index]['dz']),
-        ];
-
-        return $position;
-    }
-
-    /**
-     * 通过十二地支获取五行
-     * @param $dz
-     * @return mixed
-     */
-    public function getWxByDz($dz)
-    {
-        $dz_wx = collect($this->dzWx)->where('dz', $dz)->first();
-        return $dz_wx['wx'];
-    }
-
-    /**
-     * 全局动态设置用神的位置
-     * @param $position
-     */
-    public function setGodPositions($positions)
-    {
-        $this->god_positions = $positions;
-    }
-
-
-    /**
-     * 获取用神的五行
-     * @return mixed|null
-     */
-    public function getGodWx()
-    {
-        $position = $this->god_positions[0];
-        return $position['wx'] ?? null;
-    }
-
 }
