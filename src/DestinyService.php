@@ -172,7 +172,10 @@ class DestinyService
         //5、化解之道
         $dissolve = $this->dissolve($year, $is_pregnant);
 
-        return compact('numen', 'good_ill', 'shield', 'acc', 'dissolve');
+        //6、财运
+        $wealth = $this->wealth();
+
+        return compact('numen', 'good_ill', 'shield', 'acc', 'dissolve', 'wealth');
     }
 
     /**
