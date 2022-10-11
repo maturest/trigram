@@ -80,6 +80,22 @@ trait CommonRelationTrait
         return in_array($wx_ke_me, $wxs);
     }
 
+
+    /**
+     * 某一位置的五行是不是被日令月令克
+     * @param $wx
+     * @return bool
+     */
+    public function isWithDateKe($wx)
+    {
+        //日令月令的五行
+        $wxs = $this->getDateWx();
+
+        $wx_ke_me = $this->getWhoKeMe($wx);
+
+        return in_array($wx_ke_me, $wxs);
+    }
+
     /**
      * 获取动爻的五行
      * @return array
@@ -184,6 +200,17 @@ trait CommonRelationTrait
     {
         $grow_me_wx = $this->getWhoGrowMe($wx);
         return in_array($grow_me_wx, $this->getDongYaoWx());
+    }
+
+    /**
+     * 判断某一爻的五行是否被日令月令生
+     * @param $wx
+     * @return bool
+     */
+    public function getIsDateGrowMe($wx)
+    {
+        $grow_me_wx = $this->getWhoGrowMe($wx);
+        return in_array($grow_me_wx, $this->getDateWx());
     }
 
     /**
@@ -416,5 +443,27 @@ trait CommonRelationTrait
         $six_qin = explode(',', $this->resultDiZhi['liu_qin']);
         $arr = array_combine($six_qin, $shi_ying);
         return array_search($font, $arr);
+    }
+
+    /**
+     * 通过关键字找汇局
+     * @param string $font
+     * @return mixed
+     */
+    public function isHuiJuByFont($font = '财')
+    {
+        $hui_jus = array_values($this->draw['hui_ju']);
+        $row = collect($hui_jus)->where('hui_ju',"汇{$font}局")->first();
+        return $row;
+    }
+
+    /**
+     * 判断五行是否与日令月令五行一致
+     * @param $wx
+     * @return bool
+     */
+    public function isEqualDateWx($wx)
+    {
+        return in_array($wx,$this->getDateWx());
     }
 }
