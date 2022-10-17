@@ -46,7 +46,7 @@ trait WealthTrait
         $row = collect($this->benGuaSixQin)->where('ben_gua', $this->resultDiZhi['ben_gua'])
             ->where('wx', $position['wx'])->first();
 
-        $six_qin = $row['six'];
+        $six_qin = $row['six_qin'];
 
         $letters = [
             ['six_qin' => '财', 'letter' => '会有出现花钱不合理的情况，同时多种兴趣爱好有可能出现冲突，合理地安排花销 合理分配兴趣爱好的时间会有助于提高金钱与精力的效率。'],
