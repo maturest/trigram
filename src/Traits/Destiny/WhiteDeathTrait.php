@@ -477,7 +477,7 @@ trait WhiteDeathTrait
             $xy = collect($this->dotCoords)->where('position', $position)->first();
             $x = Arr::get($xy, 'x');
             $y = Arr::get($xy, 'y');
-            $coords[] = compact('x', 'y','position');
+            $coords[] = compact('x', 'y', 'position');
         }
         return $coords;
     }

@@ -21,8 +21,6 @@ trait WealthTrait
         $wealth[] = $this->getWealthLevel($position);
 
 
-
-
         return $wealth;
     }
 
@@ -71,37 +69,34 @@ trait WealthTrait
     {
         if (!$this->getIsKeByPosition($position)
             && ($this->isHuiJuByFont() || $this->getIsDateGrowMe($position['wx']))
-            && ($this->isEqualDateWx($position['wx']) || $this->getIsDongYaoGrowMe($position['wx']))){
+            && ($this->isEqualDateWx($position['wx']) || $this->getIsDongYaoGrowMe($position['wx']))) {
             return '财运相当旺';
         }
 
         if (!$this->getIsKeByPosition($position)
             && (($this->isHuiJuByFont() || $this->getIsDateGrowMe($position['wx']))
-            || ($this->isEqualDateWx($position['wx']) || $this->getIsDongYaoGrowMe($position['wx'])))){
+                || ($this->isEqualDateWx($position['wx']) || $this->getIsDongYaoGrowMe($position['wx'])))) {
             return '财运旺';
         }
 
         if (!$this->getIsKeByPosition($position)
             && (($this->getIsDateGrowMe($position['wx']))
-                || ($this->isEqualDateWx($position['wx']) || $this->getIsDongYaoGrowMe($position['wx'])))){
+                || ($this->isEqualDateWx($position['wx']) || $this->getIsDongYaoGrowMe($position['wx'])))) {
             return '财运较旺';
         }
 
         if ($this->isWithDateKe($position['wx']) && (($this->isHuiJuByFont() || $this->getIsDateGrowMe($position['wx']))
-                || ($this->isEqualDateWx($position['wx']) || $this->getIsDongYaoGrowMe($position['wx'])))){
+                || ($this->isEqualDateWx($position['wx']) || $this->getIsDongYaoGrowMe($position['wx'])))) {
             return '财运有起伏';
         }
 
-        if ($this->isWithDateKe($position['wx']) && (( !$this->getIsDateGrowMe($position['wx']))
-            &&($this->isEqualDateWx($position['wx'])))){
+        if ($this->isWithDateKe($position['wx']) && ((!$this->getIsDateGrowMe($position['wx']))
+                && ($this->isEqualDateWx($position['wx'])))) {
             return '财运需加强';
         }
 
         return '';
     }
-
-
-
 
 
 }

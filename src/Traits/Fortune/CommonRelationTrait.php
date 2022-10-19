@@ -34,10 +34,14 @@ trait CommonRelationTrait
      */
     public function getIsKeByPosition($position)
     {
-        $wx = $this->getWxByDz($position['dz']);
+        $dz = isset($position['dz']) ? $position['dz'] : '';
+        $is_dong = isset($position['is_dong']) ? $position['is_dong'] : '';
+        $is_an_dong = isset($position['is_an_dong']) ? $position['is_an_dong'] : '';
+
+        $wx = $this->getWxByDz($dz);
 
         //如果是明动或者暗动
-        if ($position['is_dong'] || $position['is_an_dong']) {
+        if ($is_dong || $is_an_dong) {
             return $this->isWithKe($wx);
         }
 
@@ -74,22 +78,6 @@ trait CommonRelationTrait
             //通过十二地支去找五行
             $wxs = array_merge($wxs, $date_wxs);
         }
-
-        $wx_ke_me = $this->getWhoKeMe($wx);
-
-        return in_array($wx_ke_me, $wxs);
-    }
-
-
-    /**
-     * 某一位置的五行是不是被日令月令克
-     * @param $wx
-     * @return bool
-     */
-    public function isWithDateKe($wx)
-    {
-        //日令月令的五行
-        $wxs = $this->getDateWx();
 
         $wx_ke_me = $this->getWhoKeMe($wx);
 
@@ -177,6 +165,21 @@ trait CommonRelationTrait
     public function getMonthDz()
     {
         return $this->diZhiMonth;
+    }
+
+    /**
+     * 某一位置的五行是不是被日令月令克
+     * @param $wx
+     * @return bool
+     */
+    public function isWithDateKe($wx)
+    {
+        //日令月令的五行
+        $wxs = $this->getDateWx();
+
+        $wx_ke_me = $this->getWhoKeMe($wx);
+
+        return in_array($wx_ke_me, $wxs);
     }
 
     /**
@@ -284,19 +287,20 @@ trait CommonRelationTrait
     public function getIsCongByPosition($position)
     {
         //如果是暗动
-        if ($position['is_an_dong']) {
+        if (isset($position['is_an_dong']) && $position['is_an_dong']) {
             return true;
         }
 
         //如果是明动，看是否被其他动爻冲或者克
-        if ($position['is_dong']) {
+        if (isset($position['is_dong']) && $position['is_dong']) {
             //是不是被冲
             return $this->isWithCong($position['position']);
         }
 
         //如果是静爻，看是否有动爻冲或者动爻克。
+        $position_dz = isset($position['dz']) ? $position['dz'] : '';
         foreach ($this->getDongYaoDz() as $dz) {
-            if ($this->isCongRelation($dz, $position['dz'])) {
+            if ($this->isCongRelation($dz, $position_dz)) {
                 return true;
             }
         }
@@ -429,7 +433,7 @@ trait CommonRelationTrait
             }
         }
 
-        return array_unique($positions,SORT_REGULAR);
+        return array_unique($positions, SORT_REGULAR);
     }
 
     /**
@@ -441,8 +445,8 @@ trait CommonRelationTrait
     {
         $shi_ying = explode(',', $this->resultDiZhi['shi_ying']);
         $six_qin = explode(',', $this->resultDiZhi['liu_qin']);
-        $arr = array_combine($six_qin, $shi_ying);
-        return array_search($font, $arr);
+        $key = array_search($font, $shi_ying);
+        return $six_qin[$key];
     }
 
     /**
@@ -453,7 +457,7 @@ trait CommonRelationTrait
     public function isHuiJuByFont($font = '财')
     {
         $hui_jus = array_values($this->draw['hui_ju']);
-        $row = collect($hui_jus)->where('hui_ju',"汇{$font}局")->first();
+        $row = collect($hui_jus)->where('hui_ju', "汇{$font}局")->first();
         return $row;
     }
 
@@ -464,6 +468,6 @@ trait CommonRelationTrait
      */
     public function isEqualDateWx($wx)
     {
-        return in_array($wx,$this->getDateWx());
+        return in_array($wx, $this->getDateWx());
     }
 }
