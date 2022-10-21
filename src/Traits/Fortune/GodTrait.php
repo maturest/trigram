@@ -80,7 +80,7 @@ trait GodTrait
             // 静爻
             $item['sort'] = 666;
             return $item;
-        })->sortByDesc('sort')->vlaues()->all();
+        })->sortByDesc('sort')->toArray();
 
         return $positions;
     }
