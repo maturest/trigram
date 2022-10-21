@@ -91,7 +91,13 @@ trait DissolveTrait
         //化煞2
         $hua_sha[] = $this->getHuaSha2($god_wx);
 
-        return implode(',', array_filter(array_unique($hua_sha, SORT_REGULAR))) . '，';
+        $str = implode(',', array_filter(array_unique($hua_sha, SORT_REGULAR)));
+
+        if($str){
+            return $str. '，';
+        }
+
+        return '';
     }
 
     public function getHuaSha1($god_wx)
