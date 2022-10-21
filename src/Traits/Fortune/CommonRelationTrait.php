@@ -412,6 +412,20 @@ trait CommonRelationTrait
             }
         }
 
+        // 化爻中的六亲
+        foreach ($this->resultDiZhi['trans_di_zhi'] as $key => $dz) {
+            if ($six_qin == $this->getSixQinByDz($dz)) {
+                $positions[] = [
+                    'position' => '5' . ($key + 1),
+                    'is_dong' => false,
+                    'is_an_dong' => false,
+                    'dz' => $dz,
+                    'wx' => $this->getWxByDz($dz),
+                ];
+            }
+        }
+
+
         //如果是伏爻
         foreach ($this->draw['fu_yao'] as $fu_yao) {
             if (Str::startsWith($fu_yao['fu_yao'], '伏' . $six_qin)) {

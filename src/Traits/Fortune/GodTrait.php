@@ -43,17 +43,46 @@ trait GodTrait
     }
 
     /**
-     * 通过六亲获取用神的位置
+     * 通过六亲获取用神的位置,用神多现，取旺相者，动爻大于静爻，本爻大于化爻，化爻大于静爻
      * @param $god
      * @return array|array[]
      */
     public function getGodPositionsWithSixQin($god)
     {
+        // 本爻六亲与用神一致的情况
         if (Str::contains($this->resultDiZhi['liu_qin'], $god)) {
-            return $this->getGodPositionsWithBenSixQin($god);
+            $ben_gods = $this->getGodPositionsWithBenSixQin($god);
         }
 
-        return $this->getGodPositionByFuYao($god);
+        //化爻六亲与用神一致的情况
+        $trans_gods = $this->getGodPositionByTrans($god);
+
+        $fu_yao_gods = $this->getGodPositionByFuYao($god);
+
+        if ($fu_yao_gods) {
+            return $fu_yao_gods;
+        }
+
+        $positions = array_merge($ben_gods, $trans_gods, $fu_yao_gods);
+
+        //比较权重 动爻大于化爻，化爻大于静爻
+        $positions = collect($positions)->map(function ($item) {
+            // 动爻
+            if ($item['is_dong'] || $item['is_an_dong']) {
+                $item['sort'] = 999;
+                return $item;
+            }
+            // 化爻
+            if ($item['trans']) {
+                $item['sort'] = 888;
+                return $item;
+            }
+            // 静爻
+            $item['sort'] = 666;
+            return $item;
+        })->sortByDesc('sort')->vlaues()->all();
+
+        return $positions;
     }
 
     /**
@@ -75,6 +104,7 @@ trait GodTrait
                     'is_an_dong' => $this->benGuaDetail[$key]['is_an_dong'],
                     'dz' => $this->benGuaDetail[$key]['dz'],
                     'wx' => $this->getWxByDz($this->benGuaDetail[$key]['dz']),
+                    'is_trans' => false,
                 ];
 
                 //用神多现取旺相者，动爻大于静爻，本爻大于化爻
@@ -89,6 +119,43 @@ trait GodTrait
         }
 
         return array_unique($positions, SORT_REGULAR);
+    }
+
+    /**
+     * 获取化爻中六亲等于用神的位置
+     * @param $god
+     * @return array
+     */
+    public function getGodPositionByTrans($god)
+    {
+        $trans = [];
+        foreach ($this->resultDiZhi['trans_di_zhi'] as $key => $dz) {
+            if ($god == $this->getSixQinByDz($dz)) {
+                $trans[] = [
+                    'position' => '5' . ($key + 1),
+                    'is_dong' => false,
+                    'is_an_dong' => false,
+                    'dz' => $dz,
+                    'wx' => $this->getWxByDz($dz),
+                    'is_trans' => true,
+                ];
+            }
+        }
+
+        return $trans;
+    }
+
+    /**
+     * 通过地支获取对应的六亲
+     * @param $dz
+     * @return mixed
+     */
+    public function getSixQinByDz($dz)
+    {
+        $wx = $this->getWxByDz($dz);
+        $row = collect($this->benGuaSixQin)->where('ben_gua', $this->resultDiZhi['ben_gua'])
+            ->where('wx', $wx)->first();
+        return $row['six_qin'];
     }
 
     /**
@@ -114,6 +181,7 @@ trait GodTrait
                     'is_an_dong' => $ben_yao['is_an_dong'],
                     'dz' => $dz,
                     'wx' => $this->getWxByDz($dz),
+                    'is_trans' => false,
                 ];
             }
         }

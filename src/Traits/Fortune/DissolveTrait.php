@@ -91,7 +91,7 @@ trait DissolveTrait
         //化煞2
         $hua_sha[] = $this->getHuaSha2($god_wx);
 
-        return implode(',', array_filter(array_unique($hua_sha, SORT_REGULAR)));
+        return implode(',', array_filter(array_unique($hua_sha, SORT_REGULAR))) . '，';
     }
 
     public function getHuaSha1($god_wx)
@@ -177,7 +177,7 @@ trait DissolveTrait
             //是不是被克
             if ($this->isWithKe($god_wx)) {
                 return $this->getHuaShaByWx($god_wx);
-            };
+            }
         }
 
         //如果是静爻，看是否有动爻冲或者动爻克。
@@ -206,7 +206,7 @@ trait DissolveTrait
         if ($this->getIsKongWangByPosition($position)
             || $this->getIsRuByPosition($position)
             || $this->getIsHeByPosition($position)) {
-            return '增强个人整体运势';
+            return '增强个人整体运势，';
         }
 
         return '';
@@ -225,7 +225,7 @@ trait DissolveTrait
             if ($this->getIsKongWangByPosition($position)
                 || $this->getIsRuByPosition($position)
                 || $this->getIsHeByPosition($position)) {
-                return '加强贵人力量';
+                return '加强贵人力量，';
             }
         }
         return '';
@@ -239,11 +239,11 @@ trait DissolveTrait
     public function fortuneTrigram()
     {
         $letters = [
-            ['wx' => '木', 'letter' => '建议您在申月、酉月卜当月运势卦'],
-            ['wx' => '火', 'letter' => '建议您在亥月、子月卜当月运势卦'],
-            ['wx' => '土', 'letter' => '建议您在寅月、卯月卜当月运势卦'],
-            ['wx' => '金', 'letter' => '建议您在巳月、午月卜当月运势卦'],
-            ['wx' => '水', 'letter' => '建议您在丑月、辰月、未月、戌月卜当月运势卦'],
+            ['wx' => '木', 'letter' => '建议您在申月、酉月卜当月运势卦。'],
+            ['wx' => '火', 'letter' => '建议您在亥月、子月卜当月运势卦。'],
+            ['wx' => '土', 'letter' => '建议您在寅月、卯月卜当月运势卦。'],
+            ['wx' => '金', 'letter' => '建议您在巳月、午月卜当月运势卦。'],
+            ['wx' => '水', 'letter' => '建议您在丑月、辰月、未月、戌月卜当月运势卦。'],
         ];
 
         $row = collect($letters)->where('wx', $this->getGodWx())->first();
@@ -263,7 +263,7 @@ trait DissolveTrait
         foreach ($positions as $position) {
             if ($position['is_dong'] || $position['is_an_dong']) {
                 if ($this->getIsKeByPosition($position) || $this->getIsCongByPosition($position) || $this->getIsRuByPosition($position)) {
-                    return '建议您出远门卜出行卦，注意交通工具安全，避免疲劳驾驶';
+                    return '建议您出远门卜出行卦，注意交通工具安全，避免疲劳驾驶。';
                 }
             }
         }
@@ -281,11 +281,11 @@ trait DissolveTrait
         $six_qin_shi = $this->getSixQinByShiOrYing('世');
 
         if ($six_qin_ying == '官' && in_array($six_qin_shi, ['兄', '子', '财', '官'])) {
-            return '建议您卜卦择日净化住家磁场';
+            return '建议您卜卦择日净化住家磁场。';
         }
 
         if ($six_qin_ying == '兄' && in_array($six_qin_shi, ['兄', '财', '官', '父'])) {
-            return '建议您卜卦择日净化住家磁场';
+            return '建议您卜卦择日净化住家磁场。';
         }
 
         return '';
@@ -374,11 +374,11 @@ trait DissolveTrait
         $zi_positions = $this->getPositionsWithSixQin('子');
 
         $letters = [
-            ['wx' => '木', 'letter' => '建议您去庙里拜神农大帝让婴灵去报到。如不方便去庙里，可在安静的地方朝东拜神农大帝化土煞或者化身边的阴气'],
-            ['wx' => '火', 'letter' => '建议您去庙里拜关圣帝君让婴灵去报到。如不方便去庙里，可在安静的地方朝南拜关圣帝君化金煞或者化身边的阴气'],
-            ['wx' => '土', 'letter' => '建议您去庙里拜地藏王菩萨让婴灵去报到。如不方便去庙里，可在安静的地方朝西拜地藏王菩萨化水煞或者化身边的阴气'],
-            ['wx' => '金', 'letter' => '建议您去庙里拜观世音菩萨让婴灵去报到。如不方便去庙里，可在安静的地方朝西拜观世音菩萨化木煞或者化身边的阴气'],
-            ['wx' => '水', 'letter' => '建议您去庙里拜玄天上帝让婴灵去报到。如不方便去庙里，可在安静的地方朝北拜玄天上帝化火煞或者化身边的阴气'],
+            ['wx' => '木', 'letter' => '建议您去庙里拜神农大帝让婴灵去报到。如不方便去庙里，可在安静的地方朝东拜神农大帝化土煞或者化身边的阴气。'],
+            ['wx' => '火', 'letter' => '建议您去庙里拜关圣帝君让婴灵去报到。如不方便去庙里，可在安静的地方朝南拜关圣帝君化金煞或者化身边的阴气。'],
+            ['wx' => '土', 'letter' => '建议您去庙里拜地藏王菩萨让婴灵去报到。如不方便去庙里，可在安静的地方朝西拜地藏王菩萨化水煞或者化身边的阴气。'],
+            ['wx' => '金', 'letter' => '建议您去庙里拜观世音菩萨让婴灵去报到。如不方便去庙里，可在安静的地方朝西拜观世音菩萨化木煞或者化身边的阴气。'],
+            ['wx' => '水', 'letter' => '建议您去庙里拜玄天上帝让婴灵去报到。如不方便去庙里，可在安静的地方朝北拜玄天上帝化火煞或者化身边的阴气。'],
         ];
 
         $row = collect($letters)->where('wx', $zi_positions[0]['wx'])->first();
