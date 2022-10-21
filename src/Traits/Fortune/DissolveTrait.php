@@ -36,13 +36,13 @@ trait DissolveTrait
     public function baiWho($year)
     {
         $letters = [
-            ['wx' => '火', 'is_cong' => false, 'bai' => '朝东拜神农大帝???保佑?运势平安'],
-            ['wx' => '土', 'is_cong' => false, 'bai' => '朝南拜关圣帝君???保佑?运势平安'],
-            ['wx' => '金', 'is_cong' => false, 'bai' => '朝西拜地藏王菩萨???保佑?运势平安'],
-            ['wx' => '金', 'is_cong' => true, 'bai' => '朝西拜观世音菩萨???保佑?运势平安'],
-            ['wx' => '水', 'is_cong' => false, 'bai' => '朝西拜观世音菩萨???保佑?运势平安'],
-            ['wx' => '水', 'is_cong' => true, 'bai' => '朝北拜玄天上帝???保佑?运势平安'],
-            ['wx' => '木', 'is_cong' => false, 'bai' => '朝北拜玄天上帝???保佑?运势平安'],
+            ['wx' => '火', 'is_cong' => false, 'bai' => '朝东拜神农大帝，???保佑?运势平安。'],
+            ['wx' => '土', 'is_cong' => false, 'bai' => '朝南拜关圣帝君，???保佑?运势平安。'],
+            ['wx' => '金', 'is_cong' => false, 'bai' => '朝西拜地藏王菩萨，???保佑?运势平安。'],
+            ['wx' => '金', 'is_cong' => true, 'bai' => '朝西拜观世音菩萨，???保佑?运势平安。'],
+            ['wx' => '水', 'is_cong' => false, 'bai' => '朝西拜观世音菩萨，???保佑?运势平安。'],
+            ['wx' => '水', 'is_cong' => true, 'bai' => '朝北拜玄天上帝，???保佑?运势平安。'],
+            ['wx' => '木', 'is_cong' => false, 'bai' => '朝北拜玄天上帝，???保佑?运势平安。'],
         ];
 
         $wx = $this->getGodWx();
