@@ -413,7 +413,8 @@ trait CommonRelationTrait
         }
 
         // 化爻中的六亲
-        foreach ($this->resultDiZhi['trans_di_zhi'] as $key => $dz) {
+        $arr = explode(',', $this->resultDiZhi['trans_di_zhi']);
+        foreach ($arr as $key => $dz) {
             if ($six_qin == $this->getSixQinByDz($dz)) {
                 $positions[] = [
                     'position' => '5' . ($key + 1),
