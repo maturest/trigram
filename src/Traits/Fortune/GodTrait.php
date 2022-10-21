@@ -73,7 +73,7 @@ trait GodTrait
                 return $item;
             }
             // 化爻
-            if ($item['trans']) {
+            if ($item['is_trans']) {
                 $item['sort'] = 888;
                 return $item;
             }
