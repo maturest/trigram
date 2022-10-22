@@ -28,25 +28,39 @@ trait CommonRelationTrait
     }
 
     /**
-     * 判断某一位置是否被克
-     * @param $position
-     * @return bool|string
+     * 某一位置的五行是不是被日令月令克
+     * @param $wx
+     * @return bool
      */
-    public function getIsKeByPosition($position)
+    public function isWithDateKe($wx)
     {
-        $dz = isset($position['dz']) ? $position['dz'] : '';
-        $is_dong = isset($position['is_dong']) ? $position['is_dong'] : '';
-        $is_an_dong = isset($position['is_an_dong']) ? $position['is_an_dong'] : '';
+        //日令月令的五行
+        $wxs = $this->getDateWx();
 
-        $wx = $this->getWxByDz($dz);
+        $wx_ke_me = $this->getWhoKeMe($wx);
 
-        //如果是明动或者暗动
-        if ($is_dong || $is_an_dong) {
-            return $this->isWithKe($wx);
-        }
+        return in_array($wx_ke_me, $wxs);
+    }
 
-        //如果是静爻
-        return $this->isWithKe($wx, false);
+    /**
+     * 获取日令月令的五行
+     * @return array
+     */
+    public function getDateWx()
+    {
+        return [
+            $this->getDayWx(),
+            $this->getMonthWx(),
+        ];
+    }
+
+    /**
+     * 获取日令的五行
+     * @return mixed
+     */
+    public function getDayWx()
+    {
+        return $this->getWxByDz($this->getDayDz());
     }
 
     /**
@@ -61,27 +75,53 @@ trait CommonRelationTrait
     }
 
     /**
-     * 某一位置的五行是不是被克,默认携带日令月令
+     * 获取日令的地支
+     * @return mixed
+     */
+    public function getDayDz()
+    {
+        return $this->diZhiDay;
+    }
+
+    /**
+     * 获取月令的五行
+     * @return mixed
+     */
+    public function getMonthWx()
+    {
+        return $this->getWxByDz($this->getMonthDz());
+    }
+
+    /**
+     * 获取月令的地支
+     * @return mixed
+     */
+    public function getMonthDz()
+    {
+        return $this->diZhiMonth;
+    }
+
+    /**
+     * 获取日令月令的地支
+     * @return array
+     */
+    public function getDateDz()
+    {
+        return [
+            $this->getDayDz(),
+            $this->getMonthDz(),
+        ];
+    }
+
+    /**
+     * 获取某一爻的五行是否被动爻生
      * @param $wx
-     * @param bool $date
      * @return bool
      */
-    public function isWithKe($wx, $date = true)
+    public function getIsDongYaoGrowMe($wx)
     {
-        //动爻的五行
-        $wxs = $this->getDongYaoWx();
-
-        if ($date) {
-            //日令月令的五行
-            $date_wxs = $this->getDateWx();
-
-            //通过十二地支去找五行
-            $wxs = array_merge($wxs, $date_wxs);
-        }
-
-        $wx_ke_me = $this->getWhoKeMe($wx);
-
-        return in_array($wx_ke_me, $wxs);
+        $grow_me_wx = $this->getWhoGrowMe($wx);
+        return in_array($grow_me_wx, $this->getDongYaoWx());
     }
 
     /**
@@ -117,92 +157,6 @@ trait CommonRelationTrait
         return collect($this->benGuaDetail)->filter(function ($item, $key) {
             return $item['is_dong'] || $item['is_an_dong'];
         });
-    }
-
-    /**
-     * 获取日令月令的五行
-     * @return array
-     */
-    public function getDateWx()
-    {
-        return [
-            $this->getDayWx(),
-            $this->getMonthWx(),
-        ];
-    }
-
-    /**
-     * 获取日令的五行
-     * @return mixed
-     */
-    public function getDayWx()
-    {
-        return $this->getWxByDz($this->getDayDz());
-    }
-
-    /**
-     * 获取日令的地支
-     * @return mixed
-     */
-    public function getDayDz()
-    {
-        return $this->diZhiDay;
-    }
-
-    /**
-     * 获取月令的五行
-     * @return mixed
-     */
-    public function getMonthWx()
-    {
-        return $this->getWxByDz($this->getMonthDz());
-    }
-
-    /**
-     * 获取月令的地支
-     * @return mixed
-     */
-    public function getMonthDz()
-    {
-        return $this->diZhiMonth;
-    }
-
-    /**
-     * 某一位置的五行是不是被日令月令克
-     * @param $wx
-     * @return bool
-     */
-    public function isWithDateKe($wx)
-    {
-        //日令月令的五行
-        $wxs = $this->getDateWx();
-
-        $wx_ke_me = $this->getWhoKeMe($wx);
-
-        return in_array($wx_ke_me, $wxs);
-    }
-
-    /**
-     * 获取日令月令的地支
-     * @return array
-     */
-    public function getDateDz()
-    {
-        return [
-            $this->getDayDz(),
-            $this->getMonthDz(),
-        ];
-    }
-
-    /**
-     * 获取某一爻的五行是否被动爻生
-     * @param $wx
-     * @return bool
-     */
-    public function getIsDongYaoGrowMe($wx)
-    {
-        $grow_me_wx = $this->getWhoGrowMe($wx);
-        return in_array($grow_me_wx, $this->getDongYaoWx());
     }
 
     /**
@@ -280,6 +234,239 @@ trait CommonRelationTrait
     }
 
     /**
+     * 判断某个位置是否空亡
+     * @param $position
+     * @return bool
+     */
+    public function getIsKongWangByPosition($position)
+    {
+        $coords = $this->draw['kong_wang']['coords'];
+
+        foreach ($coords as $coord) {
+            return $coord['position'] == $position['position'];
+        }
+
+        return false;
+    }
+
+    /**
+     * 获取生我的五行位置
+     * @param $wx
+     * @return array
+     */
+    public function getPositionsWhoGrowMe($wx)
+    {
+        $wx_grow_me = $this->getWhoGrowMe($wx);
+        $positions = [];
+        foreach ($this->getDongYao() as $yao) {
+            if ($wx_grow_me == $this->getWxByDz($yao['dz'])) {
+                $positions[] = ['position' => $yao['column'] . $yao['row']];
+            }
+        }
+
+        return $positions;
+    }
+
+    /**
+     * 通过六亲找到对应的位置
+     * @param $six_qin
+     * @return array
+     */
+    public function getPositionsWithSixQin($six_qin)
+    {
+        $positions = [];
+
+        //本卦中的六亲
+        $tmp_arr = explode(',', $this->resultDiZhi['liu_qin']);
+        foreach ($tmp_arr as $key => $value) {
+            if ($value == $six_qin) {
+                $positions[] = [
+                    'position' => $this->benGuaDetail[$key]['column'] . $this->benGuaDetail[$key]['row'],
+                    'is_dong' => $this->benGuaDetail[$key]['is_dong'],
+                    'is_an_dong' => $this->benGuaDetail[$key]['is_an_dong'],
+                    'dz' => $this->benGuaDetail[$key]['dz'],
+                    'wx' => $this->getWxByDz($this->benGuaDetail[$key]['dz']),
+                ];
+            }
+        }
+
+        // 化爻中的六亲
+        $arr = $this->getTransArr();
+        foreach ($arr as $key => $dz) {
+            if ($six_qin == $this->getSixQinByDz($dz)) {
+                $positions[] = [
+                    'position' => '5' . ($key + 1),
+                    'is_dong' => false,
+                    'is_an_dong' => false,
+                    'dz' => $dz,
+                    'wx' => $this->getWxByDz($dz),
+                ];
+            }
+        }
+
+
+        //如果是伏爻
+        foreach ($this->draw['fu_yao'] as $fu_yao) {
+            if (Str::startsWith($fu_yao['fu_yao'], '伏' . $six_qin)) {
+
+                $dz = mb_substr($fu_yao['fu_yao'], -1);
+
+                $ben_yao = collect($this->benGuaDetail)
+                    ->where('column', $fu_yao['position'][0])
+                    ->where('row', $fu_yao['position'][1])
+                    ->first();
+
+                $positions[] = [
+                    'position' => $fu_yao['position'],
+                    'is_dong' => $ben_yao['is_dong'],
+                    'is_an_dong' => $ben_yao['is_an_dong'],
+                    'dz' => $dz,
+                    'wx' => $this->getWxByDz($dz),
+                ];
+            }
+        }
+
+        return array_unique($positions, SORT_REGULAR);
+    }
+
+    /**
+     * 获取化爻的数组
+     * @return array|false|string[]
+     */
+    public function getTransArr()
+    {
+        return array_reverse(explode(',', $this->resultDiZhi['trans_di_zhi']));
+    }
+
+    /**
+     * 获取世或者应的六亲
+     * @param string $font
+     * @return false|int|string
+     */
+    public function getSixQinByShiOrYing($font = '世')
+    {
+        $shi_ying = explode(',', $this->resultDiZhi['shi_ying']);
+        $six_qin = explode(',', $this->resultDiZhi['liu_qin']);
+        $key = array_search($font, $shi_ying);
+        return $six_qin[$key];
+    }
+
+    /**
+     * 通过关键字找汇局
+     * @param string $font
+     * @return mixed
+     */
+    public function isHuiJuByFont($font = '财')
+    {
+        $hui_jus = array_values($this->draw['hui_ju']);
+        $row = collect($hui_jus)->where('hui_ju', "汇{$font}局")->first();
+        return $row;
+    }
+
+    /**
+     * 判断五行是否与日令月令五行一致
+     * @param $wx
+     * @return bool
+     */
+    public function isEqualDateWx($wx)
+    {
+        return $wx == $this->getDayWx() || $wx == $this->getMonthWx();
+    }
+
+    /**
+     * 动爻的化爻的六亲是否等于提供的六亲
+     * @param $position
+     * @param string $six_qin
+     * @return bool
+     */
+    public function getTranSixQinIsEqualOfferedSixQin($position, $six_qin = '官')
+    {
+        return $this->getTransSixQinByDongPosition($position) == $six_qin;
+    }
+
+    /**
+     * 获取动爻对应化爻的六亲
+     * @param $position
+     * @return mixed
+     */
+    public function getTransSixQinByDongPosition($position)
+    {
+        return $this->getTransSixQinByDongYaoPosition($position['position'] ?? '');
+    }
+
+    /**
+     * 通过动爻的位置获取对应化爻的六亲
+     * @param $col_row
+     * @return mixed
+     */
+    public function getTransSixQinByDongYaoPosition($col_row)
+    {
+        $row = str_split($col_row);
+        $arr = $this->getTransArr();
+        $transDiZhi = $arr[$row[1] - 1];
+        return $this->getSixQinByDz($transDiZhi);
+    }
+
+    /**
+     * 是否被克，冲，合，或者入墓
+     * @param $position
+     * @return bool
+     */
+    public function hasOneKeCongHeRu($position)
+    {
+        return $this->getIsKeByPosition($position)
+            || $this->getIsCongByPosition($position)
+            || $this->getIsHeByPosition($position)
+            || $this->getIsRuByPosition($position);
+    }
+
+    /**
+     * 判断某一位置是否被克
+     * @param $position
+     * @return bool|string
+     */
+    public function getIsKeByPosition($position)
+    {
+        $dz = isset($position['dz']) ? $position['dz'] : '';
+        $is_dong = isset($position['is_dong']) ? $position['is_dong'] : '';
+        $is_an_dong = isset($position['is_an_dong']) ? $position['is_an_dong'] : '';
+
+        $wx = $this->getWxByDz($dz);
+
+        //如果是明动或者暗动
+        if ($is_dong || $is_an_dong) {
+            return $this->isWithKe($wx);
+        }
+
+        //如果是静爻
+        return $this->isWithKe($wx, false);
+    }
+
+    /**
+     * 某一位置的五行是不是被克,默认携带日令月令
+     * @param $wx
+     * @param bool $date
+     * @return bool
+     */
+    public function isWithKe($wx, $date = true)
+    {
+        //动爻的五行
+        $wxs = $this->getDongYaoWx();
+
+        if ($date) {
+            //日令月令的五行
+            $date_wxs = $this->getDateWx();
+
+            //通过十二地支去找五行
+            $wxs = array_merge($wxs, $date_wxs);
+        }
+
+        $wx_ke_me = $this->getWhoKeMe($wx);
+
+        return in_array($wx_ke_me, $wxs);
+    }
+
+    /**
      * 判断某一点是不是带冲
      * @param $position
      * @return bool
@@ -326,163 +513,85 @@ trait CommonRelationTrait
     }
 
     /**
-     * 判断某个位置是否空亡
+     * 判断某一位置是否合
      * @param $position
+     * @param bool $only_date
      * @return bool
      */
-    public function getIsKongWangByPosition($position)
+    public function getIsHeByPosition($position, $only_date = false)
     {
-        $coords = $this->draw['kong_wang']['coords'];
-
-        foreach ($coords as $coord) {
-            return $coord['position'] == $position['position'];
+        foreach ($this->draw['six_he'] as $six_he) {
+            if (Str::contains($six_he, $position['position'])) {
+                if ($only_date) {
+                    if ($this->judgeRelationIsContainsDate($six_he)) {
+                        return true;
+                    }
+                } else {
+                    return true;
+                }
+            }
         }
+        return false;
+    }
 
+    public function judgeRelationIsContainsDate($relation)
+    {
+        $tmp_arr = explode('-', $relation);
+        foreach ($tmp_arr as $value) {
+            if (Str::startsWith($value, '6')) {
+                return true;
+            }
+        }
         return false;
     }
 
     /**
      * 判断某一位置是否入墓
      * @param $position
+     * @param bool $only_date
      * @return bool
      */
-    public function getIsRuByPosition($position)
+    public function getIsRuByPosition($position, $only_date = false)
     {
         foreach ($this->draw['ru_mu'] as $ru_mu) {
             if (Str::contains($ru_mu, $position['position'])) {
-                return true;
+                if ($only_date) {
+                    if ($this->judgeRelationIsContainsDate($ru_mu)) {
+                        return true;
+                    }
+                } else {
+                    return true;
+                }
             }
         }
         return false;
     }
 
     /**
-     * 获取生我的五行位置
-     * @param $wx
-     * @return array
-     */
-    public function getPositionsWhoGrowMe($wx)
-    {
-        $wx_grow_me = $this->getWhoGrowMe($wx);
-        $positions = [];
-        foreach ($this->getDongYao() as $yao) {
-            if ($wx_grow_me == $this->getWxByDz($yao['dz'])) {
-                $positions[] = ['position' => $yao['column'] . $yao['row']];
-            }
-        }
-
-        return $positions;
-    }
-
-    /**
-     * 判断某一位置是否合
      * @param $position
      * @return bool
      */
-    public function getIsHeByPosition($position)
+    public function getIsStaticYaoByPosition($position)
     {
-        foreach ($this->draw['six_he'] as $six_he) {
-            if (Str::contains($six_he, $position['position'])) {
-                return true;
-            }
-        }
-        return false;
+        return !$this->getIsDongYaoByPosition($position) && !$this->getIsTransYaoByPosition($position);
     }
 
     /**
-     * 通过六亲找到对应的位置
-     * @param $six_qin
-     * @return array
-     */
-    public function getPositionsWithSixQin($six_qin)
-    {
-        $positions = [];
-
-        //本卦中的六亲
-        $tmp_arr = explode(',', $this->resultDiZhi['liu_qin']);
-        foreach ($tmp_arr as $key => $value) {
-            if ($value == $six_qin) {
-                $positions[] = [
-                    'position' => $this->benGuaDetail[$key]['column'] . $this->benGuaDetail[$key]['row'],
-                    'is_dong' => $this->benGuaDetail[$key]['is_dong'],
-                    'is_an_dong' => $this->benGuaDetail[$key]['is_an_dong'],
-                    'dz' => $this->benGuaDetail[$key]['dz'],
-                    'wx' => $this->getWxByDz($this->benGuaDetail[$key]['dz']),
-                ];
-            }
-        }
-
-        // 化爻中的六亲
-        $arr = array_reverse(explode(',', $this->resultDiZhi['trans_di_zhi']));
-        foreach ($arr as $key => $dz) {
-            if ($six_qin == $this->getSixQinByDz($dz)) {
-                $positions[] = [
-                    'position' => '5' . ($key + 1),
-                    'is_dong' => false,
-                    'is_an_dong' => false,
-                    'dz' => $dz,
-                    'wx' => $this->getWxByDz($dz),
-                ];
-            }
-        }
-
-
-        //如果是伏爻
-        foreach ($this->draw['fu_yao'] as $fu_yao) {
-            if (Str::startsWith($fu_yao['fu_yao'], '伏' . $six_qin)) {
-
-                $dz = mb_substr($fu_yao['fu_yao'], -1);
-
-                $ben_yao = collect($this->benGuaDetail)
-                    ->where('column', $fu_yao['position'][0])
-                    ->where('row', $fu_yao['position'][1])
-                    ->first();
-
-                $positions[] = [
-                    'position' => $fu_yao['position'],
-                    'is_dong' => $ben_yao['is_dong'],
-                    'is_an_dong' => $ben_yao['is_an_dong'],
-                    'dz' => $dz,
-                    'wx' => $this->getWxByDz($dz),
-                ];
-            }
-        }
-
-        return array_unique($positions, SORT_REGULAR);
-    }
-
-    /**
-     * 获取世或者应的六亲
-     * @param string $font
-     * @return false|int|string
-     */
-    public function getSixQinByShiOrYing($font = '世')
-    {
-        $shi_ying = explode(',', $this->resultDiZhi['shi_ying']);
-        $six_qin = explode(',', $this->resultDiZhi['liu_qin']);
-        $key = array_search($font, $shi_ying);
-        return $six_qin[$key];
-    }
-
-    /**
-     * 通过关键字找汇局
-     * @param string $font
-     * @return mixed
-     */
-    public function isHuiJuByFont($font = '财')
-    {
-        $hui_jus = array_values($this->draw['hui_ju']);
-        $row = collect($hui_jus)->where('hui_ju', "汇{$font}局")->first();
-        return $row;
-    }
-
-    /**
-     * 判断五行是否与日令月令五行一致
-     * @param $wx
+     * @param $position
      * @return bool
      */
-    public function isEqualDateWx($wx)
+    public function getIsDongYaoByPosition($position)
     {
-        return in_array($wx, $this->getDateWx());
+        return ($position['is_dong'] ?? '') || ($position['is_an_dong'] ?? '');
     }
+
+    /**
+     * @param $position
+     * @return mixed|string
+     */
+    public function getIsTransYaoByPosition($position)
+    {
+        return $position['is_trans'] ?? '';
+    }
+
 }

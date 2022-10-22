@@ -3,6 +3,7 @@
 
 namespace Maturest\Trigram\Traits\Fortune;
 
+use Illuminate\Support\Str;
 
 trait WealthTrait
 {
@@ -17,19 +18,25 @@ trait WealthTrait
         if ($is_student)
             $wealth[] = $this->getWealthByStudent($position);
 
-        // 财爻的程度
-        $wealth[] = $this->getWealthLevel($position);
+        // 财爻的旺衰程度
+        $wealth[] = $this->getWealthLevelByCai($position);
 
+        $zi_positions = $this->getGodPositionsWithSixQin('子');
+        $zi_position = $zi_positions[0];
+        //子爻的旺衰程度
+        $wealth[] = $this->getWealthLevelByZi($zi_position, $zi_positions);
+
+        //子爻的五行
+        $wealth[] = $this->getFriends($zi_position);
 
         return $wealth;
     }
 
-    public function getWealthByStudent($position)
+    protected function getWealthByStudent($position)
     {
-        if ($position['is_dong'] || $position['is_an_dong']) {
+        if ($this->getIsDongYaoByPosition($position)) {
             //克，冲，合，入
-            if ($this->getIsKeByPosition($position) || $this->getIsCongByPosition($position)
-                || $this->getIsRuByPosition($position) || $this->getIsHeByPosition($position)) {
+            if ($this->hasOneKeCongHeRu($position)) {
                 return $this->getWealthBySinQin($position);
             }
 
@@ -39,7 +46,7 @@ trait WealthTrait
         return '会有不错的零花钱积累，同时可以培养好的储蓄习惯，为未来金钱上的应用与规划做预演准备。生活中亦会有较多的兴趣爱好与追求，选择自己真正的爱好方向以更投入的态度去参与，会有助干成就感的塑造，培养专注、坚持等好习惯。';
     }
 
-    public function getWealthBySinQin($position)
+    protected function getWealthBySinQin($position)
     {
         $row = collect($this->benGuaSixQin)->where('ben_gua', $this->resultDiZhi['ben_gua'])
             ->where('wx', $position['wx'])->first();
@@ -59,43 +66,220 @@ trait WealthTrait
         return $row['letter'];
     }
 
-
     /**
      * 获取财运程度
      * @param $position
      * @return string
      */
-    public function getWealthLevel($position)
+    public function getWealthLevelByCai($position)
+    {
+        return $this->wealthLevel($position) . $this->cashFlow($position);
+    }
+
+    /**
+     * 某一爻的财运如何
+     * @param $position
+     * @param string $font
+     * @return string
+     */
+    protected function wealthLevel($position, $font = '财')
     {
         if (!$this->getIsKeByPosition($position)
-            && ($this->isHuiJuByFont() || $this->getIsDateGrowMe($position['wx']))
-            && ($this->isEqualDateWx($position['wx']) || $this->getIsDongYaoGrowMe($position['wx']))) {
-            return '财运相当旺';
+            && $this->isHuiJuByFont($font)
+            && ($this->getIsDateGrowMe($position['wx']) || $this->isEqualDateWx($position['wx']))
+            && $this->getIsDongYaoGrowMe($position['wx'])) {
+            return '财运相当旺，';
         }
 
         if (!$this->getIsKeByPosition($position)
-            && (($this->isHuiJuByFont() || $this->getIsDateGrowMe($position['wx']))
-                || ($this->isEqualDateWx($position['wx']) || $this->getIsDongYaoGrowMe($position['wx'])))) {
-            return '财运旺';
+            && ($this->isHuiJuByFont($font)
+                || ($this->getIsDateGrowMe($position['wx']) || $this->isEqualDateWx($position['wx']))
+                || $this->getIsDongYaoGrowMe($position['wx']))) {
+            return '财运旺，';
         }
 
         if (!$this->getIsKeByPosition($position)
-            && (($this->getIsDateGrowMe($position['wx']))
-                || ($this->isEqualDateWx($position['wx']) || $this->getIsDongYaoGrowMe($position['wx'])))) {
-            return '财运较旺';
+            && ($this->getIsDongYaoGrowMe($position['wx'])
+                || ($this->getIsDateGrowMe($position['wx']) || $this->isEqualDateWx($position['wx'])))) {
+            return '财运较旺，';
         }
 
-        if ($this->isWithDateKe($position['wx']) && (($this->isHuiJuByFont() || $this->getIsDateGrowMe($position['wx']))
-                || ($this->isEqualDateWx($position['wx']) || $this->getIsDongYaoGrowMe($position['wx'])))) {
-            return '财运有起伏';
+        if ($this->isWithDateKe($position['wx']) &&
+            ($this->isHuiJuByFont($font)
+                || ($this->getIsDateGrowMe($position['wx']) || $this->isEqualDateWx($position['wx']))
+                || $this->getIsDongYaoGrowMe($position['wx']))) {
+            return '财运有起伏，';
         }
 
-        if ($this->isWithDateKe($position['wx']) && ((!$this->getIsDateGrowMe($position['wx']))
-                && ($this->isEqualDateWx($position['wx'])))) {
-            return '财运需加强';
+        if ($this->isWithDateKe($position['wx']) &&
+            (!($this->getIsDateGrowMe($position['wx']) || $this->isEqualDateWx($position['wx'])))) {
+            return '财运需加强，';
         }
 
         return '';
+    }
+
+    /**
+     * 现金流
+     * @param $position
+     * @return string
+     */
+    public function cashFlow($position)
+    {
+        //判断是否被克，冲，合，或者入墓
+        if ($this->hasOneKeCongHeRu($position)) {
+            $str = '需注意现金流的管控与资金的储备，以免出现不必要的财务问题，??投资需多谨慎，必要时建议可多方面卜卦确认。';
+            $cashConditions = $this->cashConditions($position);
+            return Str::replaceArray('?', $cashConditions, $str);
+        }
+
+        return '现金流充裕，可做更多渠道的财务规划与投资，建议规划与投资时可卜卦确认。';
+    }
+
+    /**
+     * 现金流条件数组
+     * @param $position
+     * @return array
+     */
+    protected function cashConditions($position)
+    {
+        $conditions = [];
+        //财爻空亡，入墓或者被合
+        if ($this->getIsKongWangByPosition($position) || $this->getIsRuByPosition($position) || $this->getIsHeByPosition($position)) {
+            $conditions[] = '财会有接不住的现象，';
+        } else {
+            $conditions[] = '';
+        }
+
+        if ($this->getIsKeByPosition($position) || $this->getIsCongByPosition($position)) {
+            $str = '现金流震荡会有不稳定的情况，';
+
+            //财爻被动爻克，财为动爻，并且被日月克
+            $is_dong = ($position['is_dong'] ?? '') || ($position['is_an_dong'] ?? '');
+            $wx = $position['wx'] ?? '';
+            if ($this->isWithKe($wx, false) || ($is_dong && $this->isWithDateKe($wx))) {
+                $str = $str . '要注意和' . $wx . '形脸的人接触，避免会有被劫财的现象。';
+            }
+
+            //财爻化官，官动爻，财为动并且日月为官
+            if ($this->isNeedSpend($position)) {
+                $str .= '容易会有是非破财的情况。';
+            }
+            $conditions[] = $str;
+        } else {
+            $conditions[] = '';
+        }
+
+        return $conditions;
+    }
+
+    /**
+     * 是否破财
+     * @param $position
+     * @return bool
+     */
+    protected function isNeedSpend($position)
+    {
+        //财爻化官 财爻为动爻并且对应的化爻与本卦的六亲为官
+        if (isset($position['is_dong']) && $position['is_dong']) {
+            if ($this->getTranSixQinIsEqualOfferedSixQin($position, '官')) {
+                return true;
+            }
+
+            //财爻为动爻或者日月为官
+            if ($this->getSixQinByDz($this->getDayDz()) == '官' && $this->getSixQinByDz($this->getMonthDz()) == '官') {
+                return true;
+            }
+        }
+
+        //官爻是动爻
+        $positions = $this->getPositionsWithSixQin('官');
+        $is_dong = collect($positions)->first(function ($value, $key) {
+            return $value['is_dong'] || $value['is_an_dong'];
+        });
+
+        return $is_dong;
+    }
+
+    protected function getWealthLevelByZi($position, $positions)
+    {
+        return $this->wealthLevel($position, '子')
+            . $this->getChannels($position, $positions)
+            . $this->getAttentions($position);
+    }
+
+    protected function getChannels($position, $positions)
+    {
+        $str = '';
+
+        if ($this->hasOneKeCongHeRu($position)) {
+            $str .= '注意来财渠道上会收到不稳定的影响。';
+        } else {
+            $str .= '有很不错的来财渠道，可做好计划并好好把握。';
+        }
+
+        if (count($positions) >= 2 || ($this->getSixQinByDz($this->getDayDz()) == '子' || $this->getSixQinByDz($this->getMonthDz()) == '子')) {
+            $str .= '有多方来财的可能，可做更多渠道的财务规划与投资，建议规划与投资时可卜卦确认。';
+        }
+
+        return $str;
+    }
+
+    protected function getAttentions($position)
+    {
+        $str = '';
+
+        if ($this->getIsDongYaoByPosition($position)) {
+            $day_six_qin = $this->getSixQinByDz($this->getDayDz());
+            $month_six_qin = $this->getSixQinByDz($this->getMonthDz());
+
+            if (($day_six_qin == '财' || $month_six_qin == '财')
+                && ($this->getIsHeByPosition($position, true) || $this->getIsRuByPosition($position, true))
+            ) {
+                $str .= '会有再对外投资的现象。';
+            }
+
+            if ($day_six_qin == '父' || $month_six_qin == '父') {
+                $str .= '注意在事业上或投资上对财源造成的压力。';
+            }
+
+            if (($day_six_qin == '官' || $month_six_qin == '官')
+                && $this->getIsHeByPosition($position, true)
+            ) {
+                $str .= '财源会有受到大环境或者政策上的影响。';
+            }
+
+            if (($day_six_qin == '兄' || $month_six_qin == '兄')
+                && ($this->getIsHeByPosition($position, true) || $this->getIsRuByPosition($position, true))
+            ) {
+                $str .= '来财渠道会受到同行或者外部竞争者的截胡。';
+            }
+
+            if (($day_six_qin == '子' || $month_six_qin == '子')
+                && $this->isWithDateKe($position['wx'])
+            ) {
+                $str .= '多个来财渠道会有冲突的情况。';
+            }
+
+        }
+
+        return $str;
+    }
+
+    protected function getFriends($position)
+    {
+        $wx = $position['wx'] ?? '';
+        $letters = [
+            ['wx' => '木', 'letter' => '多?与有博爱、性情随和、感情丰富、心胸宽广的人链接有助财运的增长。'],
+            ['wx' => '火', 'letter' => '多?与彬彬有礼、性情刚烈、热情爽快、待人耿直的人链接有助财运的增长。'],
+            ['wx' => '土', 'letter' => '多?与忠厚老实、宽宏大量、踏实肯干、讲信守誉的人链接有助财运的增长。'],
+            ['wx' => '金', 'letter' => '多?与不卑不亢、行动稳成、刚毅果决、重情重义的人链接有助财运的增长。'],
+            ['wx' => '水', 'letter' => '多?与足智多谋、聪明好学、好动健谈、灵活多变的人链接有助财运的增长。'],
+        ];
+
+        $row = collect($letters)->where('wx', $wx)->first();
+        $replace = $this->getIsStaticYaoByPosition($position) ? '主动' : '';
+        return str_replace('?', $replace, $row['letter']);
     }
 
 

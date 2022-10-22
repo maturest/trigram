@@ -93,8 +93,8 @@ trait DissolveTrait
 
         $str = implode(',', array_filter(array_unique($hua_sha, SORT_REGULAR)));
 
-        if($str){
-            return $str. '，';
+        if ($str) {
+            return $str . '，';
         }
 
         return '';

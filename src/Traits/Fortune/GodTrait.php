@@ -129,7 +129,7 @@ trait GodTrait
     public function getGodPositionByTrans($god)
     {
         $trans = [];
-        $arr = array_reverse(explode(',', $this->resultDiZhi['trans_di_zhi']));
+        $arr = $this->getTransArr();
         foreach ($arr as $key => $dz) {
             if ($god == $this->getSixQinByDz($dz)) {
                 $trans[] = [
