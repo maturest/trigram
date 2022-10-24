@@ -61,7 +61,7 @@ trait HonourableMenTrait
         $hasNoOneHeCongRuKe = !$this->hasOneKeCongHeRu($position);
         $isHuiJu = $this->isHuiJuByFont($font);
         $dateGrowAndEqual = $this->dateGrowEqual($position['wx']);
-        $isYaoGrow = $this->getIsDongAndTransYaoGrowMe($position['wx']);
+        $isYaoGrow = $this->getIsTransGrowDong();
 
         if ($hasNoOneHeCongRuKe && (($isHuiJu && $dateGrowAndEqual) || ($isHuiJu && $isYaoGrow) || ($dateGrowAndEqual && $isYaoGrow))) {
             return '贵人运相当旺，';

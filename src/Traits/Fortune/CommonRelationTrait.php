@@ -685,4 +685,20 @@ trait CommonRelationTrait
         return false;
     }
 
+    /**
+     * 化爻回头生本爻
+     * @return bool
+     */
+    public function getIsTransGrowDong()
+    {
+        $trans = $this->getTransDetail();
+        foreach ($trans as $tran) {
+            $ben = collect($this->benGuaDetail)->where('row', $tran['row'])->first();
+            if ($this->getWhoGrowMe($this->getWxByDz($tran['dz'])) == $this->getWxByDz($ben['dz'])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
