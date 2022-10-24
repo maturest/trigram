@@ -29,6 +29,12 @@ trait WealthTrait
         //子爻的五行
         $wealth[] = $this->getFriends($zi_position);
 
+        //子爻方位
+        $wealth[] = $this->getHelperPositionsByZi($zi_positions);
+
+        //财爻方位
+        $wealth[] = $this->getHelperDate($positions, $zi_positions);
+
         return $wealth;
     }
 
@@ -280,6 +286,39 @@ trait WealthTrait
         $row = collect($letters)->where('wx', $wx)->first();
         $replace = $this->getIsStaticYaoByPosition($position) ? '主动' : '';
         return str_replace('?', $replace, $row['letter']);
+    }
+
+    protected function getHelperPositionsByZi($positions)
+    {
+        $directions = [
+            ['dz' => '子', 'direction' => '正北',],
+            ['dz' => '丑', 'direction' => '东北偏北',],
+            ['dz' => '寅', 'direction' => '东北偏东',],
+            ['dz' => '卯', 'direction' => '正东',],
+            ['dz' => '辰', 'direction' => '东南偏东',],
+            ['dz' => '巳', 'direction' => '东南偏南',],
+            ['dz' => '午', 'direction' => '正南',],
+            ['dz' => '未', 'direction' => '西南偏南',],
+            ['dz' => '申', 'direction' => '西南偏西',],
+            ['dz' => '酉', 'direction' => '正西',],
+            ['dz' => '戌', 'direction' => '西北偏西',],
+            ['dz' => '亥', 'direction' => '西北偏北',],
+        ];
+        $helper_directions = [];
+        foreach ($positions as $position) {
+            $row = collect($directions)->where('dz', $position['dz'])->first();
+            $helper_directions[] = $row['direction'];
+        }
+
+        return "多往住家或办公室的" . implode('，', $helper_directions) . "方向走动有助于财运的增长。";
+    }
+
+    protected function getHelperDate($cai_positions, $zi_positions)
+    {
+        $cai_dzs = collect($cai_positions)->pluck('dz')->toArray();
+        $zi_dzs = collect($zi_positions)->pluck('dz')->toArray();
+        $dzs = array_unique(array_merge($cai_dzs, $zi_dzs));
+        return "财运在" . implode('，', $dzs) . "月以及每月的" . implode('，', $dzs) . "日较旺。";
     }
 
 
