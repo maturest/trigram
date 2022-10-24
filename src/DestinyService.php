@@ -175,7 +175,10 @@ class DestinyService
         //6、财运
         $wealth = $this->wealth();
 
-        return compact('numen', 'good_ill', 'shield', 'acc', 'dissolve', 'wealth');
+        //7、贵人运
+        $honourable_men = $this->honourableMen();
+
+        return compact('numen', 'good_ill', 'shield', 'acc', 'dissolve', 'wealth', 'honourable_men');
     }
 
     /**

@@ -5,6 +5,11 @@ namespace Maturest\Trigram\Traits\Fortune;
 
 use Illuminate\Support\Str;
 
+/**
+ * 获取用神
+ * Trait GodTrait
+ * @package Maturest\Trigram\Traits\Fortune
+ */
 trait GodTrait
 {
     /**
@@ -153,7 +158,16 @@ trait GodTrait
      */
     public function getSixQinByDz($dz)
     {
-        $wx = $this->getWxByDz($dz);
+        return $this->getSixQinByWx($this->getWxByDz($dz));
+    }
+
+    /**
+     * 通过五行找寻六亲
+     * @param $wx
+     * @return mixed
+     */
+    public function getSixQinByWx($wx)
+    {
         $row = collect($this->benGuaSixQin)->where('ben_gua', $this->resultDiZhi['ben_gua'])
             ->where('wx', $wx)->first();
         return $row['six_qin'];

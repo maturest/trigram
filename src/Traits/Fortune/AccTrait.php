@@ -5,6 +5,11 @@ namespace Maturest\Trigram\Traits\Fortune;
 
 use Illuminate\Support\Str;
 
+/**
+ * 幸运配饰
+ * Trait AccTrait
+ * @package Maturest\Trigram\Traits\Fortune
+ */
 trait AccTrait
 {
     public function acc($god)

@@ -5,6 +5,11 @@ namespace Maturest\Trigram\Traits\Fortune;
 
 use Illuminate\Support\Str;
 
+/**
+ * 财运
+ * Trait WealthTrait
+ * @package Maturest\Trigram\Traits\Fortune
+ */
 trait WealthTrait
 {
     public function wealth($is_student = true)
@@ -90,35 +95,29 @@ trait WealthTrait
      */
     protected function wealthLevel($position, $font = '财')
     {
-        if (!$this->getIsKeByPosition($position)
-            && $this->isHuiJuByFont($font)
-            && ($this->getIsDateGrowMe($position['wx']) || $this->isEqualDateWx($position['wx']))
-            && $this->getIsDongYaoGrowMe($position['wx'])) {
+        $hasNoKe = !$this->getIsKeByPosition($position);
+        $isHuiJu = $this->isHuiJuByFont($font);
+        $dateGrowAndEqual = $this->dateGrowEqual($position['wx']);
+        $isYaoGrow = $this->getIsDongYaoGrowMe($position['wx']);
+
+        if ($hasNoKe && (($isHuiJu && $dateGrowAndEqual) || ($isHuiJu && $isYaoGrow) || ($dateGrowAndEqual && $isYaoGrow))) {
             return '财运相当旺，';
         }
 
-        if (!$this->getIsKeByPosition($position)
-            && ($this->isHuiJuByFont($font)
-                || ($this->getIsDateGrowMe($position['wx']) || $this->isEqualDateWx($position['wx']))
-                || $this->getIsDongYaoGrowMe($position['wx']))) {
+        if ($hasNoKe && $isHuiJu && ($dateGrowAndEqual || $isYaoGrow)) {
             return '财运旺，';
         }
 
-        if (!$this->getIsKeByPosition($position)
-            && ($this->getIsDongYaoGrowMe($position['wx'])
-                || ($this->getIsDateGrowMe($position['wx']) || $this->isEqualDateWx($position['wx'])))) {
+        if ($hasNoKe && ($isYaoGrow || $dateGrowAndEqual)) {
             return '财运较旺，';
         }
 
-        if ($this->isWithDateKe($position['wx']) &&
-            ($this->isHuiJuByFont($font)
-                || ($this->getIsDateGrowMe($position['wx']) || $this->isEqualDateWx($position['wx']))
-                || $this->getIsDongYaoGrowMe($position['wx']))) {
+        $isDateKe = $this->isWithDateKe($position['wx']);
+        if ($isDateKe && ($isHuiJu || $dateGrowAndEqual || $isYaoGrow)) {
             return '财运有起伏，';
         }
 
-        if ($this->isWithDateKe($position['wx']) &&
-            (!($this->getIsDateGrowMe($position['wx']) || $this->isEqualDateWx($position['wx'])))) {
+        if ($isDateKe && !$dateGrowAndEqual) {
             return '财运需加强，';
         }
 

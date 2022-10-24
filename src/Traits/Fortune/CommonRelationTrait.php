@@ -5,6 +5,11 @@ namespace Maturest\Trigram\Traits\Fortune;
 
 use Illuminate\Support\Str;
 
+/**
+ * 公共关系
+ * Trait CommonRelationTrait
+ * @package Maturest\Trigram\Traits\Fortune
+ */
 trait CommonRelationTrait
 {
 
@@ -157,6 +162,69 @@ trait CommonRelationTrait
         return collect($this->benGuaDetail)->filter(function ($item, $key) {
             return $item['is_dong'] || $item['is_an_dong'];
         });
+    }
+
+    /**
+     * 是否动爻和化爻来生
+     * @return bool
+     */
+    public function getIsDongAndTransYaoGrowMe($wx)
+    {
+        $grow_me_wx = $this->getWhoGrowMe($wx);
+        $wxs = array_merge($this->getDongYaoWx(), $this->getTransYaoWx());
+        return in_array($grow_me_wx, $wxs);
+    }
+
+    /**
+     * 获取化爻的五行
+     * @return array
+     */
+    public function getTransYaoWx()
+    {
+        $trans_dzs = $this->getTransYaoDz();
+        $trans_wxs = [];
+        foreach ($trans_dzs as $trans_dz) {
+            $trans_wxs[] = $this->getWxByDz($trans_dz);
+        }
+        return $trans_wxs;
+    }
+
+    /**
+     * 获取化爻的地支
+     * @return mixed
+     */
+    public function getTransYaoDz()
+    {
+        return collect($this->getTransDetail())->pluck('dz')->toArray();
+    }
+
+    /**
+     * 获取化爻的详情
+     * @return array
+     */
+    public function getTransDetail()
+    {
+        $trans = [];
+        $arr = $this->getTransArr();
+        foreach ($arr as $key => $dz) {
+            $trans[] = [
+                'column' => "5",
+                'row' => $key + 1,
+                'is_dong' => false,
+                'is_an_dong' => false,
+                'dz' => $dz,
+            ];
+        }
+        return $trans;
+    }
+
+    /**
+     * 获取化爻的数组
+     * @return array|false|string[]
+     */
+    public function getTransArr()
+    {
+        return array_reverse(explode(',', $this->resultDiZhi['trans_di_zhi']));
     }
 
     /**
@@ -327,15 +395,6 @@ trait CommonRelationTrait
         }
 
         return array_unique($positions, SORT_REGULAR);
-    }
-
-    /**
-     * 获取化爻的数组
-     * @return array|false|string[]
-     */
-    public function getTransArr()
-    {
-        return array_reverse(explode(',', $this->resultDiZhi['trans_di_zhi']));
     }
 
     /**
@@ -592,6 +651,38 @@ trait CommonRelationTrait
     public function getIsTransYaoByPosition($position)
     {
         return $position['is_trans'] ?? '';
+    }
+
+    /**
+     * 日月生比
+     * @param $wx
+     * @return bool
+     */
+    public function dateGrowEqual($wx)
+    {
+        $grow_me_wx = $this->getWhoGrowMe($wx);
+
+        //月生日生
+        if ($grow_me_wx == $this->getDayWx() && $grow_me_wx == $this->getMonthWx()) {
+            return true;
+        }
+
+        //月生日比旺（相等）
+        if ($grow_me_wx == $this->getMonthWx() && $wx == $this->getDayWx()) {
+            return true;
+        }
+
+        //月比旺日生
+        if ($wx == $this->getMonthWx() && $grow_me_wx == $this->getDayWx()) {
+            return true;
+        }
+
+        //月比旺日比旺
+        if ($wx == $this->getMonthWx() && $wx == $this->getDayWx()) {
+            return true;
+        }
+
+        return false;
     }
 
 }

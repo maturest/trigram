@@ -5,6 +5,11 @@ namespace Maturest\Trigram\Traits\Fortune;
 
 use Illuminate\Support\Str;
 
+/**
+ * 守护神
+ * Trait NumenTrait
+ * @package Maturest\Trigram\Traits\Fortune
+ */
 trait NumenTrait
 {
     /**

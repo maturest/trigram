@@ -3,7 +3,11 @@
 
 namespace Maturest\Trigram\Traits\Fortune;
 
-
+/**
+ * 五行护持
+ * Trait ShieldTrait
+ * @package Maturest\Trigram\Traits\Fortune
+ */
 trait ShieldTrait
 {
     /**

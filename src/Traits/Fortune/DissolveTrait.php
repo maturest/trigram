@@ -5,6 +5,11 @@ namespace Maturest\Trigram\Traits\Fortune;
 
 use Illuminate\Support\Str;
 
+/**
+ * 化解之道
+ * Trait DissolveTrait
+ * @package Maturest\Trigram\Traits\Fortune
+ */
 trait DissolveTrait
 {
     public function dissolve($year, $is_pregnant = false)
