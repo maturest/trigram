@@ -280,7 +280,7 @@ trait CauseTrait
             ['dz' => '亥', 'direction' => '西北偏北'],
         ];
 
-        $directions = collect($directions)->whereIn('dz', $dzs)->pluck()->toArray();
+        $directions = collect($directions)->whereIn('dz', $dzs)->pluck('direction')->unique()->toArray();
         return '多往住家或办公室的' . implode('，', $directions) . '方向走动有助于事业运的发展。';
     }
 
