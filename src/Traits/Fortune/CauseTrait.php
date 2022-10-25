@@ -41,7 +41,7 @@ trait CauseTrait
         //对事业运有用的地方
         $letters[] = $this->getHelperByDate();
 
-        return $letters;
+        return array_filter($letters);
     }
 
     /**
