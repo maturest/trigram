@@ -3,6 +3,7 @@
 namespace Maturest\Trigram\Traits;
 
 use Maturest\Trigram\Traits\Fortune\AccTrait;
+use Maturest\Trigram\Traits\Fortune\CauseTrait;
 use Maturest\Trigram\Traits\Fortune\CommonRelationTrait;
 use Maturest\Trigram\Traits\Fortune\DissolveTrait;
 use Maturest\Trigram\Traits\Fortune\GodTrait;
@@ -19,5 +20,5 @@ trait FortuneTrait
 
     use GodTrait, CommonRelationTrait, NumenTrait, GoodIllTrait, ShieldTrait, AccTrait, DissolveTrait;
 
-    use WealthTrait, HonourableMenTrait;
+    use WealthTrait, HonourableMenTrait, CauseTrait;
 }

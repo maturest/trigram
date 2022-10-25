@@ -178,7 +178,14 @@ class DestinyService
         //7、贵人运
         $honourable_men = $this->honourableMen();
 
-        return compact('numen', 'good_ill', 'shield', 'acc', 'dissolve', 'wealth', 'honourable_men');
+        //8、事业运
+        $cause = $this->cause();
+
+        //9、时来运转
+
+
+        return compact('numen', 'good_ill', 'shield', 'acc',
+            'dissolve', 'wealth', 'honourable_men','cause');
     }
 
     /**

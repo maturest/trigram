@@ -340,7 +340,7 @@ trait CommonRelationTrait
      * @param $six_qin
      * @return array
      */
-    public function getPositionsWithSixQin($six_qin)
+    public function getPositionsWithSixQin($six_qin, $contain_date = false)
     {
         $positions = [];
 
@@ -393,6 +393,31 @@ trait CommonRelationTrait
                 ];
             }
         }
+
+        if ($contain_date) {
+            //日令
+            if ($six_qin == $this->getSixQinByDz($this->getDayDz())) {
+                $positions[] = [
+                    'position' => '62',
+                    'is_dong' => false,
+                    'is_an_dong' => false,
+                    'dz' => $this->getDayDz(),
+                    'wx' => $this->getDayWx(),
+                ];
+            }
+
+            //月令
+            if ($six_qin == $this->getSixQinByDz($this->getMonthDz())) {
+                $positions[] = [
+                    'position' => '61',
+                    'is_dong' => false,
+                    'is_an_dong' => false,
+                    'dz' => $this->getMonthDz(),
+                    'wx' => $this->getMonthWx(),
+                ];
+            }
+        }
+
 
         return array_unique($positions, SORT_REGULAR);
     }
@@ -621,6 +646,19 @@ trait CommonRelationTrait
                 } else {
                     return true;
                 }
+            }
+        }
+        return false;
+    }
+
+    public function isRuRelation($position_a, $position_b)
+    {
+        foreach ($this->draw['ru_mu'] as $ru_mu) {
+            if ($ru_mu == $position_a['position'] . '-' . $position_b['position']) {
+                return true;
+            }
+            if ($ru_mu == $position_b['position'] . '-' . $position_a['position']) {
+                return true;
             }
         }
         return false;
