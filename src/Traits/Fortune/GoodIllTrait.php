@@ -3,17 +3,8 @@
 
 namespace Maturest\Trigram\Traits\Fortune;
 
-/**
- * 运势吉凶
- * Trait GoodIllTrait
- * @package Maturest\Trigram\Traits\Fortune
- */
 trait GoodIllTrait
 {
-    /**
-     * 运势吉凶
-     * @return array
-     */
     public function goodOrIll($god)
     {
         $wx = $this->getGodWx();

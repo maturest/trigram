@@ -7,45 +7,41 @@ use Illuminate\Support\Str;
 
 trait CauseTrait
 {
+
     /**
-     * 事业运
-     * @param $is_student
+     * > It returns an array of strings that are the cause of the father's problem
+     *
+     * @param is_student if true, the student's cause will be included.
      * @return array
      */
     public function cause($is_student = false)
     {
         $letters = [];
-        //父爻的位置
+
         $positions = $this->getGodPositionsWithSixQin('父');
         $position = $positions[0];
 
-        //学生展示
         if ($is_student) {
             $letters[] = $this->getStudentCause($position);
         }
 
-        //父爻的旺衰程度
         $letters[] = $this->getCaseLevel($position);
 
         $guan_positions = $this->getGodPositionsWithSixQin('官');
         $guan_position = $guan_positions[0];
-        //官爻的事业贵人助力
+
         $letters[] = $this->getHelpers($guan_position, $position);
 
-        //对事业有帮助的人
         $letters[] = $this->getHelperMen($guan_position);
 
-        //对事业运有帮助的方向
         $letters[] = $this->getHelperDirections();
 
-        //对事业运有用的地方
         $letters[] = $this->getHelperByDate();
 
         return array_filter($letters);
     }
 
     /**
-     * 获取是学生的情况
      * @param $position
      * @return string
      */
@@ -54,7 +50,7 @@ trait CauseTrait
         if ($this->getIsKeByPosition($position)) {
             $tmp_arr = [];
             $tmp_arr[] = '今年在学业上会有不稳定的现象，成绩上会有起伏。';
-            /* 反查克冲入合的关系 */
+
             $cai_letter = '要注意课外兴趣爱好活动、一些诱惑性娱乐等给学业上带来的负面影响，导致学习成绩上的下滑现象，建议合理分配时间，做到劳逸结合。';
             $cai_letters = $this->getStudyInfo($position, '财', $cai_letter);
 
@@ -78,32 +74,32 @@ trait CauseTrait
         }
     }
 
+
     /**
-     * 冲，克，入，合
-     * @param $position
+     * > It returns an array of letters that are related to the given position
+     *
+     * @param position the position of the current character
+     * @param font the font of the position
+     * @param letter the letter of the position
+     * @return array
      */
     protected function getStudyInfo($position, $font, $letter)
     {
         $res = [];
-        // 1、获取财的位置
         $six_qin_positions = $this->getPositionsWithSixQin($font, true);
         foreach ($six_qin_positions as $six_qin_position) {
-            // 冲
             if ($this->isCongRelation($position['dz'], $six_qin_position['dz'])) {
                 $res[] = $letter;
             };
 
-            // 克
             if ($six_qin_position['wx'] == $this->getWhoKeMe($position['wx'])) {
                 $res[] = $letter;
             }
 
-            // 合
             if ($this->isHeRelation($position['dz'], $six_qin_position['dz'])) {
                 $res[] = $letter;
             }
 
-            // 入
             if ($this->isRuRelation($position, $six_qin_position)) {
                 $res[] = $letter;
             }
@@ -112,14 +108,25 @@ trait CauseTrait
         return array_unique($res);
     }
 
+    /**
+     * > The function returns the cause level and cause flow of a position
+     *
+     * @param position The position of the case in the case list.
+     *
+     * @return The case level and the case flow.
+     */
     protected function getCaseLevel($position)
     {
         return $this->causeLevel($position) . $this->causeFlow($position);
     }
 
+
     /**
-     * 事业运程度
-     * @param $position
+     * > If the position has no Ke, and the position is HuiJu and the date is growing and equal, or the
+     * position is HuiJu and the date is growing and equal, or the date is growing and equal and the
+     * position is growing and equal, then the career is very strong
+     *
+     * @param position the position of the person in the chart
      * @return string
      */
     protected function causeLevel($position)
@@ -152,6 +159,13 @@ trait CauseTrait
         return '';
     }
 
+    /**
+     * It returns a string.
+     *
+     * @param position the position of the hexagram in the sequence of 64 hexagrams.
+     *
+     * @return The method is returning a string.
+     */
     protected function causeFlow($position)
     {
         if ($this->hasOneKeCongHeRu($position)) {
@@ -163,25 +177,29 @@ trait CauseTrait
         return '事业亨通，可做好事业的规划或者投资的管理，是事业扬升的好时机，可好好把握。';
     }
 
+    /**
+     * > It returns an array of strings, each of which is a sentence describing the conditions of the
+     * career
+     *
+     * @param position the position of the god
+     * @return array
+     */
     protected function causeConditions($position)
     {
         $conditions = [];
 
-        //1、父动爻与日月的关系
         $str = '';
-        //1.1、父动爻被日月父冲
+
         if ($this->getIsDongYaoByPosition($position)
             && $this->getIsCongByDate($position['dz'])
         ) {
             $str .= '容易因多个事业项目之间的冲突照成麻烦。';
         }
 
-        //1.2、日月为官与父爻合或者入
         if ($this->judgeDateSixQin('官') && ($this->getIsHeByPosition($position, true) || $this->getIsRuByPosition($position, true))) {
             $str .= '事业会陷入不必要的是非甚至官非中。';
         }
 
-        //1.3、日月被兄合入
         $xiong_positions = $this->getGodPositionsWithSixQin('兄');
         $xiong_position = $xiong_positions[0];
         if ($this->getIsHeByPosition($xiong_position, true) || $this->getIsRuByPosition($xiong_position, true)) {
@@ -190,14 +208,12 @@ trait CauseTrait
 
         $conditions[] = $str;
 
-        //2、父空亡或入墓或合
         if ($this->getIsKongWangByPosition($position) || $this->getIsRuByPosition($position) || $this->getIsHeByPosition($position)) {
             $conditions[] = '会有停滞或越做越小的情况，';
         } else {
             $conditions[] = '';
         }
 
-        //3、父爻被冲或克
         if ($this->getIsCongByPosition($position) || $this->getIsKeByPosition($position)) {
             $conditions[] = '会因财务上的原因给事业运势带来压力，';
         } else {
@@ -207,29 +223,48 @@ trait CauseTrait
         return $conditions;
     }
 
+    /**
+     * It checks if the day or month is a cong.
+     *
+     * @param dz the day of the month
+     * @return boolean
+     */
     protected function getIsCongByDate($dz)
     {
         return $this->isCongRelation($dz, $this->getDayDz()) || $this->isCongRelation($dz, $this->getMonthDz());
     }
 
+    /**
+     * It returns true if the six_qin is the same as the day or month dz.
+     *
+     * @param six_qin the six qin of the day
+     * @return boolean
+     */
     protected function judgeDateSixQin($six_qin)
     {
         return $six_qin == $this->getSixQinByDz($this->getDayDz()) || $six_qin == $this->getSixQinByDz($this->getMonthDz());
     }
 
+    /**
+     * > If the `guan_position` is in the `cong` position, or the `guan_position` is in the `zi`
+     * position, then return `事业贵人助力不稳定，容易有口角是非，需谨慎。`; if the `fu_position` is in the `he` position, or
+     * the `fu_position` is in the `ru` position, then return `贵人同时在帮助其他的项目，来助力量分散。`; if the
+     * `xiong_position` is in the `he` position, or the `xiong_position` is in the `ru` position, then
+     *
+     * @param guan_position the position of the guan (官) god
+     * @param fu_position the position of the fu god
+     * @return string
+     */
     protected function getHelpers($guan_position, $fu_position)
     {
-        // 日月官冲or日月子
         if ($this->getIsCongByDate($guan_position['dz']) || $this->judgeDateSixQin('子')) {
             return '事业贵人助力不稳定，容易有口角是非，需谨慎。';
         }
 
-        // 日月父合入
         if ($this->getIsHeByPosition($fu_position, true) || $this->getIsRuByPosition($fu_position, true)) {
             return '贵人同时在帮助其他的项目，来助力量分散。';
         }
 
-        // 日月兄冲
         $xiong_positions = $this->getGodPositionsWithSixQin('兄');
         $xiong_position = $xiong_positions[0];
         if ($this->getIsHeByPosition($xiong_position, true) || $this->getIsRuByPosition($xiong_position, true)) {
@@ -239,6 +274,13 @@ trait CauseTrait
         return '';
     }
 
+    /**
+     * > This function returns a string that describes the type of people that will help the user's
+     * career
+     *
+     * @param position The position of the hexagram.
+     * @return string
+     */
     protected function getHelperMen($position)
     {
         $letters = [
@@ -259,9 +301,12 @@ trait CauseTrait
         return str_replace('?', $str, $row['letter']);
     }
 
+    /**
+     * > Get the directions of the positions with six qin
+     * @return string
+     */
     protected function getHelperDirections()
     {
-        //官爻对应的十二地支的方向
         $positions = $this->getPositionsWithSixQin('官');
         $dzs = collect($positions)->pluck('dz')->unique()->toArray();
 
@@ -284,16 +329,19 @@ trait CauseTrait
         return '多往住家或办公室的' . implode('，', $directions) . '方向走动有助于事业运的发展。';
     }
 
+
     /**
+     * > Get the positions of the six qin of guan and fu, then get the unique dzs of the positions,
+     * then merge the two arrays, then get the unique dzs, then implode the dzs with '，', then return
+     * the sentence
+     *
      * @return string
      */
     protected function getHelperByDate()
     {
-        //官
         $guan_positions = $this->getPositionsWithSixQin('官');
         $guan_dzs = collect($guan_positions)->pluck('dz')->unique()->toArray();
 
-        //父
         $fu_positions = $this->getPositionsWithSixQin('父');
         $fu_dzs = collect($fu_positions)->pluck('dz')->unique()->toArray();
 

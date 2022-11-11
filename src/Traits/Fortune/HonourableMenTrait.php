@@ -2,11 +2,6 @@
 
 namespace Maturest\Trigram\Traits\Fortune;
 
-/**
- * 贵人运
- * Trait HonourableMen
- * @package Maturest\Trigram\Traits\Fortune
- */
 trait HonourableMenTrait
 {
 
@@ -16,22 +11,14 @@ trait HonourableMenTrait
         $six_qin = $this->getGrowGodSixQin();
         $position = $this->getGrowGodPosition($six_qin);
 
-        //贵人运程度
         $honourable_men[] = $this->honourLevel($position, $six_qin);
 
-        //五行生世爻的属性
         $honourable_men = array_merge($honourable_men, $this->getAttributeGrowShi());
-
-        //哪类人是我的贵人
         $honourable_men[] = $this->whoIsMyHonourableMen($six_qin);
 
         return $honourable_men;
     }
 
-    /**
-     * 获取生用神爻的六亲
-     * @return array
-     */
     protected function getGrowGodSixQin()
     {
         $god_position = $this->god_positions[0];
@@ -39,23 +26,12 @@ trait HonourableMenTrait
         return $six_qin;
     }
 
-    /**
-     * 获取生用神爻的位置
-     * @param $six_qin
-     * @return mixed
-     */
     protected function getGrowGodPosition($six_qin)
     {
         $honour_positions = $this->getGodPositionsWithSixQin($six_qin);
         return $honour_positions[0];
     }
 
-    /**
-     * 贵人运程度
-     * @param $position
-     * @param $font
-     * @return string
-     */
     protected function honourLevel($position, $font)
     {
         $hasNoOneHeCongRuKe = !$this->hasOneKeCongHeRu($position);

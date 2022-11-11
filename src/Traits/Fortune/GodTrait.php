@@ -5,18 +5,8 @@ namespace Maturest\Trigram\Traits\Fortune;
 
 use Illuminate\Support\Str;
 
-/**
- * 获取用神
- * Trait GodTrait
- * @package Maturest\Trigram\Traits\Fortune
- */
 trait GodTrait
 {
-    /**
-     * 获取用神的位置
-     * @param string $god 用神
-     * @return array|array[]
-     */
     public function getGodPositions($god)
     {
         if ($god == '世') {
@@ -27,11 +17,6 @@ trait GodTrait
         return $this->getGodPositionsWithSixQin($god);
     }
 
-    /**
-     * 获取世应的位置
-     * @param string $font
-     * @return array
-     */
     public function getShiOrYingPosition($font = '世')
     {
         $shi_ying = explode(',', $this->resultDiZhi['shi_ying']);
@@ -49,19 +34,12 @@ trait GodTrait
         return $position;
     }
 
-    /**
-     * 通过六亲获取用神的位置,用神多现，取旺相者，动爻大于静爻，本爻大于化爻，化爻大于静爻
-     * @param $god
-     * @return array|array[]
-     */
     public function getGodPositionsWithSixQin($god)
     {
-        // 本爻六亲与用神一致的情况
         if (Str::contains($this->resultDiZhi['liu_qin'], $god)) {
             $ben_gods = $this->getGodPositionsWithBenSixQin($god);
         }
 
-        //化爻六亲与用神一致的情况
         $trans_gods = $this->getGodPositionByTrans($god);
 
         $fu_yao_gods = $this->getGodPositionByFuYao($god);
@@ -72,19 +50,17 @@ trait GodTrait
 
         $positions = array_merge($ben_gods, $trans_gods, $fu_yao_gods);
 
-        //比较权重 动爻大于化爻，化爻大于静爻
         $positions = collect($positions)->map(function ($item) {
-            // 动爻
             if ($item['is_dong'] || $item['is_an_dong']) {
                 $item['sort'] = 999;
                 return $item;
             }
-            // 化爻
+
             if ($item['is_trans']) {
                 $item['sort'] = 888;
                 return $item;
             }
-            // 静爻
+
             $item['sort'] = 666;
             return $item;
         })->sortByDesc('sort')->toArray();
@@ -92,16 +68,10 @@ trait GodTrait
         return $positions;
     }
 
-    /**
-     * 获取本爻中六亲等于用神的位置
-     * @param $god
-     * @return array|array[]
-     */
     public function getGodPositionsWithBenSixQin($god)
     {
         $positions = [];
 
-        //如果六亲中包含用神，可能出现多个六亲，循环遍历
         $tmp_arr = explode(',', $this->resultDiZhi['liu_qin']);
         foreach ($tmp_arr as $key => $value) {
             if ($value == $god) {
@@ -115,7 +85,6 @@ trait GodTrait
                     'is_volt' => false,
                 ];
 
-                //用神多现取旺相者，动爻大于静爻，本爻大于化爻
                 if ($this->benGuaDetail[$key]['is_dong'] || $this->benGuaDetail[$key]['is_an_dong']) {
                     return [
                         $position,
@@ -129,11 +98,6 @@ trait GodTrait
         return array_unique($positions, SORT_REGULAR);
     }
 
-    /**
-     * 获取化爻中六亲等于用神的位置
-     * @param $god
-     * @return array
-     */
     public function getGodPositionByTrans($god)
     {
         $trans = [];
@@ -155,21 +119,11 @@ trait GodTrait
         return $trans;
     }
 
-    /**
-     * 通过地支获取对应的六亲
-     * @param $dz
-     * @return mixed
-     */
     public function getSixQinByDz($dz)
     {
         return $this->getSixQinByWx($this->getWxByDz($dz));
     }
 
-    /**
-     * 通过五行找寻六亲
-     * @param $wx
-     * @return mixed
-     */
     public function getSixQinByWx($wx)
     {
         $row = collect($this->benGuaSixQin)->where('ben_gua', $this->resultDiZhi['ben_gua'])
@@ -177,11 +131,6 @@ trait GodTrait
         return $row['six_qin'];
     }
 
-    /**
-     * 获取伏爻的用神的位置
-     * @param $god
-     * @return array
-     */
     public function getGodPositionByFuYao($god)
     {
         $positions = [];

@@ -6,7 +6,6 @@ namespace Maturest\Trigram\Traits\GodNums;
 
 trait GodNums
 {
-    // 年先天数
     protected $yearFrontNums = [
         ['dz' => '子', 'front_num' => '1'],
         ['dz' => '丑', 'front_num' => '2'],
@@ -22,11 +21,6 @@ trait GodNums
         ['dz' => '亥', 'front_num' => '12'],
     ];
 
-    /**
-     * 获取后天数
-     * @param $frontNums
-     * @return mixed
-     */
     public function laterNums($frontNums)
     {
         $laterNums = collect($frontNums)->map(function ($item, $key) {
@@ -36,12 +30,7 @@ trait GodNums
         return $laterNums;
     }
 
-    /**
-     * 获取先天数
-     * @param $calendar
-     * @param $date
-     * @return array
-     */
+
     protected function frontNums($date)
     {
         $year_num = $this->frontYearNum($this->date_detail['ganzhi_year']);
@@ -51,32 +40,17 @@ trait GodNums
         return array_merge($year_num, $month_num, $day_num, $hour_num);
     }
 
-    /**
-     * 年先天数
-     * @param $gz_year
-     * @return int[]
-     */
     protected function frontYearNum($gz_year)
     {
         $row = collect($this->yearFrontNums)->where('dz', $this->dzYear($gz_year))->first();
         return [$row['front_num'] ?? 0];
     }
 
-    /**
-     * 月先天数
-     * @param $month
-     * @return int[]
-     */
     protected function frontMonthNum($month)
     {
         return [intval($month) ?: 0];
     }
 
-    /**
-     * 日先天数
-     * @param $day
-     * @return array
-     */
     protected function frontDayNum($day)
     {
         $day = intval($day);
@@ -91,11 +65,6 @@ trait GodNums
         }
     }
 
-    /**
-     * 时先天数
-     * @param $date
-     * @return array|int[]
-     */
     protected function frontHourNum($date)
     {
         // 24小时制的时间格式 比如23:02 就写2302
@@ -126,11 +95,6 @@ trait GodNums
         return [$row['front_num']];
     }
 
-    /**
-     * 创建新的数组
-     * @param $nums
-     * @return array
-     */
     protected function createNewArr($nums)
     {
         $arr = [];

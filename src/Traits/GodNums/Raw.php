@@ -6,7 +6,6 @@ namespace Maturest\Trigram\Traits\GodNums;
 
 trait Raw
 {
-    // 生
     private $raw = [
         1 => [4, 5],
         2 => [4, 5],

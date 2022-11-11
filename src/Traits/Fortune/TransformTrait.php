@@ -5,11 +5,6 @@ namespace Maturest\Trigram\Traits\Fortune;
 
 use Illuminate\Support\Str;
 
-/**
- * 时来运转
- * Trait TransformTrait
- * @package Maturest\Trigram\Traits\Fortune
- */
 trait TransformTrait
 {
     protected $directions = [
@@ -48,16 +43,12 @@ trait TransformTrait
     {
         $res = [];
 
-        //子爻
         $res[] = $this->transformWithZi($god);
 
-        //财爻
         $res[] = $this->transformWithCai($god);
 
-        //父爻
         $res[] = $this->transformWithFu($god);
 
-        //官或兄
         $res[] = $this->transformWithGod($god);
 
         return array_filter($res);
@@ -70,7 +61,6 @@ trait TransformTrait
         $position = $this->getPrimaryGodPositions($keyword);
 
         if($converged){
-            // 如果用神爻被破
             if( $this->getIsCongByPosition($position) ){
                 return $this->generalZi($god,$position);
             }

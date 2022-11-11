@@ -6,7 +6,6 @@ namespace Maturest\Trigram\Traits\GodNums;
 
 trait Gram
 {
-    // 克
     private $gram = [
         1 => [6, 7],
         2 => [6, 7],
@@ -22,7 +21,6 @@ trait Gram
         12 => [6, 7],
     ];
 
-    // 犯绝数组
     private $absolute = [
         [2, 6],
         [7, 12],
@@ -33,23 +31,11 @@ trait Gram
         [1, 9],
     ];
 
-    /**
-     * 获取克关系
-     * @param $frontNums
-     * @param $new_front_nums
-     * @param $laterNums
-     * @param $new_later_nums
-     * @return array
-     */
     protected function getGramRelation($frontNums, $new_front_nums, $laterNums, $new_later_nums)
     {
-        // 先天克数据
         $front_gram = $this->gramRelation($frontNums, $new_front_nums);
-        // 后天克数据
         $later_gram = $this->gramRelation($laterNums, $new_later_nums);
-        // 数据统计
         $gram_statistics = array_merge($front_gram['gram_statistics'], $later_gram['gram_statistics']);
-        // 数据分析
         $gram_statistics = $this->gramStatistics($gram_statistics);
 
         return [
@@ -61,10 +47,7 @@ trait Gram
 
     protected function gramRelation($nums, $new_nums)
     {
-        // 克关系
         $gram_relations = [];
-
-        // 克关系 拿来统计用
         $gram_statistics = [];
         $max_key = count($new_nums) - 1;
         $last_position = '';
@@ -116,12 +99,6 @@ trait Gram
         return compact('gram_relations', 'gram_statistics');
     }
 
-    /**
-     * 判断是否犯绝
-     * @param $a
-     * @param $b
-     * @return bool
-     */
     protected function isAbsolute($a, $b)
     {
         if (in_array([$a, $b], $this->absolute) || in_array([$b, $a], $this->absolute)) {
@@ -131,11 +108,6 @@ trait Gram
         return false;
     }
 
-    /**
-     * 克关系统计
-     * @param $gram_statistics
-     * @return array
-     */
     protected function gramStatistics($gram_statistics)
     {
         $grouped = collect($gram_statistics)->groupBy('join')->toArray();

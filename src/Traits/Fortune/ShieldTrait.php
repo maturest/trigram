@@ -3,17 +3,9 @@
 
 namespace Maturest\Trigram\Traits\Fortune;
 
-/**
- * 五行护持
- * Trait ShieldTrait
- * @package Maturest\Trigram\Traits\Fortune
- */
+
 trait ShieldTrait
 {
-    /**
-     * 获取五行护持
-     * @return mixed
-     */
     public function shield()
     {
         return $this->getShieldItems($this->getGodWx());

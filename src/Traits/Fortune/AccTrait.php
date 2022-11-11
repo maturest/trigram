@@ -5,35 +5,43 @@ namespace Maturest\Trigram\Traits\Fortune;
 
 use Illuminate\Support\Str;
 
-/**
- * 幸运配饰
- * Trait AccTrait
- * @package Maturest\Trigram\Traits\Fortune
- */
 trait AccTrait
 {
+    /**
+     * > Get the letters of the god's acc
+     *
+     * @param god the god you want to calculate
+     *
+     * @return The return value is an array of letters.
+     */
     public function acc($god)
     {
         if ($god == '财') {
-            //子爻的五行颜色
             $zi_positions = $this->getGodPositionsWithSixQin('子');
             $color_wx = $zi_positions[0]['wx'];
 
-            //财爻的五行物件
             $cai_positions = $this->getGodPositionsWithSixQin('财');
             $goods_wx = $cai_positions[0]['wx'];
 
             return $this->getAccLetters($color_wx, $goods_wx);
         }
 
-        //用神的五行颜色
         $color_wx = $this->getGodWx();
-        //生用神的五行物件
+
         $goods_wx = $this->getWhoGrowMe($color_wx);
 
         return $this->getAccLetters($color_wx, $goods_wx);
     }
 
+    /**
+     * It takes two parameters, `` and ``, and returns a string with the color and
+     * good substituted in
+     *
+     * @param color_wx The color of the five elements of the year
+     * @param goods_wx the wuxing of the goods
+     *
+     * @return string
+     */
     public function getAccLetters($color_wx, $goods_wx)
     {
         $colors = [

@@ -196,6 +196,4 @@ trait BuDiZhiTrait
             $this->diZhiMonth = mb_substr($last_day_res['ganzhi_month'], -1, 1);
         }
     }
-
-
 }

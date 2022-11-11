@@ -5,39 +5,26 @@ namespace Maturest\Trigram\Traits\Fortune;
 
 use Illuminate\Support\Str;
 
-/**
- * 化解之道
- * Trait DissolveTrait
- * @package Maturest\Trigram\Traits\Fortune
- */
 trait DissolveTrait
 {
     public function dissolve($year, $is_pregnant = false)
     {
         $res = [];
 
-        //拜神
         $res[] = $this->baiWho($year);
 
-        //卜月运势卦
         $res[] = $this->fortuneTrigram();
 
-        //是否需要卜出行卦
         $res[] = $this->tripTrigram();
 
-        //净化磁场
         $res[] = $this->cleanMagneticField();
 
-        //让婴灵去报道
         $res[] = $this->unborn($is_pregnant);
 
         return array_filter($res);
     }
 
-    /**
-     * 拜神
-     * @return mixed
-     */
+
     public function baiWho($year)
     {
         $letters = [
@@ -54,7 +41,6 @@ trait DissolveTrait
         $is_cong = false;
 
         if (in_array($wx, ['金', '水'])) {
-            // 判断用神是否带冲
             $is_cong = $this->getIsCongByPosition($this->god_positions[0]);
         }
 
@@ -63,37 +49,26 @@ trait DissolveTrait
         return Str::replaceArray('?', $this->getConditions($year), $row['bai']);
     }
 
-    /**
-     * 获取条件数组
-     * @param $year
-     * @return array
-     */
     public function getConditions($year)
     {
         $res = [];
         $god_wx = $this->getGodWx();
-        //条件一
+
         $res[] = $this->getHuaSha($god_wx);
-        //条件二
+
         $res[] = $this->getWholeFortune();
-        //条件三
+
         $res[] = $this->getMagnatePower($god_wx);
-        //条件四 年份
+
         $res[] = $year;
 
         return $res;
     }
 
-    /**
-     * 获取化煞内容
-     * @param $god_wx
-     * @return string
-     */
     public function getHuaSha($god_wx)
     {
-        //化煞1
         $hua_sha[] = $this->getHuaSha1($god_wx);
-        //化煞2
+
         $hua_sha[] = $this->getHuaSha2($god_wx);
 
         $str = implode(',', array_filter(array_unique($hua_sha, SORT_REGULAR)));
@@ -109,11 +84,9 @@ trait DissolveTrait
     {
         $position = $this->god_positions[0];
 
-        //用神爻是否被动爻或者日令月令克
         $is_ke_god = $this->getIsKeByPosition($position);
 
         if ($is_ke_god) {
-            //用神爻被动爻生 && 生世爻的爻不带合或入
             $shi_position = $this->getShiOrYingPosition();
             if ($this->getIsDongYaoGrowMe($god_wx) && $this->withoutHeOrRuByGrowMe($shi_position['wx'])) {
                 return '';
@@ -125,11 +98,6 @@ trait DissolveTrait
         }
     }
 
-    /**
-     * 获取化煞结果
-     * @param $god_wx
-     * @return mixed
-     */
     public function getHuaShaByWx($god_wx)
     {
         $letters = [
@@ -152,11 +120,8 @@ trait DissolveTrait
             return $row['hs'];
         }
 
-        // 世爻的位置
         $shi_position = $this->getShiOrYingPosition();
-        // 判断世爻是否被冲
         $is_cong = $this->getIsCongByPosition($shi_position['position']);
-        // 判断世爻是否被克
         $is_ke = $this->getIsKeByPosition($shi_position['position']);
 
         $row = collect($letters)->where('wx', $god_wx)->where('ke', $is_ke)->where('cong', $is_cong)->first();
@@ -164,34 +129,24 @@ trait DissolveTrait
         return $row['hs'];
     }
 
-    /**
-     * 动爻的冲克包含动爻与日月的关系，静爻的冲克仅考虑动爻的关系
-     * @param $god_wx
-     * @return string
-     */
     public function getHuaSha2($god_wx)
     {
-        //用神有动爻冲或有动爻克
         $god_position = $this->god_positions[0];
 
-        //如果是暗动
         if ($god_position['is_an_dong']) {
             return $this->getHuaShaByWx($god_wx);
         }
 
-        //如果是明动，看是否被其他动爻冲或者克
         if ($god_position['is_dong']) {
-            //是不是被冲
             if ($this->isWithCong($god_position['position'])) {
                 return $this->getHuaShaByWx($god_wx);
             }
-            //是不是被克
+
             if ($this->isWithKe($god_wx)) {
                 return $this->getHuaShaByWx($god_wx);
             }
         }
 
-        //如果是静爻，看是否有动爻冲或者动爻克。
         foreach ($this->getDongYaoDz() as $dz) {
             if ($this->isCongRelation($dz, $god_position['dz'])) {
                 return $this->getHuaShaByWx($god_wx);
@@ -205,13 +160,8 @@ trait DissolveTrait
         return '';
     }
 
-    /**
-     * 增强个人整体运势
-     * @return string
-     */
     public function getWholeFortune()
     {
-        //用神空亡，入墓，合
         $position = $this->god_positions[0];
 
         if ($this->getIsKongWangByPosition($position)
@@ -223,14 +173,8 @@ trait DissolveTrait
         return '';
     }
 
-    /**
-     * 加强贵人力量
-     * @param $god_wx
-     * @return string
-     */
     public function getMagnatePower($god_wx)
     {
-        //生用神的爻的位置
         $positions = $this->getPositionsWhoGrowMe($god_wx);
         foreach ($positions as $position) {
             if ($this->getIsKongWangByPosition($position)
@@ -242,11 +186,6 @@ trait DissolveTrait
         return '';
     }
 
-    /**
-     * 月运势卦
-     * @param $god
-     * @return mixed
-     */
     public function fortuneTrigram()
     {
         $letters = [
@@ -262,12 +201,6 @@ trait DissolveTrait
         return $row['letter'];
     }
 
-    /**
-     * 出行卦
-     * 父爻的五行是动爻，并且被克，被冲或入墓
-     * @param string $six_qin
-     * @return string
-     */
     public function tripTrigram($six_qin = '父')
     {
         $positions = $this->getPositionsWithSixQin($six_qin);
@@ -282,10 +215,6 @@ trait DissolveTrait
         return '';
     }
 
-    /**
-     * 净化磁场
-     * @return string
-     */
     public function cleanMagneticField()
     {
         $six_qin_ying = $this->getSixQinByShiOrYing('应');
@@ -302,12 +231,6 @@ trait DissolveTrait
         return '';
     }
 
-    /**
-     * 婴灵
-     * 官是动爻并且与动爻的兄或子有合、冲、入，克关系
-     * @param $is_pregnant
-     * @return string
-     */
     public function unborn($is_pregnant)
     {
         $guan_positions = $this->getPositionsWithSixQin('官');
@@ -316,10 +239,8 @@ trait DissolveTrait
 
         if (!$is_pregnant) {
             foreach ($guan_positions as $position) {
-                //如果官爻是动爻
-                if ($position['is_dong'] || $position['is_an_dong']) {
 
-                    //判断是否有合的关系
+                if ($position['is_dong'] || $position['is_an_dong']) {
                     if ($this->getIsHeByPosition($position)) {
                         if ($this->isNeedUnborn($position, $brother_positions, 'six_he')
                             || $this->isNeedUnborn($position, $child_positions, 'six_he')) {
@@ -327,7 +248,6 @@ trait DissolveTrait
                         }
                     }
 
-                    //判断是否有冲的关系
                     if ($this->getIsCongByPosition($position)) {
                         if ($this->isNeedUnborn($position, $brother_positions, 'six_chong')
                             || $this->isNeedUnborn($position, $child_positions, 'six_chong')) {
@@ -335,7 +255,6 @@ trait DissolveTrait
                         }
                     }
 
-                    //判断是否有入的关系
                     if ($this->getIsRuByPosition($position)) {
                         if ($this->isNeedUnborn($position, $brother_positions, 'ru_mu')
                             || $this->isNeedUnborn($position, $child_positions, 'ru_mu')) {
@@ -343,7 +262,6 @@ trait DissolveTrait
                         }
                     }
 
-                    //判断是否有克的关系
                     if ($this->unbornKe($position, $brother_positions) || $this->unbornKe($position, $child_positions)) {
                         return $this->cleanYinQi();
                     }
@@ -354,12 +272,6 @@ trait DissolveTrait
         return '';
     }
 
-    /**
-     * @param array $position 官动爻的位置
-     * @param array $relation_positions 六亲的位置
-     * @param string $relation 关系
-     * @return bool
-     */
     public function isNeedUnborn($position, $relation_positions, $relation = 'six_he')
     {
         foreach ($this->draw[$relation] as $item) {
@@ -376,10 +288,6 @@ trait DissolveTrait
         return false;
     }
 
-    /**
-     * 请走婴灵
-     * @return mixed
-     */
     public function cleanYinQi()
     {
         $zi_positions = $this->getPositionsWithSixQin('子');
@@ -397,17 +305,11 @@ trait DissolveTrait
         return $row['letter'];
     }
 
-    /**
-     * 官爻的位置是否与兄或者子动爻相克
-     * @param $position
-     * @param $relation_positions
-     */
     public function unbornKe($position, $relation_positions)
     {
         $wx = $this->getWxByDz($position['dz']);
         $wx_ke_me = $this->getWhoKeMe($wx);
         foreach ($relation_positions as $relation_position) {
-            //如果是动爻
             if ($relation_position['is_dong'] || $relation_position['is_an_dong']) {
                 if ($this->getWxByDz($relation_position['dz']) == $wx_ke_me) {
                     return true;

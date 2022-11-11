@@ -5,26 +5,23 @@ namespace Maturest\Trigram\Traits\Fortune;
 
 use Illuminate\Support\Str;
 
-/**
- * 公共关系
- * Trait CommonRelationTrait
- * @package Maturest\Trigram\Traits\Fortune
- */
 trait CommonRelationTrait
 {
-
     /**
-     * 全局动态设置用神的位置
-     * @param $position
+     * It sets the god positions.
+     *
+     * @param positions An array of positions.
      */
     public function setGodPositions($positions)
     {
         $this->god_positions = $positions;
     }
 
+
     /**
-     * 获取用神的五行
-     * @return mixed|null
+     * > Get the first god's WeChat ID
+     *
+     * @return The first element of the god_positions array.
      */
     public function getGodWx()
     {
@@ -32,14 +29,15 @@ trait CommonRelationTrait
         return $position['wx'] ?? null;
     }
 
+
     /**
-     * 某一位置的五行是不是被日令月令克
-     * @param $wx
-     * @return bool
+     * > If the user is in the list of users who have a date with me, return true
+     *
+     * @param wx the wechat id of the person who sent the message
+     * @return boolean
      */
     public function isWithDateKe($wx)
     {
-        //日令月令的五行
         $wxs = $this->getDateWx();
 
         $wx_ke_me = $this->getWhoKeMe($wx);
@@ -47,9 +45,11 @@ trait CommonRelationTrait
         return in_array($wx_ke_me, $wxs);
     }
 
+
     /**
-     * 获取日令月令的五行
-     * @return array
+     * It returns the day and month of the date.
+     *
+     * @return The day and month of the date.
      */
     public function getDateWx()
     {
@@ -59,19 +59,19 @@ trait CommonRelationTrait
         ];
     }
 
-    /**
-     * 获取日令的五行
-     * @return mixed
-     */
+
     public function getDayWx()
     {
         return $this->getWxByDz($this->getDayDz());
     }
 
+
     /**
-     * 通过十二地支获取五行
-     * @param $dz
-     * @return mixed
+     * It returns the weather station code for a given location.
+     *
+     * @param dz the address of the device
+     *
+     * @return The weather condition for the given zip code.
      */
     public function getWxByDz($dz)
     {
@@ -79,36 +79,39 @@ trait CommonRelationTrait
         return $dz_wx['wx'];
     }
 
+
     /**
-     * 获取日令的地支
-     * @return mixed
+     * It returns the day dizhi.
+     *
+     * @return The day of the week.
      */
     public function getDayDz()
     {
         return $this->diZhiDay;
     }
 
+
     /**
-     * 获取月令的五行
-     * @return mixed
+     * It returns the month's wx.
+     *
+     * @return The month's weather.
      */
     public function getMonthWx()
     {
         return $this->getWxByDz($this->getMonthDz());
     }
 
-    /**
-     * 获取月令的地支
-     * @return mixed
-     */
+
     public function getMonthDz()
     {
         return $this->diZhiMonth;
     }
 
+
     /**
-     * 获取日令月令的地支
-     * @return array
+     * It returns the day and month of the date.
+     *
+     * @return The day and month of the date.
      */
     public function getDateDz()
     {
@@ -118,10 +121,11 @@ trait CommonRelationTrait
         ];
     }
 
+
     /**
-     * 获取某一爻的五行是否被动爻生
-     * @param $wx
-     * @return bool
+     * > It returns true if the person who grew me is in the list of people who are Dong Yao
+     *
+     * @param wx the user's wechat id
      */
     public function getIsDongYaoGrowMe($wx)
     {
@@ -129,9 +133,9 @@ trait CommonRelationTrait
         return in_array($grow_me_wx, $this->getDongYaoWx());
     }
 
+
     /**
-     * 获取动爻的五行
-     * @return array
+     * It returns the wx of the dongyao.
      */
     public function getDongYaoWx()
     {
@@ -143,10 +147,9 @@ trait CommonRelationTrait
         return $dong_wxs;
     }
 
+
     /**
-     * 获取静爻的五行
-     *
-     * @return array
+     * It returns the static yao wx.
      */
     public function getStaticYaoWx()
     {
@@ -158,20 +161,12 @@ trait CommonRelationTrait
         return $static_wxs;
     }
 
-    /**
-     * 获取动爻的地支
-     * @return mixed
-     */
     public function getDongYaoDz()
     {
         $dong_yao = $this->getDongYao();
         return $dong_yao->pluck('dz')->toArray();
     }
 
-    /**
-     * 获取动爻的位置
-     * @return mixed
-     */
     public function getDongYao()
     {
         return collect($this->benGuaDetail)->filter(function ($item, $key) {
@@ -179,11 +174,6 @@ trait CommonRelationTrait
         });
     }
 
-    /**
-     * 获取静爻的位置
-     *
-     * @return mixed
-     */
     public function getStaticYao()
     {
         return collect($this->benGuaDetail)->filter(function ($item, $key) {
@@ -191,33 +181,18 @@ trait CommonRelationTrait
         });
     }
 
-    /**
-     * 获取静爻的地支
-     *
-     * @return mixed
-     */
     public function getStaticYaoDz()
     {
         $static_yao = $this->getStaticYao();
         return $static_yao->pluck('dz')->toArray();
     }
 
-    /**
-     * 静爻是否来生
-     *
-     * @param string 五行
-     * @return void
-     */
     public function getIsStaticYaoGrowMe($wx)
     {
         $grow_me_wx = $this->getWhoGrowMe($wx);
         return in_array($grow_me_wx, $this->getStaticYaoWx());
     }
 
-    /**
-     * 是否动爻和化爻来生
-     * @return bool
-     */
     public function getIsDongAndTransYaoGrowMe($wx)
     {
         $grow_me_wx = $this->getWhoGrowMe($wx);
@@ -225,10 +200,6 @@ trait CommonRelationTrait
         return in_array($grow_me_wx, $wxs);
     }
 
-    /**
-     * 获取化爻的五行
-     * @return array
-     */
     public function getTransYaoWx()
     {
         $trans_dzs = $this->getTransYaoDz();
@@ -239,19 +210,11 @@ trait CommonRelationTrait
         return $trans_wxs;
     }
 
-    /**
-     * 获取化爻的地支
-     * @return mixed
-     */
     public function getTransYaoDz()
     {
         return collect($this->getTransDetail())->pluck('dz')->toArray();
     }
 
-    /**
-     * 获取化爻的详情
-     * @return array
-     */
     public function getTransDetail()
     {
         $trans = [];
@@ -268,31 +231,17 @@ trait CommonRelationTrait
         return $trans;
     }
 
-    /**
-     * 获取化爻的数组
-     * @return array|false|string[]
-     */
     public function getTransArr()
     {
         return array_reverse(explode(',', $this->resultDiZhi['trans_di_zhi']));
     }
 
-    /**
-     * 判断某一爻的五行是否被日令月令生
-     * @param $wx
-     * @return bool
-     */
     public function getIsDateGrowMe($wx)
     {
         $grow_me_wx = $this->getWhoGrowMe($wx);
         return in_array($grow_me_wx, $this->getDateWx());
     }
 
-    /**
-     * 获取生某一爻的爻不带合或入
-     * @param string $wx 某一爻的五行
-     * @return bool
-     */
     public function withoutHeOrRuByGrowMe($wx)
     {
         $result = false;
@@ -301,12 +250,12 @@ trait CommonRelationTrait
         foreach ($this->getDongYao() as $yao) {
             if ($grow_me_wx == $this->getWxByDz($yao['dz'])) {
                 $position = $yao['column'] . $yao['row'];
-                //带不带合
+
                 if ($this->isWithHe($position)) {
                     $result = true;
                     break;
                 }
-                //带不带入
+
                 if ($this->isWithRu($position)) {
                     $result = true;
                     break;
@@ -317,11 +266,6 @@ trait CommonRelationTrait
         return $result;
     }
 
-    /**
-     * 判断某一位置是否携带合
-     * @param $position
-     * @return bool
-     */
     public function isWithHe($position)
     {
         $with_he = false;
@@ -334,11 +278,6 @@ trait CommonRelationTrait
         return $with_he;
     }
 
-    /**
-     * 判断某一位置是否携带入
-     * @param $position
-     * @return bool
-     */
     public function isWithRu($position)
     {
         $with_ru = false;
@@ -351,11 +290,6 @@ trait CommonRelationTrait
         return $with_ru;
     }
 
-    /**
-     * 判断某个位置是否空亡
-     * @param $position
-     * @return bool
-     */
     public function getIsKongWangByPosition($position)
     {
         $coords = $this->draw['kong_wang']['coords'];
@@ -367,11 +301,6 @@ trait CommonRelationTrait
         return false;
     }
 
-    /**
-     * 获取生我的五行位置
-     * @param $wx
-     * @return array
-     */
     public function getPositionsWhoGrowMe($wx)
     {
         $wx_grow_me = $this->getWhoGrowMe($wx);
@@ -385,16 +314,10 @@ trait CommonRelationTrait
         return $positions;
     }
 
-    /**
-     * 通过六亲找到对应的位置
-     * @param $six_qin
-     * @return array
-     */
     public function getPositionsWithSixQin($six_qin, $contain_date = false)
     {
         $positions = [];
 
-        //本卦中的六亲
         $tmp_arr = explode(',', $this->resultDiZhi['liu_qin']);
         foreach ($tmp_arr as $key => $value) {
             if ($value == $six_qin) {
@@ -410,7 +333,6 @@ trait CommonRelationTrait
             }
         }
 
-        // 化爻中的六亲
         $arr = $this->getTransArr();
         foreach ($arr as $key => $dz) {
             if ($six_qin == $this->getSixQinByDz($dz)) {
@@ -426,8 +348,6 @@ trait CommonRelationTrait
             }
         }
 
-
-        //如果是伏爻
         foreach ($this->draw['fu_yao'] as $fu_yao) {
             if (Str::startsWith($fu_yao['fu_yao'], '伏' . $six_qin)) {
 
@@ -451,7 +371,6 @@ trait CommonRelationTrait
         }
 
         if ($contain_date) {
-            //日令
             if ($six_qin == $this->getSixQinByDz($this->getDayDz())) {
                 $positions[] = [
                     'position' => '62',
@@ -464,7 +383,6 @@ trait CommonRelationTrait
                 ];
             }
 
-            //月令
             if ($six_qin == $this->getSixQinByDz($this->getMonthDz())) {
                 $positions[] = [
                     'position' => '61',
@@ -478,15 +396,9 @@ trait CommonRelationTrait
             }
         }
 
-
         return array_unique($positions, SORT_REGULAR);
     }
 
-    /**
-     * 获取世或者应的六亲
-     * @param string $font
-     * @return false|int|string
-     */
     public function getSixQinByShiOrYing($font = '世')
     {
         $shi_ying = explode(',', $this->resultDiZhi['shi_ying']);
@@ -495,11 +407,6 @@ trait CommonRelationTrait
         return $six_qin[$key];
     }
 
-    /**
-     * 通过关键字找汇局
-     * @param string $font
-     * @return mixed
-     */
     public function isHuiJuByFont($font = '财')
     {
         $hui_jus = array_values($this->draw['hui_ju']);
@@ -507,42 +414,21 @@ trait CommonRelationTrait
         return $row;
     }
 
-    /**
-     * 判断五行是否与日令月令五行一致
-     * @param $wx
-     * @return bool
-     */
     public function isEqualDateWx($wx)
     {
         return $wx == $this->getDayWx() || $wx == $this->getMonthWx();
     }
 
-    /**
-     * 动爻的化爻的六亲是否等于提供的六亲
-     * @param $position
-     * @param string $six_qin
-     * @return bool
-     */
     public function getTranSixQinIsEqualOfferedSixQin($position, $six_qin = '官')
     {
         return $this->getTransSixQinByDongPosition($position) == $six_qin;
     }
 
-    /**
-     * 获取动爻对应化爻的六亲
-     * @param $position
-     * @return mixed
-     */
     public function getTransSixQinByDongPosition($position)
     {
         return $this->getTransSixQinByDongYaoPosition($position['position'] ?? '');
     }
 
-    /**
-     * 通过动爻的位置获取对应化爻的六亲
-     * @param $col_row
-     * @return mixed
-     */
     public function getTransSixQinByDongYaoPosition($col_row)
     {
         $row = str_split($col_row);
@@ -551,11 +437,6 @@ trait CommonRelationTrait
         return $this->getSixQinByDz($transDiZhi);
     }
 
-    /**
-     * 是否被克，冲，合，或者入墓
-     * @param $position
-     * @return bool
-     */
     public function hasOneKeCongHeRu($position)
     {
         return $this->getIsKeByPosition($position)
@@ -564,11 +445,6 @@ trait CommonRelationTrait
             || $this->getIsRuByPosition($position);
     }
 
-    /**
-     * 判断某一位置是否被克
-     * @param $position
-     * @return bool|string
-     */
     public function getIsKeByPosition($position)
     {
         $dz = isset($position['dz']) ? $position['dz'] : '';
@@ -577,31 +453,19 @@ trait CommonRelationTrait
 
         $wx = $this->getWxByDz($dz);
 
-        //如果是明动或者暗动
         if ($is_dong || $is_an_dong) {
             return $this->isWithKe($wx);
         }
 
-        //如果是静爻
         return $this->isWithKe($wx, false);
     }
 
-    /**
-     * 某一位置的五行是不是被克,默认携带日令月令
-     * @param $wx
-     * @param bool $date
-     * @return bool
-     */
     public function isWithKe($wx, $date = true)
     {
-        //动爻的五行
         $wxs = $this->getDongYaoWx();
 
         if ($date) {
-            //日令月令的五行
             $date_wxs = $this->getDateWx();
-
-            //通过十二地支去找五行
             $wxs = array_merge($wxs, $date_wxs);
         }
 
@@ -610,25 +474,16 @@ trait CommonRelationTrait
         return in_array($wx_ke_me, $wxs);
     }
 
-    /**
-     * 判断某一点是不是带冲
-     * @param $position
-     * @return bool
-     */
     public function getIsCongByPosition($position)
     {
-        //如果是暗动
         if (isset($position['is_an_dong']) && $position['is_an_dong']) {
             return true;
         }
 
-        //如果是明动，看是否被其他动爻冲或者克
         if (isset($position['is_dong']) && $position['is_dong']) {
-            //是不是被冲
             return $this->isWithCong($position['position']);
         }
 
-        //如果是静爻，看是否有动爻冲或者动爻克。
         $position_dz = isset($position['dz']) ? $position['dz'] : '';
         foreach ($this->getDongYaoDz() as $dz) {
             if ($this->isCongRelation($dz, $position_dz)) {
@@ -639,11 +494,6 @@ trait CommonRelationTrait
         return false;
     }
 
-    /**
-     * 判断某一位置是不是冲
-     * @param $position
-     * @return bool
-     */
     public function isWithCong($position)
     {
         $with_cong = false;
@@ -656,12 +506,6 @@ trait CommonRelationTrait
         return $with_cong;
     }
 
-    /**
-     * 判断某一位置是否合
-     * @param $position
-     * @param bool $only_date
-     * @return bool
-     */
     public function getIsHeByPosition($position, $only_date = false)
     {
         foreach ($this->draw['six_he'] as $six_he) {
@@ -689,12 +533,6 @@ trait CommonRelationTrait
         return false;
     }
 
-    /**
-     * 判断某一位置是否入墓
-     * @param $position
-     * @param bool $only_date
-     * @return bool
-     */
     public function getIsRuByPosition($position, $only_date = false)
     {
         foreach ($this->draw['ru_mu'] as $ru_mu) {
@@ -724,58 +562,37 @@ trait CommonRelationTrait
         return false;
     }
 
-    /**
-     * @param $position
-     * @return bool
-     */
     public function getIsStaticYaoByPosition($position)
     {
         return !$this->getIsDongYaoByPosition($position) && !$this->getIsTransYaoByPosition($position);
     }
 
-    /**
-     * @param $position
-     * @return bool
-     */
     public function getIsDongYaoByPosition($position)
     {
         return ($position['is_dong'] ?? '') || ($position['is_an_dong'] ?? '');
     }
 
-    /**
-     * @param $position
-     * @return mixed|string
-     */
     public function getIsTransYaoByPosition($position)
     {
         return $position['is_trans'] ?? '';
     }
 
-    /**
-     * 日月生比
-     * @param $wx
-     * @return bool
-     */
     public function dateGrowEqual($wx)
     {
         $grow_me_wx = $this->getWhoGrowMe($wx);
 
-        //月生日生
         if ($grow_me_wx == $this->getDayWx() && $grow_me_wx == $this->getMonthWx()) {
             return true;
         }
 
-        //月生日比旺（相等）
         if ($grow_me_wx == $this->getMonthWx() && $wx == $this->getDayWx()) {
             return true;
         }
 
-        //月比旺日生
         if ($wx == $this->getMonthWx() && $grow_me_wx == $this->getDayWx()) {
             return true;
         }
 
-        //月比旺日比旺
         if ($wx == $this->getMonthWx() && $wx == $this->getDayWx()) {
             return true;
         }
@@ -783,10 +600,6 @@ trait CommonRelationTrait
         return false;
     }
 
-    /**
-     * 化爻回头生本爻
-     * @return bool
-     */
     public function getIsTransGrowDong()
     {
         $trans = $this->getTransDetail();

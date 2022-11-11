@@ -6,7 +6,6 @@ namespace Maturest\Trigram\Traits\GodNums;
 
 trait Prosper
 {
-    // 比旺
     private $prosper = [
         1 => [1, 2, 12],
         2 => [1, 2, 12],
@@ -31,7 +30,6 @@ trait Prosper
 
     protected function properRelation($nums, $new_nums)
     {
-        // 比旺关系
         $proper_relations = [];
 
         $max_key = count($new_nums) - 1;

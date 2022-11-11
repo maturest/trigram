@@ -5,11 +5,7 @@ namespace Maturest\Trigram\Traits\Fortune;
 
 use Illuminate\Support\Str;
 
-/**
- * 财运
- * Trait WealthTrait
- * @package Maturest\Trigram\Traits\Fortune
- */
+
 trait WealthTrait
 {
     public function wealth($is_student = true)
@@ -19,25 +15,20 @@ trait WealthTrait
 
         $wealth = [];
 
-        //如果是学生
         if ($is_student)
             $wealth[] = $this->getWealthByStudent($position);
 
-        // 财爻的旺衰程度
         $wealth[] = $this->getWealthLevelByCai($position);
 
         $zi_positions = $this->getGodPositionsWithSixQin('子');
         $zi_position = $zi_positions[0];
-        //子爻的旺衰程度
+
         $wealth[] = $this->getWealthLevelByZi($zi_position, $zi_positions);
 
-        //子爻的五行
         $wealth[] = $this->getFriends($zi_position);
 
-        //子爻方位
         $wealth[] = $this->getHelperPositionsByZi($zi_positions);
 
-        //财爻方位
         $wealth[] = $this->getHelperDate($positions, $zi_positions);
 
         return $wealth;
@@ -77,22 +68,11 @@ trait WealthTrait
         return $row['letter'];
     }
 
-    /**
-     * 获取财运程度
-     * @param $position
-     * @return string
-     */
     public function getWealthLevelByCai($position)
     {
         return $this->wealthLevel($position) . $this->cashFlow($position);
     }
 
-    /**
-     * 某一爻的财运如何
-     * @param $position
-     * @param string $font
-     * @return string
-     */
     protected function wealthLevel($position, $font = '财')
     {
         $hasNoKe = !$this->getIsKeByPosition($position);
@@ -124,11 +104,6 @@ trait WealthTrait
         return '';
     }
 
-    /**
-     * 现金流
-     * @param $position
-     * @return string
-     */
     public function cashFlow($position)
     {
         //判断是否被克，冲，合，或者入墓
@@ -141,11 +116,6 @@ trait WealthTrait
         return '现金流充裕，可做更多渠道的财务规划与投资，建议规划与投资时可卜卦确认。';
     }
 
-    /**
-     * 现金流条件数组
-     * @param $position
-     * @return array
-     */
     protected function cashConditions($position)
     {
         $conditions = [];
@@ -178,11 +148,6 @@ trait WealthTrait
         return $conditions;
     }
 
-    /**
-     * 是否破财
-     * @param $position
-     * @return bool
-     */
     protected function isNeedSpend($position)
     {
         //财爻化官 财爻为动爻并且对应的化爻与本卦的六亲为官
