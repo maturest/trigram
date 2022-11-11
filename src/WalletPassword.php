@@ -4,12 +4,10 @@
 namespace Maturest\Trigram;
 
 use Exception;
-use Illuminate\Support\Carbon;
 use Maturest\Trigram\Exceptions\InvalidArgumentException;
 
 class WalletPassword extends BaseService
 {
-    // 六十甲子纳音表
     protected $naYin = [
         ['gz' => '甲子', 'fate' => '海中金', 'wx' => '金'],
         ['gz' => '乙丑', 'fate' => '海中金', 'wx' => '金'],
@@ -73,7 +71,7 @@ class WalletPassword extends BaseService
         ['gz' => '癸亥', 'fate' => '大海水', 'wx' => '水'],
     ];
 
-    // 新钞
+
     protected $newBanknotes = [
         ['wx' => '金', 'banknotes' => 2100],
         ['wx' => '木', 'banknotes' => 2700],
@@ -82,7 +80,7 @@ class WalletPassword extends BaseService
         ['wx' => '土', 'banknotes' => 2900],
     ];
 
-    // 钱包颜色配置
+
     protected $walletColors = [
         ['month' => '1', 'primary' => ['black', 'gray'], 'secondary' => ['brown'], 'note' => '黑色、灰色为主，咖啡色为辅', 'img' => 'wallet/bgb.png'],
         ['month' => '2', 'primary' => ['black', 'gray'], 'secondary' => ['brown'], 'note' => '黑色、灰色为主，咖啡色为辅', 'img' => 'wallet/bgb.png'],
@@ -98,23 +96,20 @@ class WalletPassword extends BaseService
         ['month' => '12', 'primary' => ['black', 'gray'], 'secondary' => ['brown'], 'note' => '黑色、灰色为主，咖啡色为辅', 'img' => 'wallet/bgb.png'],
     ];
 
+
     /**
-     * 通过阴历日期获取钱包密码
-     * @param string $date 阴历日期 如：2000-05-08
-     * @param bool $isLeapMonth 标记是否是闰月
-     * @return array
+     * It returns the banknotes and wallet for a given lunar date.
+     *
+     * @param date The date you want to query, in the format of YYYY-MM-DD
+     * @param isLeapMonth Whether it is a leap month
      * @throws InvalidArgumentException
+     * @return An array with two keys: banknotes and wallet.
      */
     public function getResultByLunar($date, $isLeapMonth = false)
     {
         try {
-            //1、获取年的干支
             $this->lunar($date, $isLeapMonth);
-
-            //2、获取干支所对应的新钞数量
             $banknotes = $this->getNewBanknotes($this->date_detail['ganzhi_year']);
-
-            //3、获取钱包颜色以及图片
             $wallet = $this->getWallet($this->date_detail['lunar_month']);
         } catch (Exception $exception) {
             throw new InvalidArgumentException('阴历日期格式有误');
@@ -123,10 +118,13 @@ class WalletPassword extends BaseService
         return compact('banknotes', 'wallet');
     }
 
+
     /**
-     * 获取新钞数量
-     * @param $gz_year
-     * @return int|mixed
+     * > Get the new banknotes for the given year
+     *
+     * @param gz_year The year of the lunar calendar
+     *
+     * @return The number of banknotes for the given year.
      */
     protected function getNewBanknotes($gz_year)
     {
@@ -135,51 +133,59 @@ class WalletPassword extends BaseService
         return $banknote['banknotes'] ?? 0;
     }
 
+
     /**
-     * 获取纳音行
-     * @param $gz_year
-     * @return mixed
+     * It returns the NaYin of the given year.
+     *
+     * @param gz_year The year of the lunar calendar.
+     *
+     * @return A collection of the NaYin array where the gz value is equal to the gz_year value.
      */
     public function getNaYin($gz_year)
     {
         return collect($this->naYin)->where('gz', $gz_year)->first();
     }
 
+
     /**
-     * 获取新钞行
-     * @param $wx
-     * @return mixed
+     * It returns the first banknote from the collection of new banknotes that has the same wx value as
+     * the wx value passed to the function
+     *
+     * @param wx The banknote's Wx value.
+     *
+     * @return The first banknote that has the same wx as the parameter.
      */
     protected function getBanknote($wx)
     {
         return collect($this->newBanknotes)->where('wx', $wx)->first();
     }
 
+
     /**
-     * 获取钱包
-     * @param $lunar_month
-     * @return mixed
+     * > It returns the wallet color for the given lunar month
+     *
+     * @param lunar_month The lunar month of the year.
+     *
+     * @return The wallet color for the given lunar month.
      */
     protected function getWallet($lunar_month)
     {
         return collect($this->walletColors)->where('month', $lunar_month)->first();
     }
 
+
     /**
-     * @param $date
-     * @return array
-     * @throws InvalidArgumentException
+     * It returns the banknotes and wallet for a given solar date.
+     *
+     * @param date The date you want to query, the format is YYYY-MM-DD
+     *
+     * @return An array with two keys: banknotes and wallet.
      */
     public function getResultBySolar($date)
     {
         try {
-            //1、获取年的干支
             $this->solar($date);
-
-            //2、获取干支所对应的新钞数量
             $banknotes = $this->getNewBanknotes($this->date_detail['ganzhi_year']);
-
-            //3、获取钱包颜色以及图片
             $wallet = $this->getWallet($this->date_detail['lunar_month']);
         } catch (Exception $exception) {
             throw new InvalidArgumentException('阳历日期格式有误');

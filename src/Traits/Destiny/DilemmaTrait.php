@@ -35,9 +35,10 @@ trait DilemmaTrait
         ['ben_gua' => '辰', 'hua' => '丑', 'dilemma' => 'tui', 'font' => '退'],
     ];
 
+
     /**
-     * 处理进退神关系  注意：产品文档上写错了，不管进退，箭头都是从左往右
-     * @return $this
+     * It takes the positions of the transforming gua and the positions of the ben gua, and then finds
+     * the dilemma that corresponds to the transforming gua and the ben gua
      */
     public function handleDilemma()
     {

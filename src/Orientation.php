@@ -4,7 +4,6 @@
 namespace Maturest\Trigram;
 
 use Exception;
-use Illuminate\Support\Carbon;
 use Maturest\Trigram\Exceptions\InvalidArgumentException;
 
 class Orientation extends BaseService
@@ -24,10 +23,13 @@ class Orientation extends BaseService
         ['zhi' => '亥', 'strong' => '坐东朝西', 'weakness' => '坐西朝东', 'img' => 'orientation/west.png'],
     ];
 
+
     /**
-     * 通过阳历日期获取最强方位
-     * @param $date
-     * @return mixed
+     * It returns the position of the solar date.
+     *
+     * @param date The date you want to get the result.
+     *
+     * @return The position of the ganzhi_year in the array.
      */
     public function getResultBySolar($date)
     {
@@ -35,16 +37,25 @@ class Orientation extends BaseService
         return $this->getPosition($this->date_detail['ganzhi_year']);
     }
 
+    /**
+     * It returns the position of the given year.
+     *
+     * @param gz_year The year of the lunar calendar
+     *
+     * @return The first element in the collection that matches the condition.
+     */
     protected function getPosition($gz_year)
     {
         return collect($this->positions)->where('zhi', $this->dzYear($gz_year))->first();
     }
 
     /**
-     * 通过阴历获取最强方位
-     * @param $date
-     * @param bool $isLeapMonth
-     * @return mixed
+     * It returns the position of the given date.
+     *
+     * @param date The date of the lunar calendar, the format is yyyy-mm-dd
+     * @param isLeapMonth Whether it is a leap month, the default is false
+     *
+     * @return The return value is the position of the animal in the zodiac.
      */
     public function getResultByLunar($date, $isLeapMonth = false)
     {

@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 
 trait ConvergeSetTrait
 {
-    // 汇局的图片
+
     protected $joinImages = [
         ['hui_ju' => '汇子局', 'torn' => false, 'img' => 'hui_ju/hz.png'],
         ['hui_ju' => '汇兄局', 'torn' => false, 'img' => 'hui_ju/hx.png'],
@@ -22,7 +22,7 @@ trait ConvergeSetTrait
         ['hui_ju' => '汇财局', 'torn' => true, 'img' => 'hui_ju/hcp.png'],
     ];
 
-    // 凶卦提示语
+
     protected $dangerous = [
         '木变金：朝北拜玄天上帝，化解本卦的金煞',
         '火变水：朝东拜神农大帝，化解本卦的水煞',
@@ -32,7 +32,7 @@ trait ConvergeSetTrait
     ];
 
 
-    // 汇局
+
     protected $huiJu = [
         ['hui_ju' => ['寅', '午', '戌'], 'hui' => '火', 'jx' => '午'],
         ['hui_ju' => ['亥', '卯', '未'], 'hui' => '木', 'jx' => '卯'],
@@ -41,7 +41,7 @@ trait ConvergeSetTrait
     ];
 
 
-    // 本卦六亲
+
     protected $benGuaSixQin = [
         ['ben_gua' => '乾金', 'sheng_ke' => '同我', 'wx' => '金', 'six_qin' => '兄'],
         ['ben_gua' => '乾金', 'sheng_ke' => '我生', 'wx' => '水', 'six_qin' => '子'],
@@ -86,29 +86,23 @@ trait ConvergeSetTrait
     ];
 
 
+
     /**
-     * 处理汇局
-     * 要求：
-     * 1、上卦归上卦，下卦归下卦，单独汇局
-     * 2、上卦动爻、暗动、天时（月令、日令中的地支）共同参与汇局
-     * 3、下卦动爻、暗动、天时（月令、日令中的地支）共同参与汇局
-     *
+     * A function that is used to calculate the relationship between the two people.
      */
     public function handleRelationConvergeSet()
     {
         $up = [];
         $down = [];
         $join_up = $this->joinDiZhi(-3);
-        // 上下卦的地支数量至少3个才论汇局
+
         if (count($join_up) >= 3) {
-            // 判断上卦的汇局情况
             $up = $this->getHuiJu($join_up, 'up');
         }
 
         $join_down = $this->joinDiZhi(3);
 
         if (count($join_down) >= 3) {
-            // 判断下卦的汇局情况
             $down = $this->getHuiJu($join_down, 'down');
         }
         $hui_ju = array_merge($up, $down);
@@ -118,14 +112,16 @@ trait ConvergeSetTrait
         return $this;
     }
 
+
     /**
-     * 取出论汇局中的上下卦的所有地支
-     * @param $limit
-     * @return array
+     * It takes the first 6 positions of the gua and the first 6 positions of the trans gua, and the
+     * day and month positions of the date, and returns an array of the positions of the di zhi in the
+     * gua
+     *
+     * @param limit the number of positions to be returned
      */
     public function joinDiZhi($limit)
     {
-        // 本卦动爻的地支
         $ben_gua_di_zhi = collect($this->benGuaDetail)->take($limit)->filter(function ($item, $key) {
             return $item['is_dong'] || $item['is_an_dong'];
         })->toArray();
@@ -141,7 +137,6 @@ trait ConvergeSetTrait
             }
         }
 
-        // 取出 上卦中的 化爻
         $trans_dz_positions = [];
         if ($this->transGuaExists()) {
             $trans_di_zhi = collect(explode(',', $this->resultDiZhi['trans_di_zhi']))
@@ -156,7 +151,6 @@ trait ConvergeSetTrait
             }
         }
 
-        // 取出日令,月令
         $date_dz_positions = [
             [
                 'dz' => $this->diZhiDay,
@@ -169,22 +163,24 @@ trait ConvergeSetTrait
                 'row' => 1,
             ],
         ];
+
         $res = array_merge($ben_gua_dz_positions, $trans_dz_positions, $date_dz_positions);
+
         return $res;
     }
 
+
     /**
-     * 获取上下卦的汇局
-     * @param $dz_arr
-     * @param string $type
+     * A function to get the hui ju.
+     *
+     * @param dz_arr the array of the six points of the hexagram
+     * @param type up or down, up is the upper trigram, down is the lower trigram
      */
     public function getHuiJu($dz_arr, $type = 'up')
     {
-        //初始化
         $res = [];
         $res[$type] = [];
 
-        // 汇局至少要有三个，并且不一样的
         $dz = collect($dz_arr)->pluck('dz')->unique();
 
         if ($dz->count() >= 3) {
@@ -196,7 +192,6 @@ trait ConvergeSetTrait
                         ->where('wx', $hui)
                         ->first();
 
-                    //标记是否为破
                     $torn = $this->markIsTorn($hui_ju['jx'], $dz_arr);
 
                     $jx_point = collect($dz_arr)->where('dz', $hui_ju['jx'])->first();
@@ -216,22 +211,23 @@ trait ConvergeSetTrait
         return $res;
     }
 
+
     /**
-     * 判断一个地支与地支数组中的任意一个是否存在六冲关系
-     * @param $dz
-     * @param $dz_arr
-     * @return bool
+     * It checks if a given dz is torn
+     *
+     * @param dz the current dz
+     * @param dz_arr the array of all the data in the table
      */
     public function markIsTorn($dz, $dz_arr)
     {
         $res = false;
-        //1、先看将星的位置
+
         $jxs = collect($dz_arr)->where('dz', $dz);
         if ($jxs->count()) {
             $jxs = $jxs->toArray();
-            //已将星为中心，去找自己的六冲
+
             foreach ($jxs as $jx) {
-                //如果是本爻，本爻与本爻，本爻与自己的化爻，本爻与日令，月令相比较
+
                 if ($jx['column'] == 4) {
                     $res = $this->isTornBen($dz, $dz_arr, $jx);
                     if ($res) {
@@ -239,7 +235,6 @@ trait ConvergeSetTrait
                     }
                 }
 
-                // 如果将星位置在化爻
                 if ($jx['column'] == 5) {
                     $res = $this->isTornHua($dz, $dz_arr, $jx);
                     if ($res) {
@@ -247,7 +242,6 @@ trait ConvergeSetTrait
                     }
                 }
 
-                //如果将星在日令 月令位置
                 if ($jx['column'] == 6) {
                     $res = $this->isTornLing($dz, $dz_arr);
                     if ($res) {
@@ -260,16 +254,16 @@ trait ConvergeSetTrait
         return $res;
     }
 
+
     /**
-     * 将星在本卦列
-     * @param $dz
-     * @param $dz_arr
-     * @param $jx
-     * @return bool
+     * > It checks if a given gua is a ben gua
+     *
+     * @param dz the current dizhi
+     * @param dz_arr the array of the current hexagram
+     * @param jx the current hexagram
      */
     public function isTornBen($dz, $dz_arr, $jx)
     {
-        //取出本爻
         $ben = collect($this->benGuaDetail)->filter(function ($item, $key) {
             return $item['is_dong'] || $item['is_an_dong'];
         })->toArray();
@@ -281,18 +275,15 @@ trait ConvergeSetTrait
             }
         }
 
-        // 本爻只能与自己的化爻
         $hua = collect($dz_arr)->where('column', 5)
             ->where('row', $jx['row'])->first();
 
-        // 如果是暗动的话，是没有化爻的
         if ($hua) {
             if ($this->isCongRelation($dz, $hua['dz'])) {
                 return true;
             }
         }
 
-        // 与月令 日令相比
         $lings = collect($dz_arr)->where('column', 6)->toArray();
         foreach ($lings as $val) {
             if ($this->isCongRelation($dz, $val['dz'])) {
@@ -303,23 +294,23 @@ trait ConvergeSetTrait
         return false;
     }
 
+
     /**
-     * 将星在化爻列
-     * @param $dz
-     * @param $dz_arr
-     * @param $jx
-     * @return bool
+     * > If the current dizhi is in the same column as the ben dizhi, or in the same column as any of
+     * the lings dizhi, then return true
+     *
+     * @param dz the current position
+     * @param dz_arr the array of all the dzs in the current jx
+     * @param jx the current card
      */
     public function isTornHua($dz, $dz_arr, $jx)
     {
-        //化爻只能与自己的本爻比较
         $ben = collect($dz_arr)->where('column', 4)
             ->where('row', $jx['row'])->first();
         if ($this->isCongRelation($dz, $ben['dz'])) {
             return true;
         }
 
-        //化爻与日令 月令相比
         $lings = collect($dz_arr)->where('column', 6)->toArray();
         foreach ($lings as $val) {
             if ($this->isCongRelation($dz, $val['dz'])) {
@@ -327,19 +318,18 @@ trait ConvergeSetTrait
             }
         }
 
-        // 化爻与化爻之间是不能比较的
         return false;
     }
 
+
     /**
-     * 将星在日令 月令列
-     * @param $dz
-     * @param $dz_arr
-     * @return bool
+     * > If the current dz is a cong relation with any of the dzs in the array, return true
+     *
+     * @param dz the current dz
+     * @param dz_arr an array of dz's that are already in the sentence.
      */
     public function isTornLing($dz, $dz_arr)
     {
-        //简化一下，直接与所有的比较
         foreach ($dz_arr as $dz_arr_val) {
             if ($this->isCongRelation($dz, $dz_arr_val['dz'])) {
                 return true;

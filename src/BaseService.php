@@ -9,7 +9,7 @@ use Maturest\Trigram\Exceptions\InvalidArgumentException;
 
 class BaseService
 {
-    // 日期的详细属性
+
     protected $date_detail;
 
     /**
@@ -47,7 +47,6 @@ class BaseService
     }
 
     /**
-     * 年份的地支
      * @param $gz
      * @return mixed|string
      */

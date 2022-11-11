@@ -64,44 +64,43 @@ trait DrawTrait
         ['font' => 'x', 'img' => 'fonts/X.png']
     ];
 
-    //默认字体颜色
     protected $fontColor = '#333333';
 
-    //卦变字体颜色
     protected $gbFontColor;
 
     protected $bgObject;
 
+
     /**
-     * 画图，返回的应该是一张图片路径
+     * > The function draws the trigram image and returns the image url
+     *
+     * @return A string of the file path.
      */
     public function draw()
     {
-        //初始化画布
         $this->initBgObject();
-        //是否添加水印
-        $this->addWaterMark();
-        //1、部地支
-        $this->drawDiZhi();
-        //1.2 添加问句和姓名
-        $this->drawQuestionsAndName();
-        //2、标空亡
-        $this->drawWhiteDeath();
-        //3、暗动
-        $this->drawDarkOn();
-        //4、六冲
-        $this->drawSixChong();
-        //5、六合
-        $this->drawSixHe();
-        //6、汇局
-        $this->drawJoin();
-        //7、入墓
-        $this->drawEnterTomb();
-        //8、进退神
-        $this->drawDilemma();
-        //9、伏爻
-        $this->drawVoltTrigram();
 
+        $this->addWaterMark();
+
+        $this->drawDiZhi();
+
+        $this->drawQuestionsAndName();
+
+        $this->drawWhiteDeath();
+
+        $this->drawDarkOn();
+
+        $this->drawSixChong();
+
+        $this->drawSixHe();
+
+        $this->drawJoin();
+
+        $this->drawEnterTomb();
+
+        $this->drawDilemma();
+
+        $this->drawVoltTrigram();
 
         $filename = app()->isLocal() ? 'test.png' : date('YmdHis') . Str::random(10) . '.png';
         $file_path = '64draw/trigrams/' . $filename;
@@ -109,6 +108,9 @@ trait DrawTrait
         return config('app.url') . DIRECTORY_SEPARATOR . $file_path;
     }
 
+    /**
+     * It creates a new image object from the file bg.png
+     */
     public function initBgObject()
     {
         $drawBg = public_path($this->relativePath . 'bg.png');
@@ -116,6 +118,11 @@ trait DrawTrait
         $this->bgObject = Image::make($drawBg);
     }
 
+    /**
+     * > This function checks if a file exists. If it doesn't, it throws an exception
+     *
+     * @param file The file path to be processed
+     */
     public function fileExists($file)
     {
         if (!file_exists($file)) {
@@ -123,6 +130,10 @@ trait DrawTrait
         }
     }
 
+    /**
+     * It takes the background image, and inserts the watermark image into the top left corner of the
+     * background image
+     */
     public function addWaterMark()
     {
         if ($this->watermark) {
@@ -132,40 +143,40 @@ trait DrawTrait
         }
     }
 
+    /**
+     * It writes the date, the ben gua, and the date ling to the image
+     */
     public function drawDiZhi()
     {
-        //1、画本卦字体
         $this->writeBenGuaFont();
-        //2、画日期
         $this->writeDate();
-        //3、写关系 世应 本爻 本爻字体 化爻
         $this->writeBenGua();
-        //4、日令 月令 空亡
         $this->writeDateLing();
     }
 
+
     /**
-     * 写本卦以及卦变
+     * It writes the ben_gua to the image.
      */
     public function writeBenGuaFont()
     {
         $ben_gua = $this->resultDiZhi['ben_gua'];
         $this->writeFont($ben_gua, 39, 37);
-
         if ($this->isGuaBian()) {
             $font = '卦变：' . $this->resultDiZhi['gua_bian'];
             $this->writeFont($font, 39, 80, 30, '#d93615');
         }
-
     }
 
+
     /**
-     * 在图像资源上写字
-     * @param $font
-     * @param $x
-     * @param $y
-     * @param $size
-     * @param $color
+     * It writes a font to the image.
+     *
+     * @param font The text to be written
+     * @param x The x coordinate of the text
+     * @param y The y coordinate of the text
+     * @param size font size
+     * @param color The color of the font, in RGB format.
      */
     public function writeFont($font, $x, $y, $size = 30, $color = '')
     {
@@ -181,6 +192,11 @@ trait DrawTrait
         });
     }
 
+    /**
+     * It returns the path of the font file.
+     *
+     * @return The path to the font file.
+     */
     public function getHanFont()
     {
         $font_path = public_path('fonts/msyh.ttf');
@@ -188,53 +204,55 @@ trait DrawTrait
         return $font_path;
     }
 
+    /**
+     * It checks if the resultDiZhi array has a key called 'gua_bian' and if it does, it checks if the
+     * value is true.
+     */
     public function isGuaBian()
     {
         return isset($this->resultDiZhi['gua_bian']) && $this->resultDiZhi['gua_bian'];
     }
 
+
     /**
-     * 写本卦日期
+     * It writes the date and time to the image.
      */
     public function writeDate()
     {
-        // 写年月
         $date = Carbon::parse($this->date)->format('m月d日');
         $this->writeFont($date, 491, 38);
 
-        // 写时间
         $time = Carbon::parse($this->date)->format('H时i分s秒');
         $this->writeFont($time, 491, 80, 20);
     }
 
+
     /**
-     * 鬼画符
+     * It inserts images into the HTML document
      */
     public function writeBenGua()
     {
-        //六亲
         $liu_qin = $this->getSixQinPosition();
-        //世应
+
         $shi_ying = $this->getShiYingPosition();
-        //六爻
+
         $yao = $this->getAllBenYaoPositions();
-        //本卦
+
         $ben = $this->getPositionsInlineBen();
-        //化爻的横线
+
         $trans_hr = $this->getTransHrPositions();
-        //化爻
+
         $trans = $this->getAllHuaPositions();
 
-        //汇总到一起
         $arr = array_merge($liu_qin, $shi_ying, $yao, $ben, $trans_hr, $trans);
         foreach ($arr as $value) {
             $this->insertImg($value);
         }
     }
 
+
     /**
-     * 获取六亲的位置
-     * @return array
+     * It returns the position of the six qin.
      */
     public function getSixQinPosition()
     {
@@ -242,11 +260,13 @@ trait DrawTrait
         return $this->transToArr($arr, 1);
     }
 
+
     /**
-     * 将某列的卦转为数组
-     * @param $arr
-     * @param $column
-     * @return array
+     * It takes an array of strings, and a column number, and returns an array of arrays, each of which
+     * has a 'dz', 'column', and 'row' key
+     *
+     * @param arr the array to be converted
+     * @param column the column number of the chessboard, from left to right, starting from 0
      */
     public function transToArr($arr, $column)
     {
@@ -263,9 +283,10 @@ trait DrawTrait
         return $res;
     }
 
+
     /**
-     * 获取世应的位置
-     * @return array
+     * It takes a string of numbers separated by commas, and returns an array of arrays of two numbers
+     * each
      */
     public function getShiYingPosition()
     {
@@ -273,9 +294,11 @@ trait DrawTrait
         return $this->transToArr($arr, 2);
     }
 
+
     /**
-     * 获取所有本爻的位置
-     * @return array
+     * It returns an array of the positions of the ben yao.
+     *
+     * @return The positions of the Ben Yao.
      */
     public function getAllBenYaoPositions()
     {
@@ -283,6 +306,10 @@ trait DrawTrait
         return $this->transToArr($arr, 3);
     }
 
+    /**
+     * It takes the `trans_di_zhi` value from the `result_di_zhi` table, splits it into an array, and
+     * then returns the 7th element of that array
+     */
     public function getTransHrPositions()
     {
         $res = [];
@@ -293,6 +320,12 @@ trait DrawTrait
         return $res;
     }
 
+    /**
+     * It takes a position, finds the corresponding image, and inserts it into the background image at
+     * the correct coordinates
+     *
+     * @param position the position of the image to be inserted
+     */
     public function insertImg($position)
     {
         $font = $position['dz'];
@@ -310,9 +343,11 @@ trait DrawTrait
         $this->bgObject->insert($img, 'top-left', $x, $y);
     }
 
+    /**
+     * It writes the date on the image.
+     */
     public function writeDateLing()
     {
-        //先把定空亡的两个括号给画了
         $this->writeFont('︻', '590', '613', 36);
         $this->writeFont('︼', '590', '790', 36);
 
@@ -327,6 +362,14 @@ trait DrawTrait
         }
     }
 
+    /**
+     * It takes a string, splits it into an array, then loops through the array and inserts the
+     * corresponding image into the background image
+     *
+     * @param date_font the date you want to write
+     * @param position the position of the date in the image.
+     * @param h the height of the font
+     */
     public function writeDateLingFont($date_font, $position, $h)
     {
         $arr = mb_str_split($date_font);
@@ -346,10 +389,12 @@ trait DrawTrait
         }
     }
 
+    /**
+     * It draws the question and the name of the user.
+     */
     public function drawQuestionsAndName()
     {
         if ($this->question || $this->trigramType) {
-            //1、先画个圆圈，然后写个占字
             $this->bgObject->circle(20, 570, 180, function ($draw) {
                 $draw->background('#7a7a7a');
                 $draw->border(1, '#7a7a7a');
@@ -359,8 +404,6 @@ trait DrawTrait
         }
 
         if ($this->question || $this->trigramType) {
-
-            //2、将卜卦类型与问句结合，然后最多拆分为两列
             $str = $this->trigramType ? $this->trigramType . ' ' . $this->question : $this->question;
             $fonts = array_chunk(mb_str_split($str), 33);
             $size = 14;
@@ -378,7 +421,6 @@ trait DrawTrait
         }
 
         if ($this->userName) {
-            //3、写入名字
             $fonts = mb_str_split($this->userName);
             $size = 24;
             $color = '#000000';
@@ -390,13 +432,21 @@ trait DrawTrait
             }
         }
 
-        //4、写上归属人
         if ($this->owner) {
             $str = '归属人：' . $this->owner;
             $this->writeFont($str, 167, 846, 24, '#999999');
         }
     }
 
+    /**
+     * It writes the text in the center of the image.
+     *
+     * @param font The text to be written
+     * @param x The x coordinate of the text
+     * @param y The y-coordinate of the text
+     * @param size font size
+     * @param color The color of the text.
+     */
     public function writeFrontVerticalAlignCenter($font, $x, $y, $size = 30, $color = '')
     {
         if (empty($color)) {
@@ -411,9 +461,11 @@ trait DrawTrait
         });
     }
 
+
     /**
-     * 标空亡 再远点画圈圈
-     * @return bool
+     * Draw a red circle around the coordinates of the white death
+     *
+     * @return the value of the last expression in the function.
      */
     public function drawWhiteDeath()
     {
@@ -435,9 +487,11 @@ trait DrawTrait
         return true;
     }
 
+
     /**
-     * 标明暗动
-     * @return bool
+     * > Draws the dark on image on the background image
+     *
+     * @return the boolean value of true.
      */
     public function drawDarkOn()
     {
@@ -458,9 +512,9 @@ trait DrawTrait
         return true;
     }
 
+
     /**
-     * 画六冲关系
-     * @return bool
+     * > Draws arrows on the image to indicate the six chong
      */
     public function drawSixChong()
     {
@@ -477,31 +531,31 @@ trait DrawTrait
         return true;
     }
 
+
     /**
-     * @param $row
-     * @param $item
+     * It takes a row from a CSV file, and draws an arrow on the image
+     *
+     * @param row the row of the array in the config file
+     * @param item The item number
      */
     public function drawArrow($row, $item)
     {
-        // 画箭头
         $img = public_path($this->relativePath . $row['img']);
         $this->fileExists($img);
         $this->bgObject->insert($img, 'top-left', $row['left_top'][0], $row['left_top'][1]);
 
         if (in_array($item, ['41-51', '42-52', '43-53', '44-54', '45-55', '46-56'])) {
-            // 画中间的字
             $this->writeFont($row['font'], $row['middle'][0], $row['middle'][1], 16, '#D93615');
         } else {
-            // 画中间合
             $img = public_path($this->relativePath . $row['mid_img']);
             $this->fileExists($img);
             $this->bgObject->insert($img, 'top-left', $row['middle'][0], $row['middle'][1]);
         }
     }
 
+
     /**
-     * 画六合关系
-     * @return bool
+     * > Draws the six he images and arrows
      */
     public function drawSixHe()
     {
@@ -518,18 +572,17 @@ trait DrawTrait
         return true;
     }
 
+
     /**
-     * 处理汇局
+     * It draws the join of the table.
      */
     public function drawJoin()
     {
-        //1、处理上汇局
         $up = $this->draw['hui_ju']['up'] ?? [];
         if (!empty($up)) {
             $this->huiJuUp($up);
         }
 
-        //2、处理下汇局
         $down = $this->draw['hui_ju']['down'] ?? [];
         if (!empty($down)) {
             $this->huiJuDown($down);
@@ -538,26 +591,27 @@ trait DrawTrait
         return true;
     }
 
+
     /**
-     * 处理下卦汇局
-     * @param $up
+     * It draws the bracket for the huiJuUp function.
+     *
+     * @param up the number of the round you want to draw
      */
     public function huiJuUp($up)
     {
-        //1、画花括号
         $this->drawBracket(46, 147);
-
         $x = 29;
         $y = 231;
         $gap = 18;
-        //2、画汇局
         $this->huiJu($up, $x, $y, $gap);
     }
 
+
     /**
-     * 画花括号
-     * @param $x
-     * @param $y
+     * It draws a bracket on the image.
+     *
+     * @param x The x-coordinate of the top-left corner of the image.
+     * @param y The y coordinate of the top left corner of the image.
      */
     public function drawBracket($x, $y)
     {
@@ -566,12 +620,14 @@ trait DrawTrait
         $this->bgObject->insert($bracket, 'top-left', $x, $y);
     }
 
+
     /**
-     * 画汇局
-     * @param $hui_ju
-     * @param $x
-     * @param $y
-     * @param $gap
+     * It takes an array of images and places them on the background image.
+     *
+     * @param hui_ju The array of the data to be joined
+     * @param x The x-coordinate of the top left corner of the image.
+     * @param y The y-axis of the image
+     * @param gap the distance between the two images
      */
     public function huiJu($hui_ju, $x, $y, $gap)
     {
@@ -585,22 +641,24 @@ trait DrawTrait
         }
     }
 
+
     /**
-     * 处理上卦汇局
-     * @param $down
+     * It draws the bracket for the down vote.
+     *
+     * @param down the number of down
      */
     public function huiJuDown($down)
     {
-        //1、画花括号
         $this->drawBracket(46, 536);
-
         $x = 29;
         $y = 620;
         $gap = 18;
-        //2、画汇局
         $this->huiJu($down, $x, $y, $gap);
     }
 
+    /**
+     * > Draws an arrow from the tomb to the tomb's corresponding mu
+     */
     public function drawEnterTomb()
     {
         $ru_mus = $this->draw['ru_mu'] ?? [];
@@ -616,6 +674,9 @@ trait DrawTrait
         return true;
     }
 
+    /**
+     * > It draws the dilemma image and text on the background image
+     */
     public function drawDilemma()
     {
         $dilemmas = $this->draw['jin_tui'] ?? [];
@@ -624,20 +685,20 @@ trait DrawTrait
         }
 
         foreach ($dilemmas as $dilemma) {
-
             $row = $this->dilemmaPositions[$dilemma['position']];
-            // 画箭头
             $img = public_path($this->relativePath . $row['img']);
             $this->fileExists($img);
             $this->bgObject->insert($img, 'top-left', $row['left_top'][0], $row['left_top'][1]);
-
-            //写字
             $this->writeFont($dilemma['font'], $row['middle'][0], $row['middle'][1], 16, '#D93615');
-
         }
         return true;
     }
 
+    /**
+     * > Draw the trigram of the hexagram
+     *
+     * @return the value of the variable .
+     */
     public function drawVoltTrigram()
     {
         $fu_yaos = $this->draw['fu_yao'] ?? [];
@@ -651,8 +712,11 @@ trait DrawTrait
         }
     }
 
+
     /**
-     * 通过位置写字
+     * > Write the font at the position
+     *
+     * @param position the position of the font in the grid
      */
     public function writeFontByPosition($position)
     {
@@ -665,10 +729,13 @@ trait DrawTrait
         $this->writeFont($font, $x, $y, 38);
     }
 
+
     /**
-     * 通过卦象转换为卦符
-     * @param $item
-     * @return string
+     * > It returns a symbol based on the value of the parameter
+     *
+     * @param item The item number.
+     *
+     * @return The symbol for the item.
      */
     public function getSymbol($item)
     {

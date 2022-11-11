@@ -14,59 +14,63 @@ class Plate extends BaseService
 {
     use Gram, GodNums, Wx, YinYang, Raw, Prosper;
 
+    /**
+     * It takes a date, converts it to a solar date, then gets the front and later numbers, then gets
+     * the relations between the front and later numbers
+     *
+     * @param date The date you want to get the result.
+     * @return mixed
+     */
     public function getResultBySolar($date)
     {
-        //1、获取阳历生日对应的日期详情
         $this->solar($date);
 
-        //2、获取先天数和后天数
         $frontNums = $this->frontNums($date);
+
         $laterNums = $this->laterNums($frontNums);
 
-        //3、十二神数排盘
         $relations = $this->relations($frontNums, $laterNums);
 
         return $relations;
     }
 
+
     /**
-     * 获取十二神数的关系
-     * @param $frontNums
-     * @param $laterNums
-     * @return array
+     * It takes two arrays of numbers, and returns an array of arrays of numbers
+     *
+     * @param frontNums The first number of the wallet password
+     * @param laterNums The last six digits of the wallet password
+     * @return mixed
      */
     protected function relations($frontNums, $laterNums)
     {
-        // 生成新的先天数组
+
         $front_nums = $this->createNewArr($frontNums);
-        // 生成新的后天数组
+
         $later_nums = $this->createNewArr($laterNums);
 
-        // 获取 克关系 的数据
         $grams = $this->getGramRelation($frontNums, $front_nums, $laterNums, $later_nums);
 
-        // 获取 阴阳 的数据
         $yin_yang = $this->getYinYangRelation($front_nums, $later_nums);
 
-        //获取 生 关系
         $raws = $this->getRawRelation($frontNums, $front_nums, $laterNums, $later_nums);
 
-        //获取 比旺 关系
         $prosper = $this->getProsperRelation($frontNums, $front_nums, $laterNums, $later_nums);
 
-        //获取所对应的五行
         $wx = $this->getWxByNums($front_nums, $later_nums);
 
-        //天运
         $fate = $this->getFateByGz(new WalletPassword());
 
         return array_merge(compact('front_nums', 'later_nums'), $grams, $wx, $yin_yang, $raws, $prosper, $fate);
     }
 
+
     /**
-     * 获取 六十甲子纳音表
-     * @param WalletPassword $walletPassword
-     * @return array
+     * > Get the fate of the year by the ganzhi of the year
+     *
+     * @param WalletPassword walletPassword The object of the class WalletPassword
+     *
+     * @return The fate of the year.
      */
     public function getFateByGz(WalletPassword $walletPassword)
     {
@@ -75,16 +79,20 @@ class Plate extends BaseService
     }
 
 
+    /**
+     * > It takes a date and returns a list of numbers that are related to that date
+     *
+     * @param date The date you want to calculate, in the format of YYYY-MM-DD.
+     * @param isLeapMonth Whether it is a leap month.
+     * @return mixed
+     */
     public function getResultByLunar($date, $isLeapMonth = false)
     {
-        //1、获取阳历生日对应的日期详情
         $this->lunar($date, $isLeapMonth);
 
-        //2、获取先天数和后天数
         $frontNums = $this->frontNums($date);
         $laterNums = $this->laterNums($frontNums);
 
-        //3、十二神数排盘
         $relations = $this->relations($frontNums, $laterNums);
 
         return $relations;

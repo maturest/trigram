@@ -9,7 +9,6 @@ use Illuminate\Support\Str;
 
 trait SixCongTrait
 {
-    //六冲
     protected $sixCong = [
         ['子', '午'],
         ['丑', '未'],
@@ -19,9 +18,8 @@ trait SixCongTrait
         ['巳', '亥'],
     ];
 
-    // 先按类别，然后再按论关系的纬度
     protected $sixCongImages = [
-        //本爻与本爻
+
         '41-42' => ['left_top' => ['148', '155'], 'img' => 'six_chong/11-12.png', 'middle' => ['138', '204'], 'mid_img' => 'fonts/chong.png'],
         '41-43' => ['left_top' => ['121', '153'], 'img' => 'six_chong/11-13.png', 'middle' => ['112', '255'], 'mid_img' => 'fonts/chong.png'],
         '41-44' => ['left_top' => ['94', '153'], 'img' => 'six_chong/11-14.png', 'middle' => ['86', '322'], 'mid_img' => 'fonts/chong.png'],
@@ -37,35 +35,35 @@ trait SixCongTrait
         '44-45' => ['left_top' => ['148', '530'], 'img' => 'six_chong/14-15.png', 'middle' => ['138', '580'], 'mid_img' => 'fonts/chong.png'],
         '44-46' => ['left_top' => ['115', '530'], 'img' => 'six_chong/14-16.png', 'middle' => ['106', '639'], 'mid_img' => 'fonts/chong.png'],
         '45-46' => ['left_top' => ['148', '652'], 'img' => 'six_chong/15-16.png', 'middle' => ['138', '701'], 'mid_img' => 'fonts/chong.png'],
-        //本爻与化爻
+
         '41-51' => ['left_top' => ['392', '146'], 'img' => 'six_chong/41-51.png', 'middle' => ['405', '130'], 'font' => '冲'],
         '42-52' => ['left_top' => ['392', '268'], 'img' => 'six_chong/41-51.png', 'middle' => ['405', '252'], 'font' => '冲'],
         '43-53' => ['left_top' => ['392', '391'], 'img' => 'six_chong/41-51.png', 'middle' => ['405', '375'], 'font' => '冲'],
         '44-54' => ['left_top' => ['392', '513'], 'img' => 'six_chong/41-51.png', 'middle' => ['405', '497'], 'font' => '冲'],
         '45-55' => ['left_top' => ['392', '636'], 'img' => 'six_chong/41-51.png', 'middle' => ['405', '620'], 'font' => '冲'],
         '46-56' => ['left_top' => ['392', '758'], 'img' => 'six_chong/41-51.png', 'middle' => ['405', '742'], 'font' => '冲'],
-        //本爻与月令
+
         '61-41' => ['left_top' => ['387', '171'], 'img' => 'six_chong/61-41.png', 'middle' => ['485', '193'], 'mid_img' => 'fonts/po.png'],
         '61-42' => ['left_top' => ['374', '232'], 'img' => 'six_chong/61-42.png', 'middle' => ['485', '224'], 'mid_img' => 'fonts/po.png'],
         '61-43' => ['left_top' => ['385', '245'], 'img' => 'six_chong/61-43.png', 'middle' => ['484', '290'], 'mid_img' => 'fonts/po.png'],
         '61-44' => ['left_top' => ['380', '270'], 'img' => 'six_chong/61-44.png', 'middle' => ['487', '404'], 'mid_img' => 'fonts/po.png'],
         '61-45' => ['left_top' => ['383', '293'], 'img' => 'six_chong/61-45.png', 'middle' => ['484', '516'], 'mid_img' => 'fonts/po.png'],
         '61-46' => ['left_top' => ['379', '315'], 'img' => 'six_chong/61-46.png', 'middle' => ['496', '611'], 'mid_img' => 'fonts/po.png'],
-        //本爻与日令
+
         '62-41' => ['left_top' => ['384', '166'], 'img' => 'six_chong/62-41.png', 'middle' => ['499', '284'], 'mid_img' => 'fonts/chong.png'],
         '62-42' => ['left_top' => ['384', '294'], 'img' => 'six_chong/62-42.png', 'middle' => ['495', '401'], 'mid_img' => 'fonts/chong.png'],
         '62-43' => ['left_top' => ['386', '420'], 'img' => 'six_chong/62-43.png', 'middle' => ['495', '458'], 'mid_img' => 'fonts/chong.png'],
         '62-44' => ['left_top' => ['388', '538'], 'img' => 'six_chong/62-44.png', 'middle' => ['486', '545'], 'mid_img' => 'fonts/chong.png'],
         '62-45' => ['left_top' => ['380', '554'], 'img' => 'six_chong/62-45.png', 'middle' => ['462', '576'], 'mid_img' => 'fonts/chong.png'],
         '62-46' => ['left_top' => ['381', '566'], 'img' => 'six_chong/62-46.png', 'middle' => ['482', '650'], 'mid_img' => 'fonts/chong.png'],
-        //化爻与月令
+
         '61-51' => ['left_top' => ['491', '158'], 'img' => 'six_chong/61-51.png', 'middle' => ['526', '178'], 'mid_img' => 'fonts/po.png'],
         '61-52' => ['left_top' => ['488', '236'], 'img' => 'six_chong/61-52.png', 'middle' => ['525', '246'], 'mid_img' => 'fonts/po.png'],
         '61-53' => ['left_top' => ['483', '250'], 'img' => 'six_chong/61-53.png', 'middle' => ['516', '315'], 'mid_img' => 'fonts/po.png'],
         '61-54' => ['left_top' => ['484', '271'], 'img' => 'six_chong/61-54.png', 'middle' => ['519', '393'], 'mid_img' => 'fonts/po.png'],
         '61-55' => ['left_top' => ['481', '293'], 'img' => 'six_chong/61-55.png', 'middle' => ['520', '464'], 'mid_img' => 'fonts/po.png'],
         '61-56' => ['left_top' => ['482', '307'], 'img' => 'six_chong/61-56.png', 'middle' => ['524', '536'], 'mid_img' => 'fonts/po.png'],
-        //化爻与日令
+
         '62-51' => ['left_top' => ['481', '156'], 'img' => 'six_chong/62-51.png', 'middle' => ['529', '310'], 'mid_img' => 'fonts/chong.png'],
         '62-52' => ['left_top' => ['480', '280'], 'img' => 'six_chong/62-52.png', 'middle' => ['524', '376'], 'mid_img' => 'fonts/chong.png'],
         '62-53' => ['left_top' => ['485', '403'], 'img' => 'six_chong/62-53.png', 'middle' => ['523', '444'], 'mid_img' => 'fonts/chong.png'],
@@ -75,31 +73,25 @@ trait SixCongTrait
 
     ];
 
+
     /**
-     * 处理六冲关系
-     * @return $this
+     * It gets the six cong of the ben gua, the ben gua and the trans gua, the day gua and the ben gua,
+     * the day gua and the trans gua, the month gua and the ben gua, and the month gua and the trans
+     * gua
      */
     public function handleRelationSixCong()
     {
-        // 纯静爻有暗动  动爻也有暗动
-        //$this->getYaoDetail();
 
-        // 1、本爻与本爻
         $benGuaCongSelf = $this->getSixCongByBenGua();
 
-        // 2、本爻与自己的化爻
         $benGuaCongTrans = $this->getSixCongBenAndTrans();
 
-        // 3、日令与本爻
         $dayCongBenGua = $this->getSixCongDay2Ben();
 
-        // 4、日令与化爻
         $dayCongTransGua = $this->getSixCongDay2Trans();
 
-        // 5、月令与本爻
         $monthCongBenGua = $this->getSixCongMonth2Ben();
 
-        // 6、月令与化爻
         $monthCongTransGua = $this->getSixCongMonth2Trans();
 
         $this->draw['six_chong'] = array_merge($benGuaCongSelf, $benGuaCongTrans, $dayCongBenGua,
@@ -108,14 +100,12 @@ trait SixCongTrait
         return $this;
     }
 
+
     /**
-     * 本爻中六冲关系，只论动摇与动摇之间的关系
-     * @return array
+     * It returns the six cong relations of the ben gua.
      */
     public function getSixCongByBenGua()
     {
-        // 取出本卦中所有动爻
-
         $dongs = $this->getBenDong();
 
         $cong = [];
@@ -124,7 +114,6 @@ trait SixCongTrait
 
         if ($count > 1) {
             foreach ($dongs as $key => $dong) {
-                // 每从地支里拿出来一个，就要与对应的比
                 $start = $key + 1;
                 for ($i = $start; $i < $count; $i++) {
                     if ($this->isCongRelation($dong['dz'], $dongs[$i]['dz'])) {
@@ -137,25 +126,29 @@ trait SixCongTrait
         return $cong;
     }
 
+
     /**
-     * 判断两个是否存在六冲关系
-     * @param $a
-     * @param $b
-     * @return bool
+     * > Given two numbers, return true if they are congruent modulo 6
+     *
+     * @param a the first number
+     * @param b the number of the first note
      */
     public function isCongRelation($a, $b)
     {
         return in_array([$a, $b], $this->sixCong) || in_array([$b, $a], $this->sixCong);
     }
 
+    /**
+     * It returns an array of strings, each string is a pair of numbers, the first number is the
+     * position of the ben gua, the second number is the position of the trans gua
+     */
     public function getSixCongBenAndTrans()
     {
-        // 如果存在化爻
+
         if ($this->transGuaExists()) {
             $cong = [];
-            // 本卦地支数组
+
             $ben_arr = $this->diZhi2Arr($this->resultDiZhi['di_zhi']);
-            // 化爻地支数组
             $trans_arr = $this->diZhi2Arr($this->resultDiZhi['trans_di_zhi']);
 
             foreach ($ben_arr as $key => $val) {
@@ -169,10 +162,10 @@ trait SixCongTrait
         return [];
     }
 
-    /**
-     * 日令与静爻的六冲关系为 暗动，日令与本卦中的动爻
-     * @return array
-     */
+
+   /**
+    * It returns the six cong of the day pillar.
+    */
     public function getSixCongDay2Ben()
     {
         $dongs = $this->getBenPureDong();
@@ -185,10 +178,10 @@ trait SixCongTrait
         return $cong;
     }
 
-    /**
-     * 日令与化爻的六冲
-     * @return array
-     */
+
+   /**
+    * It returns the 6th cong of the day.
+    */
     public function getSixCongDay2Trans()
     {
         if ($this->transGuaExists()) {
@@ -198,6 +191,15 @@ trait SixCongTrait
         return [];
     }
 
+    /**
+     * It takes a date, a list of dates, a start column, and a column, and returns a list of cells that
+     * are in conflict with the date
+     *
+     * @param date_di_zhi the date's stem
+     * @param di_zhi_arr the array of the 12 zodiacs
+     * @param start the start column of the table
+     * @param column the column of the date
+     */
     public function getCongByDate($date_di_zhi, $di_zhi_arr, $start, $column)
     {
         $cong = [];
@@ -210,9 +212,9 @@ trait SixCongTrait
         return $cong;
     }
 
+
     /**
-     * 月令与本卦的六冲关系
-     * @return array
+     * It returns the six cong of the month.
      */
     public function getSixCongMonth2Ben()
     {
@@ -226,9 +228,9 @@ trait SixCongTrait
         return $cong;
     }
 
+
     /**
-     * 月令与化爻之间的六冲关系
-     * @return array
+     * It returns the 6th month of the year, which is June.
      */
     public function getSixCongMonth2Trans()
     {
@@ -239,6 +241,14 @@ trait SixCongTrait
         return [];
     }
 
+    /**
+     * > It takes a string of a single character and returns a string of the remaining five characters
+     * of the same row in the six-row array
+     *
+     * @param di_zhi The address of the hexagram
+     *
+     * @return the cong of the given di_zhi.
+     */
     public function getCong($di_zhi)
     {
         $row = Arr::first($this->sixCong, function ($item, $key) use ($di_zhi) {

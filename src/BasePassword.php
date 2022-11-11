@@ -57,9 +57,11 @@ class BasePassword
         ['tj_point' => 8, 'num' => 4, 'password' => '7875', 'note' => ''],
     ];
 
+
     /**
-     * 通过位数获取开机密码
-     * @param $num
+     * It takes a number, and returns an array of passwords that have that number of characters
+     *
+     * @param num The number of passwords to be generated.
      * @return mixed
      */
     public function getPasswordByNum($num = 6)

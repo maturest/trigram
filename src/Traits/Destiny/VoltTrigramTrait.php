@@ -34,12 +34,15 @@ trait VoltTrigramTrait
         '金', '木', '水', '火', '土',
     ];
 
+    /**
+     * It checks if the trigram is a volt trigram.
+     *
+     * @return The object itself.
+     */
     public function handleVoltTrigram()
     {
-        //本卦中所有地支的五行
         $wxs = $this->getDiZhiWx();
 
-        //如果五行缺失就启用标记伏爻
         if (count($wxs) < 5) {
             $this->voltTrigram($wxs);
         }
@@ -47,23 +50,25 @@ trait VoltTrigramTrait
         return $this;
     }
 
+
     /**
-     * 获取所有地支的五行
-     * @return array
+     * It returns an array of unique weather stations for a given set of unique locations.
      */
     public function getDiZhiWx()
     {
-        //取出所有地支
         $dzs = collect($this->getAllPosition())->pluck('dz')->unique()->toArray();
-        //取出所有的地支五行
+
         $wxs = collect($this->dzWx)->whereIn('dz', $dzs)->pluck('wx')->unique()->toArray();
 
         return $wxs;
     }
 
+
     /**
-     * 获取本卦中动爻，化爻，时令的位置
-     * @return array
+     * It gets all the positions from the database and returns them as an array
+     *
+     * @return An array of all the positions in the inline ben, all the positions in the hua, and all
+     * the positions in the date.
      */
     public function getAllPosition()
     {
@@ -73,6 +78,9 @@ trait VoltTrigramTrait
         return array_merge($ben, $trans, $date);
     }
 
+    /**
+     * It takes a string of numbers, and returns an array of arrays
+     */
     public function getPositionsInlineBen()
     {
         $res = [];
@@ -90,9 +98,13 @@ trait VoltTrigramTrait
         return $res;
     }
 
+
     /**
-     * 获取日令与月令的位置
-     * @return array[]
+     * > It returns an array of arrays, each of which contains the day and month branch of the date,
+     * the column and row of the cell in the table where the branch should be placed, and the branch's
+     * position in the table
+     *
+     * @return An array of arrays.
      */
     public function getDatePositions()
     {
@@ -110,17 +122,18 @@ trait VoltTrigramTrait
         ];
     }
 
+
     /**
-     * 标记伏爻
-     * @param $wxs
+     * A function to calculate the trigrams that are hidden in the hexagram.
+     *
+     * @param wxs the trigrams of the six positions of the hexagram
      */
     public function voltTrigram($wxs)
     {
-        //缺失的五行
         $miss = array_diff($this->wx, $wxs);
-        //找出缺失五行所对应的地支
+
         $dzs = collect($this->dzWx)->whereIn('wx', $miss)->pluck('dz')->toArray();
-        //获取重装卦
+
         $gua = $this->getUpEqualDownGua();
 
         $res = [];
@@ -142,9 +155,9 @@ trait VoltTrigramTrait
         $this->draw['fu_yao'] = $res;
     }
 
+
     /**
-     * 获取本卦的重装挂
-     * @return array
+     * > Get the gua that has the same up and down trigrams
      */
     public function getUpEqualDownGua()
     {

@@ -63,6 +63,11 @@ class PhoneAdjust
         ['tj_point' => 1, 'tail_num' => '86188', 'note' => '天8慎用'],
     ];
 
+    /**
+     * It takes an array of objects, groups them by a property, and returns an array of arrays
+     *
+     * @return A collection of the phone list grouped by the tj_point.
+     */
     public function getPhoneList()
     {
         return collect($this->phoneList)->groupBy('tj_point')->toArray();

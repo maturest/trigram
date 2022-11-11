@@ -8,10 +8,8 @@ use Illuminate\Support\Str;
 
 trait WhiteDeathTrait
 {
-
     protected $benGuaDetail;
 
-    // 五行生克
     protected $wxKe = [
         ['火', '金'],
         ['金', '木'],
@@ -30,7 +28,6 @@ trait WhiteDeathTrait
 
     protected $kongWang;
 
-    // 空亡数组
     protected $emptyDeath = [
         ['tian_gan' => '甲', 'dizhi' => '子', 'kongwang' => '戌亥'],
         ['tian_gan' => '乙', 'dizhi' => '丑', 'kongwang' => '戌亥'],
@@ -94,7 +91,6 @@ trait WhiteDeathTrait
         ['tian_gan' => '癸', 'dizhi' => '亥', 'kongwang' => '子丑'],
     ];
 
-    // 穷举法 标记空亡
     protected $dotCoords = [
         ['position' => '11', 'x' => '164', 'y' => '142'],
         ['position' => '12', 'x' => '164', 'y' => '264'],
@@ -129,7 +125,7 @@ trait WhiteDeathTrait
         ['position' => '61', 'x' => '588', 'y' => '222'],
         ['position' => '62', 'x' => '588', 'y' => '434'],
         ['position' => '63', 'x' => '588', 'y' => '643'],
-        ['position' => '71', 'x' => '400', 'y' => '161'], // 化爻的需要携带横线，后续填上
+        ['position' => '71', 'x' => '400', 'y' => '161'],
         ['position' => '72', 'x' => '400', 'y' => '284'],
         ['position' => '73', 'x' => '400', 'y' => '406'],
         ['position' => '74', 'x' => '400', 'y' => '528'],
@@ -144,18 +140,16 @@ trait WhiteDeathTrait
     ];
 
     protected $coords = [
-        'six_qin' => '1', // 六亲对应第一列
-        'shi_ying' => '2', // 世应对应第二列
-        'gua' => '3', // 六爻卦对应第三列
-        'di_zhi' => '4', // 本爻地支对应第四列
-        'trans_di_zhi' => '5', // 化爻对应第五列
-        'ri_ling' => '6', // 日令对应第六列
-        'hr' => '7', // 动爻与化爻之间的横线
-        'dark_on' => '8', // 暗动
+        'six_qin' => '1',
+        'shi_ying' => '2',
+        'gua' => '3',
+        'di_zhi' => '4',
+        'trans_di_zhi' => '5',
+        'ri_ling' => '6',
+        'hr' => '7',
+        'dark_on' => '8',
     ];
 
-
-    // 64卦
     protected $totalGua = [
         '222121' => ['ben_gua' => '乾金', 'di_zhi' => '未,巳,卯,酉,未,巳', 'liu_qin' => '父,官,财,兄,父,官', 'shi_ying' => '应,,,世,,'],
         '222211' => ['ben_gua' => '乾金', 'di_zhi' => '未,巳,卯,未,巳,卯', 'liu_qin' => '父,官,财,父,官,财', 'shi_ying' => '应,,,世,,'],
@@ -223,8 +217,11 @@ trait WhiteDeathTrait
         '212112' => ['ben_gua' => '兑金', 'di_zhi' => '寅,辰,午,亥,酉,未', 'liu_qin' => '财,父,官,子,兄,父', 'shi_ying' => '世,,,应,,',],
     ];
 
+
     /**
-     * 获取暗动的位置
+     * > It takes an array of objects, and returns an array of strings
+     *
+     * @return The object itself.
      */
     public function handleDarkOn()
     {
@@ -240,14 +237,11 @@ trait WhiteDeathTrait
         return $this;
     }
 
-    /**
-     * 转化本爻，标记明动还是 暗动
-     * @return $this
-     */
+
     public function getYaoDetail()
     {
         $ben_gua = str_split($this->gua);
-        // 本卦地支数组
+
         $ben_di_zhi = explode(',', $this->resultDiZhi['di_zhi']);
 
         $ben_gua_arr = [];
@@ -255,9 +249,7 @@ trait WhiteDeathTrait
         foreach ($ben_gua as $key => $value) {
             $row = (6 - $key);
             if (in_array($value, [1, 2])) {
-                // 表示静爻 则需要判断该处地支是否与日令存在暗动的关系
                 if ($this->isCongRelation($this->diZhiDay, $ben_di_zhi[$key])) {
-                    // 如果是暗动关系
                     $ben_gua_arr[] = ['dz' => $ben_di_zhi[$key], 'is_dong' => false, 'is_an_dong' => true, 'column' => $column, 'row' => $row];
                 } else {
                     $ben_gua_arr[] = ['dz' => $ben_di_zhi[$key], 'is_dong' => false, 'is_an_dong' => false, 'column' => $column, 'row' => $row];
@@ -273,10 +265,11 @@ trait WhiteDeathTrait
     }
 
 
+
     /**
-     * 判断卦变是否与本卦相克
-     * @param $arr
-     * @return array
+     * A function to judge whether a person is dangerous or not.
+     *
+     * @param arr the array of the original hexagram and the transformed hexagram
      */
     public function getIsDangerous($arr)
     {
@@ -289,22 +282,27 @@ trait WhiteDeathTrait
         return $res;
     }
 
+
     /**
-     * 判断两个五行是否相克
-     * @param $dz_one
-     * @param $dz_two
-     * @return boolean
+     * > It returns true if the two given numbers are in the array `->wxKe`
+     *
+     * @param dz_one The first point of the two points to be judged
+     * @param dz_two the second dice
      */
     public function judgeIsDangerous($dz_one, $dz_two)
     {
         return in_array([$dz_one, $dz_two], $this->wxKe);
     }
 
+
     /**
-     * 获取卦变为凶卦的提示
-     * @param $dz_one
-     * @param $dz_two
-     * @return string
+     * > If the string starts with `` and ends with ``, return the string after ``
+     * and before ``
+     *
+     * @param dz_one The first note of the two notes
+     * @param dz_two The first two characters of the current address
+     *
+     * @return the note for the dangerous combination of the two given dizhi.
      */
     public function judgeDangerousNote($dz_one, $dz_two)
     {
@@ -316,21 +314,23 @@ trait WhiteDeathTrait
         return '';
     }
 
+
     /**
-     * 判断两个五行是否相生，A 生 B = one 生 two
-     * @param $wx_one
-     * @param $wx_two
-     * @return bool
+     * > It returns true if the two given numbers are in the array of valid combinations
+     *
+     * @param wx_one The first card
+     * @param wx_two The second card
      */
     public function judgeIsGrow($wx_one, $wx_two)
     {
         return in_array(['a' => $wx_one, 'b' => $wx_two], $this->wxSheng);
     }
 
+
     /**
-     * 获取谁生我
-     * @param $wx
-     * @return mixed
+     * > Given a wuxing, return the wuxing that grows it
+     *
+     * @param wx the wx you want to get the who-grew-me for
      */
     public function getWhoGrowMe($wx)
     {
@@ -338,10 +338,13 @@ trait WhiteDeathTrait
         return $row['a'];
     }
 
+
     /**
-     * 获取谁克我
-     * @param $wx
-     * @return mixed
+     * It returns the first element of the array that matches the condition.
+     *
+     * @param wx the wechat id of the person you want to send the message to
+     *
+     * @return The name of the person who has the given WeChat ID.
      */
     public function getWhoKeMe($wx)
     {
@@ -351,9 +354,12 @@ trait WhiteDeathTrait
         return $row[0];
     }
 
+
     /**
-     * 化爻
-     * @return array
+     * It takes the gua number, and returns the gua number of the ben gua, and the di zhi of the ben
+     * gua
+     *
+     * @return An array with the trans_di_zhi and gua_bian keys.
      */
     public function transBenGua()
     {
@@ -372,7 +378,6 @@ trait WhiteDeathTrait
         }
         $arr['trans_di_zhi'] = implode(',', $trans_di_zhi);
 
-        // 如果是动爻并且上下卦一致的话，需要卦变
         $need_gua_bian = $this->upEqualDown();
         if ($need_gua_bian) {
             $arr['gua_bian'] = $trans['ben_gua'];
@@ -381,9 +386,11 @@ trait WhiteDeathTrait
         return $arr;
     }
 
+
     /**
-     * 转化本卦
-     * @param string $type
+     * It takes a string of numbers and returns a string of numbers.
+     *
+     * @return The trans_gua is being returned.
      */
     public function getTransGua()
     {
@@ -403,18 +410,23 @@ trait WhiteDeathTrait
         return $trans_gua;
     }
 
+
     /**
-     * 判断化爻是否存在
-     * @return bool
+     * It checks if the resultDiZhi array has a key called 'trans_di_zhi' and if it has a value.
+     *
+     * @return The result of the function is the value of the variable
+     * ->resultDiZhi['trans_di_zhi'].
      */
     public function transGuaExists()
     {
         return isset($this->resultDiZhi['trans_di_zhi']) && $this->resultDiZhi['trans_di_zhi'];
     }
 
+
     /**
-     * 标空亡
-     * @return $this
+     * It returns the kongwang of the day.
+     *
+     * @return The object itself.
      */
     public function whiteDeath()
     {
@@ -428,9 +440,12 @@ trait WhiteDeathTrait
         return $this;
     }
 
+
     /**
-     * 获取标空亡的坐标点
-     * 与空亡两个字相同的就标注
+     * It takes the coordinates of the two death stars and the coordinates of the two trans-death stars
+     * and merges them into one array
+     *
+     * @return The object itself.
      */
     public function handleWhiteDeath()
     {
@@ -443,11 +458,13 @@ trait WhiteDeathTrait
         return $this;
     }
 
+
     /**
-     * 获取某一列空亡坐标
-     * @param $di_zhi
-     * @param string $type
-     * @return array
+     * It takes a string of numbers separated by commas, and returns an array of coordinates
+     *
+     * @param di_zhi The address of the empty position, such as:
+     * "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25
+     * @param type original or trans_di_zhi
      */
     public function getCoords($di_zhi, $type = 'original')
     {
@@ -465,10 +482,13 @@ trait WhiteDeathTrait
         return $coords;
     }
 
+
     /**
-     * 获取具体坐标点的位置
-     * @param $dots
-     * @return array
+     * It takes an array of dot positions and returns an array of coordinates
+     *
+     * @param dots an array of dot positions, e.g. [1, 2, 3, 4, 5, 6, 7, 8, 9]
+     *
+     * @return An array of arrays.
      */
     public function getCoordsByDots($dots)
     {

@@ -11,25 +11,19 @@ use Maturest\Trigram\Exceptions\InvalidArgumentException;
 
 trait BuDiZhiTrait
 {
-    // 卜卦日期
+
     protected $date;
 
-    // 卜卦日期月地支（带月）
     protected $gzMonth;
 
-    // 卜卦日期的天干地支(带日)
     protected $gzDay;
 
-    // 卜卦日期 日地支
     protected $diZhiDay;
 
-    // 卜卦日期 月地支
     protected $diZhiMonth;
 
-    // 卜卦日期 天干
     protected $tianGanDay;
 
-    // 最终部地支的结果
     protected $resultDiZhi = [
         'gua_bian' => '',
         'is_dangerous' => false,
@@ -37,45 +31,45 @@ trait BuDiZhiTrait
         'trans_di_zhi' => '',
     ];
 
+
     /**
-     * 部地支 外带卦变
-     * @return $this
+     * It takes the current gua, and then it checks if it needs to be transformed. If it does, it
+     * transforms it, and then it checks if the transformed gua is dangerous. If it is, it adds the
+     * transformed gua to the result
+     *
+     * @return The result of the method is the object itself.
      */
     public function deployDiZhi()
     {
-        // 是否需要卦变
         $need_gua_bian = $this->upEqualDown();
-
-        // 获取本卦
         $ben_gua = $this->getBenGua();
         $arr = $this->getBaGuaByGua($ben_gua);
 
-        //如果本卦中存在动爻，则需要化爻，即将老阳转化为阴，将老阴转化为阳
         if (Str::contains($this->gua, [3, 4])) {
             $trans = $this->transBenGua();
             $arr = array_merge($arr, $trans);
         }
 
-        // 如果是静爻并且上下卦一致的话，需要卦变,
         if ($need_gua_bian && !Str::contains($this->gua, [3, 4])) {
             $trans_gua = $this->getTransGua();
             $trans = $this->getBaGuaByGua($trans_gua);
             $arr['gua_bian'] = $trans['ben_gua'];
         }
 
-        // 如果存在卦变 则标记此卦是否为凶卦
         if (isset($arr['gua_bian'])) {
             $res = $this->getIsDangerous($arr);
             $arr = array_merge($arr, $res);
         }
+
         $this->resultDiZhi = array_merge($this->resultDiZhi, $arr);
 
         return $this;
     }
 
+
     /**
-     * 判断上下卦是否一致
-     * @return bool
+     * > If the first three lines of the gua are the same as the last three lines of the gua, then
+     * return true, otherwise return false
      */
     public function upEqualDown()
     {
@@ -84,36 +78,44 @@ trait BuDiZhiTrait
         return $down == $up ? true : false;
     }
 
+
     /**
-     * 获取本卦
-     * @return string
+     * > If the gua contains 3 or 4, replace 3 with 1 and 4 with 2
+     *
+     * @return The ben gua of the gua.
      */
     public function getBenGua()
     {
-        //如果是纯静爻
+
         $ben_gua = $this->gua;
-        //如果本卦中存在动爻 则需要将 老阳转化为阳 老阴转化为阴
+
         if (Str::contains($this->gua, [3, 4])) {
             $ben_gua = str_replace('3', '1', $this->gua);
             $ben_gua = str_replace('4', '2', $ben_gua);
         }
+
         return $ben_gua;
     }
 
+
     /**
-     * 获取64卦中的一种
-     * @param $gua
-     * @return array
+     * It returns the value of the key in the array.
+     *
+     * @param gua The gua number, from 1 to 64.
+     *
+     * @return The value of the key  in the array ->totalGua.
      */
     public function getBaGuaByGua($gua)
     {
         return Arr::get($this->totalGua, $gua);
     }
 
+
     /**
-     * 获取反转后的地支数组
-     * @param $di_zhi
-     * @return array
+     * It takes a string of comma separated values and returns an array of the values in reverse order.
+     *
+     * @param di_zhi The address you want to convert.
+     * @return mixed
      */
     public function diZhi2Arr($di_zhi)
     {
@@ -122,8 +124,15 @@ trait BuDiZhiTrait
         return $arr;
     }
 
+
     /**
-     * 标记暗动的坐标位置
+     * > It takes a string of numbers separated by commas and a number, and returns a string of numbers
+     * separated by commas
+     *
+     * @param gua_dz the gua's dizhi
+     * @param day_cong the day of the month
+     *
+     * @return the coordinates of the dots that are being passed in.
      */
     public function markDarkOn($gua_dz, $day_cong)
     {
@@ -135,9 +144,12 @@ trait BuDiZhiTrait
         $this->draw['an_dong']['coords'] = $coords;
     }
 
+
     /**
-     * 解析卜卦日期，计算日令
-     * @return $this
+     * > It parses the date and returns the corresponding ganzhi day and month, and the corresponding
+     * tiangan and dizhi day and month
+     *
+     * @return The object itself.
      */
     public function parseDate()
     {
@@ -152,32 +164,29 @@ trait BuDiZhiTrait
         $this->gzMonth = mb_substr($result['ganzhi_month'], -1, 1) . '月';
         $this->diZhiMonth = mb_substr($result['ganzhi_month'], -1, 1);
         $this->gzDay = $result['ganzhi_day'] . '日';
-
         [$tian_gan, $dizhi] = mb_str_split($result['ganzhi_day']);
-
-        // 标记卜卦日期 地支
         $this->diZhiDay = $dizhi;
-        //  标记卜卦日期 天干
         $this->tianGanDay = $tian_gan;
-
-        //处理二十四节气时间临界点问题
         $this->dealWithSolarTerms();
 
         return $this;
     }
 
+    /**
+     * > If the current date is a solar term, then the ganzhi month of the previous day is used
+     *
+     * @return The last day of the month.
+     */
     public function dealWithSolarTerms()
     {
-        // 此时根据二十节气临界点去找寻对应的月地支
+
         $json = file_get_contents(public_path('data/solar_terms.json'));
         $solar_terms = json_decode($json, true);
-        // 先看是否存在与当前日期同一天的二十四节气
         $trigram_date = Carbon::parse($this->date);
         $solar_term = collect($solar_terms)->first(function ($value, $key) use ($trigram_date) {
             return $trigram_date->isSameDay($value['time']);
         });
 
-        // 如果存在并且卜卦时间早于节气时间临界点的
         if ($solar_term && $trigram_date->lt($solar_term['time'])) {
             $last_day = Carbon::parse($this->date)->subDay()->format('Y-n-j-G');
             [$year, $month, $day, $hour] = explode('-', $last_day);
