@@ -182,10 +182,10 @@ class DestinyService
         $cause = $this->cause();
 
         //9、时来运转
-
+        $transform = $this->transform($god);
 
         return compact('numen', 'good_ill', 'shield', 'acc',
-            'dissolve', 'wealth', 'honourable_men','cause');
+            'dissolve', 'wealth', 'honourable_men','cause','transform');
     }
 
     /**

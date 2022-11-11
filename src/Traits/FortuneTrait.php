@@ -12,6 +12,7 @@ use Maturest\Trigram\Traits\Fortune\NumenTrait;
 use Maturest\Trigram\Traits\Fortune\ShieldTrait;
 use Maturest\Trigram\Traits\Fortune\WealthTrait;
 use Maturest\Trigram\Traits\Fortune\HonourableMenTrait;
+use Maturest\Trigram\Traits\Fortune\TransformTrait;
 
 trait FortuneTrait
 {
@@ -20,5 +21,5 @@ trait FortuneTrait
 
     use GodTrait, CommonRelationTrait, NumenTrait, GoodIllTrait, ShieldTrait, AccTrait, DissolveTrait;
 
-    use WealthTrait, HonourableMenTrait, CauseTrait;
+    use WealthTrait, HonourableMenTrait, CauseTrait, TransformTrait;
 }

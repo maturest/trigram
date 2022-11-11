@@ -144,6 +144,21 @@ trait CommonRelationTrait
     }
 
     /**
+     * 获取静爻的五行
+     *
+     * @return array
+     */
+    public function getStaticYaoWx()
+    {
+        $static_dzs = $this->getStaticYaoDz();
+        $static_wxs = [];
+        foreach ($static_dzs as $static_dz) {
+            $static_wxs[] = $this->getWxByDz($static_dz);
+        }
+        return $static_wxs;
+    }
+
+    /**
      * 获取动爻的地支
      * @return mixed
      */
@@ -162,6 +177,41 @@ trait CommonRelationTrait
         return collect($this->benGuaDetail)->filter(function ($item, $key) {
             return $item['is_dong'] || $item['is_an_dong'];
         });
+    }
+
+    /**
+     * 获取静爻的位置
+     *
+     * @return mixed
+     */
+    public function getStaticYao()
+    {
+        return collect($this->benGuaDetail)->filter(function ($item, $key) {
+            return $item['is_dong'] == false && $item['is_an_dong'] == false;
+        });
+    }
+
+    /**
+     * 获取静爻的地支
+     *
+     * @return mixed
+     */
+    public function getStaticYaoDz()
+    {
+        $static_yao = $this->getStaticYao();
+        return $static_yao->pluck('dz')->toArray();
+    }
+
+    /**
+     * 静爻是否来生
+     *
+     * @param string 五行
+     * @return void
+     */
+    public function getIsStaticYaoGrowMe($wx)
+    {
+        $grow_me_wx = $this->getWhoGrowMe($wx);
+        return in_array($grow_me_wx, $this->getStaticYaoWx());
     }
 
     /**
@@ -352,6 +402,8 @@ trait CommonRelationTrait
                     'position' => $this->benGuaDetail[$key]['column'] . $this->benGuaDetail[$key]['row'],
                     'is_dong' => $this->benGuaDetail[$key]['is_dong'],
                     'is_an_dong' => $this->benGuaDetail[$key]['is_an_dong'],
+                    'trans' => false,
+                    'fu' => false,
                     'dz' => $this->benGuaDetail[$key]['dz'],
                     'wx' => $this->getWxByDz($this->benGuaDetail[$key]['dz']),
                 ];
@@ -366,6 +418,8 @@ trait CommonRelationTrait
                     'position' => '5' . ($key + 1),
                     'is_dong' => false,
                     'is_an_dong' => false,
+                    'trans' => true,
+                    'fu' => false,
                     'dz' => $dz,
                     'wx' => $this->getWxByDz($dz),
                 ];
@@ -388,6 +442,8 @@ trait CommonRelationTrait
                     'position' => $fu_yao['position'],
                     'is_dong' => $ben_yao['is_dong'],
                     'is_an_dong' => $ben_yao['is_an_dong'],
+                    'trans' => false,
+                    'fu' => true,
                     'dz' => $dz,
                     'wx' => $this->getWxByDz($dz),
                 ];
@@ -401,6 +457,8 @@ trait CommonRelationTrait
                     'position' => '62',
                     'is_dong' => false,
                     'is_an_dong' => false,
+                    'trans' => false,
+                    'fu' => false,
                     'dz' => $this->getDayDz(),
                     'wx' => $this->getDayWx(),
                 ];
@@ -412,6 +470,8 @@ trait CommonRelationTrait
                     'position' => '61',
                     'is_dong' => false,
                     'is_an_dong' => false,
+                    'trans' => false,
+                    'fu' => false,
                     'dz' => $this->getMonthDz(),
                     'wx' => $this->getMonthWx(),
                 ];
@@ -736,6 +796,94 @@ trait CommonRelationTrait
                 return true;
             }
         }
+        return false;
+    }
+
+     /**
+     * > If the position is not a dong and not an an dong, then it is a static trigram
+     *
+     * @param position the position of the trigram in the hexagram
+     * @return  boolean
+     */
+    public function getIsStaticTrigram($position)
+    {
+        return $position['is_dong'] == false && $position['is_an_dong'] == false
+        && $position['is_trans'] == false && $position['is_volt'] == false;
+    }
+
+   /**
+    * > This function returns true if the position is a volt
+    *
+    * @param array The position in the trigram.
+    *
+    * @return boolean
+    */
+    public function getIsVoltTrigram($position)
+    {
+        return $position['is_volt'] == true;
+    }
+
+    /**
+     * > Get the primary god positions from the font
+     *
+     * @param string font the font to use
+     *
+     * @return array
+     */
+    public function getPrimaryGodPositions($font)
+    {
+        $positions = $this->getGodPositions($font);
+        return $positions[0];
+    }
+
+    /**
+     * > It checks if only action trigram grow current position
+     *
+     * @param array $position
+     * @return boolean
+     */
+    public function onlyDongYaoGrowMe($position)
+    {
+        return $this->getIsDongYaoGrowMe($position['wx'])
+        && !$this->getIsDateGrowMe($position['wx'])
+        && !$this->getIsTransGrowMe($position)
+        && !$this->getIsStaticYaoGrowMe($position['wx']);
+    }
+
+    /**
+     * It checks if only current column grow current position
+     *
+     * @param array $position
+     * @return boolean
+     */
+    public function onlyBenYaoGrowMe($position)
+    {
+        return ($this->getIsDongYaoGrowMe($position['wx']) || $this->getIsStaticYaoGrowMe($position['wx']))
+        && !$this->getIsDateGrowMe($position['wx'])
+        && !$this->getIsTransGrowMe($position);
+    }
+
+
+    /**
+     * It checks if the position is a trans grow me position.
+     *
+     * @param array The position in the trigrams
+     * @return boolean
+     */
+    public function getIsTransGrowMe($position)
+    {
+        $wx = $position['wx'];
+        $wxs = $this->getWhoGrowMe($wx);
+
+        $trans = $this->getTransDetail();
+
+        $tran = collect($trans)->where('row',$position['row'])->first();
+
+        if($tran){
+            $wx = $this->getWxByDz($tran['dz']);
+            return in_array($wx,$wxs);
+        }
+
         return false;
     }
 

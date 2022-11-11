@@ -40,6 +40,8 @@ trait GodTrait
             'position' => $this->benGuaDetail[$index]['column'] . $this->benGuaDetail[$index]['row'],
             'is_dong' => $this->benGuaDetail[$index]['is_dong'],
             'is_an_dong' => $this->benGuaDetail[$index]['is_an_dong'],
+            'is_volt' => false,
+            'is_trans' => false,
             'dz' => $this->benGuaDetail[$index]['dz'],
             'wx' => $this->getWxByDz($this->benGuaDetail[$index]['dz']),
         ];
@@ -110,6 +112,7 @@ trait GodTrait
                     'dz' => $this->benGuaDetail[$key]['dz'],
                     'wx' => $this->getWxByDz($this->benGuaDetail[$key]['dz']),
                     'is_trans' => false,
+                    'is_volt' => false,
                 ];
 
                 //用神多现取旺相者，动爻大于静爻，本爻大于化爻
@@ -144,6 +147,7 @@ trait GodTrait
                     'dz' => $dz,
                     'wx' => $this->getWxByDz($dz),
                     'is_trans' => true,
+                    'is_volt' => false,
                 ];
             }
         }
@@ -197,6 +201,7 @@ trait GodTrait
                     'dz' => $dz,
                     'wx' => $this->getWxByDz($dz),
                     'is_trans' => false,
+                    'is_volt' => true,
                 ];
             }
         }
