@@ -873,15 +873,16 @@ trait CommonRelationTrait
     public function getIsTransGrowMe($position)
     {
         $wx = $position['wx'];
-        $wxs = $this->getWhoGrowMe($wx);
+        $grow_wx = $this->getWhoGrowMe($wx);
 
         $trans = $this->getTransDetail();
 
-        $tran = collect($trans)->where('row',$position['row'])->first();
+        $row = substr($position['position'],-1);
+        $tran = collect($trans)->where('row',$row)->first();
 
         if($tran){
             $wx = $this->getWxByDz($tran['dz']);
-            return in_array($wx,$wxs);
+            return $wx == $grow_wx;
         }
 
         return false;
