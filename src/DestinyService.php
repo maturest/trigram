@@ -196,7 +196,7 @@ class DestinyService
         $honourable_men = $this->honourableMen();
 
 
-        $cause = $this->cause();
+        $cause = $this->cause($is_student);
 
 
         $transform = $this->transform($god);

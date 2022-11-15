@@ -40,23 +40,23 @@ trait HonourableMenTrait
         $isYaoGrow = $this->getIsTransGrowDong();
 
         if ($hasNoOneHeCongRuKe && (($isHuiJu && $dateGrowAndEqual) || ($isHuiJu && $isYaoGrow) || ($dateGrowAndEqual && $isYaoGrow))) {
-            return '贵人运相当旺，';
+            return '贵人运相当旺。';
         }
 
         if ($hasNoOneHeCongRuKe && $isHuiJu && ($dateGrowAndEqual || $isYaoGrow)) {
-            return '贵人运旺，';
+            return '贵人运旺。';
         }
 
         if ($hasNoOneHeCongRuKe && ($isYaoGrow || $dateGrowAndEqual)) {
-            return '贵人运较旺，';
+            return '贵人运较旺。';
         }
 
         if (!$hasNoOneHeCongRuKe && ($isHuiJu || $dateGrowAndEqual || $isYaoGrow)) {
-            return '贵人运有起伏，';
+            return '贵人运有起伏。';
         }
 
         if (!$hasNoOneHeCongRuKe && !$dateGrowAndEqual) {
-            return '贵人运需加强，';
+            return '贵人运需加强。';
         }
 
         return '';
@@ -68,11 +68,11 @@ trait HonourableMenTrait
         $wx = $this->getWhoGrowMe($position['wx']);
 
         $attributes = [
-            ['wx' => '木', 'letters' => ['贵人外貌多为身材瘦瘦高高，脸色偏青，脸部中段平直，下巴偏窄的人；', '贵人助力方向主要在正东方及东北偏东方；', '贵人运在寅、卯月以及每月的寅、卯日较旺。']],
-            ['wx' => '火', 'letters' => ['贵人外貌多为身材圆胖、丰满，有点菱形脸，皮肤偏红，脸形上下比较尖的；', '贵人助力方向主要在正南方及东南偏南方；', '贵人运在巳、午月以及每月的巳、午日较旺。']],
-            ['wx' => '土', 'letters' => ['贵人外貌多为身材偏矮四肢偏短，脸色偏黄，脸圆背后、唇厚、手背厚、蒜头鼻，行动沉重稳实；', '贵人助力方向主要在东北偏北方、东南偏东方、西南偏南方及西北偏西方；', '贵人运在丑、辰、未、戌月以及每月的丑、辰、未、戌日较旺。']],
-            ['wx' => '金', 'letters' => ['贵人外貌多为身材单薄，肤色偏白，国字型脸，脸色白眉清目秀，口齿伶俐；', '贵人助力方向主要在西南偏西方及正西方；', '贵人运在申、酉月以及每月的申、酉日较旺。']],
-            ['wx' => '水', 'letters' => ['贵人外貌多为体型偏胖，面色偏黑，脸形比较圆偏大，耳朵偏大，行动偏迟缓；', '贵人助力方向主要在西北偏北方及正北方；', '贵人运在亥、子月以及每月的亥、子日较旺。']],
+            ['wx' => '木', 'letters' => ['贵人外貌多为身材瘦瘦高高，脸色偏青，脸部中段平直，下巴偏窄的人。', '贵人助力方向主要在正东方及东北偏东方。', '贵人运在寅、卯月以及每月的寅、卯日较旺。']],
+            ['wx' => '火', 'letters' => ['贵人外貌多为身材圆胖、丰满，有点菱形脸，皮肤偏红，脸形上下比较尖的。', '贵人助力方向主要在正南方及东南偏南方。', '贵人运在巳、午月以及每月的巳、午日较旺。']],
+            ['wx' => '土', 'letters' => ['贵人外貌多为身材偏矮四肢偏短，脸色偏黄，脸圆背后、唇厚、手背厚、蒜头鼻，行动沉重稳实。', '贵人助力方向主要在东北偏北方、东南偏东方、西南偏南方及西北偏西方。', '贵人运在丑、辰、未、戌月以及每月的丑、辰、未、戌日较旺。']],
+            ['wx' => '金', 'letters' => ['贵人外貌多为身材单薄，肤色偏白，国字型脸，脸色白眉清目秀，口齿伶俐。', '贵人助力方向主要在西南偏西方及正西方。', '贵人运在申、酉月以及每月的申、酉日较旺。']],
+            ['wx' => '水', 'letters' => ['贵人外貌多为体型偏胖，面色偏黑，脸形比较圆偏大，耳朵偏大，行动偏迟缓。', '贵人助力方向主要在西北偏北方及正北方。', '贵人运在亥、子月以及每月的亥、子日较旺。']],
         ];
 
         $row = collect($attributes)->where('wx', $wx)->first();

@@ -36,6 +36,8 @@ trait GodTrait
 
     public function getGodPositionsWithSixQin($god)
     {
+        $ben_gods = [];
+
         if (Str::contains($this->resultDiZhi['liu_qin'], $god)) {
             $ben_gods = $this->getGodPositionsWithBenSixQin($god);
         }
@@ -48,9 +50,17 @@ trait GodTrait
             return $fu_yao_gods;
         }
 
-        $positions = array_merge($ben_gods, $trans_gods, $fu_yao_gods);
+        $date_gods = $this->getGodPositionByDate($god);
+
+        $positions = array_merge($ben_gods, $trans_gods, $fu_yao_gods,$date_gods);
 
         $positions = collect($positions)->map(function ($item) {
+
+            if ( $item['is_date'] ) {
+                $item['sort'] = 1000;
+                return $item;
+            }
+
             if ($item['is_dong'] || $item['is_an_dong']) {
                 $item['sort'] = 999;
                 return $item;
@@ -64,6 +74,33 @@ trait GodTrait
             $item['sort'] = 666;
             return $item;
         })->sortByDesc('sort')->toArray();
+
+        return $positions;
+    }
+
+    public function getGodPositionByDate($god)
+    {
+        $positions = [];
+
+        $dzs = $this->getDateDz();
+
+        //月令的权重大于日令
+        foreach($dzs as $key => $dz){
+            if ($god == $this->getSixQinByDz($dz)) {
+                $positions[] = [
+                    'position' => '6' . ($key + 1),
+                    'is_dong' => false,
+                    'is_an_dong' => false,
+                    'dz' => $dz,
+                    'wx' => $this->getWxByDz($dz),
+                    'is_trans' => false,
+                    'is_volt' => false,
+                    'is_date' => true,
+                ];
+            }
+        }
+
+        $positions = array_reverse($positions);
 
         return $positions;
     }
@@ -83,6 +120,7 @@ trait GodTrait
                     'wx' => $this->getWxByDz($this->benGuaDetail[$key]['dz']),
                     'is_trans' => false,
                     'is_volt' => false,
+                    'is_date' => false,
                 ];
 
                 if ($this->benGuaDetail[$key]['is_dong'] || $this->benGuaDetail[$key]['is_an_dong']) {
@@ -112,6 +150,7 @@ trait GodTrait
                     'wx' => $this->getWxByDz($dz),
                     'is_trans' => true,
                     'is_volt' => false,
+                    'is_date' => false,
                 ];
             }
         }
@@ -151,6 +190,7 @@ trait GodTrait
                     'wx' => $this->getWxByDz($dz),
                     'is_trans' => false,
                     'is_volt' => true,
+                    'is_date' => false,
                 ];
             }
         }
