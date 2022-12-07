@@ -81,24 +81,24 @@ trait WealthTrait
         $isYaoGrow = $this->getIsDongYaoGrowMe($position['wx']);
 
         if ($hasNoKe && (($isHuiJu && $dateGrowAndEqual) || ($isHuiJu && $isYaoGrow) || ($dateGrowAndEqual && $isYaoGrow))) {
-            return '财运相当旺，';
+            return $font == '财' ? '财运相当旺，' : '财源相当旺，';
         }
 
         if ($hasNoKe && $isHuiJu && ($dateGrowAndEqual || $isYaoGrow)) {
-            return '财运旺，';
+            return $font == '财' ? '财运旺，' : '财源旺，';
         }
 
         if ($hasNoKe && ($isYaoGrow || $dateGrowAndEqual)) {
-            return '财运较旺，';
+            return $font == '财' ? '财运较旺，' : '财源较旺，';
         }
 
         $isDateKe = $this->isWithDateKe($position['wx']);
         if ($isDateKe && ($isHuiJu || $dateGrowAndEqual || $isYaoGrow)) {
-            return '财运有起伏，';
+            return $font == '财' ? '财运有起伏，' : '财源有起伏，';
         }
 
         if ($isDateKe && !$dateGrowAndEqual) {
-            return '财运需加强，';
+            return $font == '财' ? '财运需加强，' : '财源需加强，';
         }
 
         return '';

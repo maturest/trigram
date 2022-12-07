@@ -193,7 +193,7 @@ trait CauseTrait
         if ($this->getIsDongYaoByPosition($position)
             && $this->getIsCongByDate($position['dz'])
         ) {
-            $str .= '容易因多个事业项目之间的冲突照成麻烦。';
+            $str .= '容易因多个事业项目之间的冲突造成麻烦。';
         }
 
         if ($this->judgeDateSixQin('官') && ($this->getIsHeByPosition($position, true) || $this->getIsRuByPosition($position, true))) {
