@@ -28,7 +28,7 @@ trait GoodIllTrait
             ['wx' => '水', 'letter' => '适合在申日、酉日做重大决定，下午3-7点的黄金时间段可多思考做重要决策。'],
             ['wx' => '木', 'letter' => '适合在子日、亥日做重大决定，晚上9点至凌晨1点前的黄金时间段可多思考做重要决策。'],
         ];
-        $row = collect($letters)->where('wx', $this->getWhoGrowMe($wx))->first();
+        $row = collect($letters)->where('wx', $wx)->first();
         return $row['letter'];
     }
 
@@ -60,7 +60,7 @@ trait GoodIllTrait
             ['wx' => '水', 'letter' => '避免在丑日、辰日、未日、戌日以及上午7-9点、下午1-3点、晚上7-9点的时间段做重大决定。'],
             ['wx' => '木', 'letter' => '避免在申日、酉日以及下午3-7点的时间段做重大决定。'],
         ];
-        $row = collect($letters)->where('wx', $this->getWhoKeMe($wx))->first();
+        $row = collect($letters)->where('wx',$wx)->first();
         return $row['letter'];
     }
 
