@@ -90,7 +90,7 @@ trait CauseTrait
         foreach ($six_qin_positions as $six_qin_position) {
             if ($this->isCongRelation($position['dz'], $six_qin_position['dz'])) {
                 $res[] = $letter;
-            };
+            }
 
             if ($six_qin_position['wx'] == $this->getWhoKeMe($position['wx'])) {
                 $res[] = $letter;
@@ -190,9 +190,7 @@ trait CauseTrait
 
         $str = '';
 
-        if ($this->getIsDongYaoByPosition($position)
-            && $this->getIsCongByDate($position['dz'])
-        ) {
+        if ($this->judgeDateSixQin('父') && $this->getIsCongByDate($position['dz'])) {
             $str .= '容易因多个事业项目之间的冲突造成麻烦。';
         }
 
@@ -224,17 +222,6 @@ trait CauseTrait
     }
 
     /**
-     * It checks if the day or month is a cong.
-     *
-     * @param dz the day of the month
-     * @return boolean
-     */
-    protected function getIsCongByDate($dz)
-    {
-        return $this->isCongRelation($dz, $this->getDayDz()) || $this->isCongRelation($dz, $this->getMonthDz());
-    }
-
-    /**
      * It returns true if the six_qin is the same as the day or month dz.
      *
      * @param six_qin the six qin of the day
@@ -243,6 +230,17 @@ trait CauseTrait
     protected function judgeDateSixQin($six_qin)
     {
         return $six_qin == $this->getSixQinByDz($this->getDayDz()) || $six_qin == $this->getSixQinByDz($this->getMonthDz());
+    }
+
+    /**
+     * It checks if the day or month is a cong.
+     *
+     * @param dz the day of the month
+     * @return boolean
+     */
+    protected function getIsCongByDate($dz)
+    {
+        return $this->isCongRelation($dz, $this->getDayDz()) || $this->isCongRelation($dz, $this->getMonthDz());
     }
 
     /**

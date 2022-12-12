@@ -32,14 +32,12 @@ trait ConvergeSetTrait
     ];
 
 
-
     protected $huiJu = [
         ['hui_ju' => ['寅', '午', '戌'], 'hui' => '火', 'jx' => '午'],
         ['hui_ju' => ['亥', '卯', '未'], 'hui' => '木', 'jx' => '卯'],
         ['hui_ju' => ['申', '子', '辰'], 'hui' => '水', 'jx' => '子'],
         ['hui_ju' => ['巳', '酉', '丑'], 'hui' => '金', 'jx' => '酉'],
     ];
-
 
 
     protected $benGuaSixQin = [
@@ -84,7 +82,6 @@ trait ConvergeSetTrait
         ['ben_gua' => '坤土', 'sheng_ke' => '我克', 'wx' => '水', 'six_qin' => '财'],
         ['ben_gua' => '坤土', 'sheng_ke' => '克我', 'wx' => '木', 'six_qin' => '官'],
     ];
-
 
 
     /**
@@ -200,6 +197,7 @@ trait ConvergeSetTrait
                         'hui_ju' => '汇' . $row['six_qin'] . '局',
                         'torn' => $torn,
                         'jx' => $hui_ju['jx'],
+                        'dzs' => $hui_ju['hui_ju'],
                         'jx_position' => $jx_point['column'] . $jx_point['row'],
                     ];
 

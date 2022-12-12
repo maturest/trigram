@@ -43,6 +43,19 @@ trait HonourableMenTrait
             return '贵人运相当旺。';
         }
 
+        $god_position = $this->god_positions[0];
+        $hui_jus = array_merge($this->draw['hui_ju']['up'], $this->draw['hui_ju']['down']);
+        foreach ($hui_jus as $hui_ju) {
+            if (in_array($god_position['dz'], $hui_ju['dzs'])) {
+                $grow_me_wx = $this->getWhoGrowMe($god_position['wx']);
+                foreach ($hui_ju['dzs'] as $dz) {
+                    if ($grow_me_wx == $this->getWxByDz($dz)) {
+                        return '贵人运相当旺。';
+                    }
+                }
+            }
+        }
+
         if ($hasNoOneHeCongRuKe && $isHuiJu && ($dateGrowAndEqual || $isYaoGrow)) {
             return '贵人运旺。';
         }
