@@ -44,7 +44,7 @@ trait HonourableMenTrait
         }
 
         $god_position = $this->god_positions[0];
-        $hui_jus = array_merge($this->draw['hui_ju']['up'], $this->draw['hui_ju']['down']);
+        $hui_jus = array_merge($this->draw['hui_ju']['up'] ?? [], $this->draw['hui_ju']['down'] ?? []);
         foreach ($hui_jus as $hui_ju) {
             if (in_array($god_position['dz'], $hui_ju['dzs'])) {
                 $grow_me_wx = $this->getWhoGrowMe($god_position['wx']);
