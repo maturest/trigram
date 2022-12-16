@@ -23,19 +23,19 @@ trait TransformTrait
     ];
 
     protected $wxColor = [
-        ['wx'=>'金','color'=>'白色'],
-        ['wx'=>'木','color'=>'绿色或者紫色'],
-        ['wx'=>'水','color'=>'黑色或者蓝色'],
-        ['wx'=>'火','color'=>'红色'],
-        ['wx'=>'土','color'=>'黄色'],
+        ['wx' => '金', 'color' => '白色'],
+        ['wx' => '木', 'color' => '绿色或者紫色'],
+        ['wx' => '水', 'color' => '黑色或者蓝色'],
+        ['wx' => '火', 'color' => '红色'],
+        ['wx' => '土', 'color' => '黄色'],
     ];
 
     protected $wxNumber = [
-        ['wx'=>'金','number'=>'9'],
-        ['wx'=>'木','number'=>'3'],
-        ['wx'=>'水','number'=>'1'],
-        ['wx'=>'火','number'=>'7'],
-        ['wx'=>'土','number'=>'5'],
+        ['wx' => '金', 'number' => '9'],
+        ['wx' => '木', 'number' => '3'],
+        ['wx' => '水', 'number' => '1'],
+        ['wx' => '火', 'number' => '7'],
+        ['wx' => '土', 'number' => '5'],
     ];
 
 
@@ -60,27 +60,27 @@ trait TransformTrait
         $converged = $this->isHuiJuByFont($keyword);
         $position = $this->getPrimaryGodPositions($keyword);
 
-        if($converged){
-            if( $this->getIsCongByPosition($position) ){
-                return $this->generalZi($god,$position);
+        if ($converged) {
+            if ($this->getIsCongByPosition($position)) {
+                return $this->generalZi($god, $position);
             }
 
             return '';
         }
 
-        if( $this->getIsDongYaoByPosition($position) && ( $this->hasOneKeCongHeRu($position) || $this->getIsKongWangByPosition($position) ) ){
-            return $this->generalZi($god,$position);
+        if ($this->getIsDongYaoByPosition($position) && ($this->hasOneKeCongHeRu($position) || $this->getIsKongWangByPosition($position))) {
+            return $this->generalZi($god, $position);
         }
 
 
-        if( ! ($this->getIsStaticTrigram($position) && ( $this->dateGrowEqual($position['wx']) || $this->onlyDongYaoGrowMe($position) ) ) ){
-            return $this->generalZi($god,$position);
+        if (!($this->getIsStaticTrigram($position) && ($this->dateGrowEqual($position['wx']) || $this->onlyDongYaoGrowMe($position)))) {
+            return $this->generalZi($god, $position);
         };
 
 
-        if( $god != $keyword ){
-            if( ! ( $this->getIsVoltTrigram($position) && ( $this->dateGrowEqual($position['wx']) || $this->onlyBenYaoGrowMe($position) ) ) ){
-                return $this->generalZi($god,$position);
+        if ($god != $keyword) {
+            if (!($this->getIsVoltTrigram($position) && ($this->dateGrowEqual($position['wx']) || $this->onlyBenYaoGrowMe($position)))) {
+                return $this->generalZi($god, $position);
             }
         }
 
@@ -101,27 +101,27 @@ trait TransformTrait
 
         $converged = $this->isHuiJuByFont($keyword);
 
-        if($converged){
+        if ($converged) {
             // 如果用神爻被破
-            if( $this->getIsCongByPosition($position) ){
-                return $this->generalCai($god,$position);
+            if ($this->getIsCongByPosition($position)) {
+                return $this->generalCai($god, $position);
             }
 
             return '';
         }
 
-        if( $this->getIsDongYaoByPosition($position) && ( $this->hasOneKeCongHeRu($position) || $this->getIsKongWangByPosition($position) ) ){
-            return $this->generalCai($god,$position);
+        if ($this->getIsDongYaoByPosition($position) && ($this->hasOneKeCongHeRu($position) || $this->getIsKongWangByPosition($position))) {
+            return $this->generalCai($god, $position);
         }
 
 
-        if( ! ($this->getIsStaticTrigram($position) && ( $this->dateGrowEqual($position['wx']) || $this->onlyDongYaoGrowMe($position) ) ) ){
-            return $this->generalCai($god,$position);
+        if (!($this->getIsStaticTrigram($position) && ($this->dateGrowEqual($position['wx']) || $this->onlyDongYaoGrowMe($position)))) {
+            return $this->generalCai($god, $position);
         };
 
-        if( $god != $keyword ){
-            if( ! ( $this->getIsVoltTrigram($position) && ( $this->dateGrowEqual($position['wx']) || $this->onlyBenYaoGrowMe($position) ) ) ){
-                return $this->generalCai($god,$position);
+        if ($god != $keyword) {
+            if (!($this->getIsVoltTrigram($position) && ($this->dateGrowEqual($position['wx']) || $this->onlyBenYaoGrowMe($position)))) {
+                return $this->generalCai($god, $position);
             }
         }
 
@@ -137,27 +137,27 @@ trait TransformTrait
 
         $converged = $this->isHuiJuByFont($keyword);
 
-        if($converged){
+        if ($converged) {
             // 如果用神爻被破
-            if( $this->getIsCongByPosition($position) ){
-                return $this->generalFu($god,$position);
+            if ($this->getIsCongByPosition($position)) {
+                return $this->generalFu($god, $position);
             }
 
             return '';
         }
 
-        if( $this->getIsDongYaoByPosition($position) && ( $this->hasOneKeCongHeRu($position) || $this->getIsKongWangByPosition($position) ) ){
-            return $this->generalFu($god,$position);
+        if ($this->getIsDongYaoByPosition($position) && ($this->hasOneKeCongHeRu($position) || $this->getIsKongWangByPosition($position))) {
+            return $this->generalFu($god, $position);
         }
 
 
-        if( ! ($this->getIsStaticTrigram($position) && ( $this->dateGrowEqual($position['wx']) || $this->onlyDongYaoGrowMe($position) ) ) ){
-            return $this->generalFu($god,$position);
+        if (!($this->getIsStaticTrigram($position) && ($this->dateGrowEqual($position['wx']) || $this->onlyDongYaoGrowMe($position)))) {
+            return $this->generalFu($god, $position);
         };
 
-        if( $god != $keyword ){
-            if( ! ( $this->getIsVoltTrigram($position) && ( $this->dateGrowEqual($position['wx']) || $this->onlyBenYaoGrowMe($position) ) ) ){
-                return $this->generalFu($god,$position);
+        if ($god != $keyword) {
+            if (!($this->getIsVoltTrigram($position) && ($this->dateGrowEqual($position['wx']) || $this->onlyBenYaoGrowMe($position)))) {
+                return $this->generalFu($god, $position);
             }
         }
 
@@ -166,32 +166,31 @@ trait TransformTrait
 
     protected function transformWithGod($god)
     {
-        if(in_array($god,['兄','官'])){
+        if (in_array($god, ['兄', '官'])) {
 
             $position = $this->god_positions[0];
 
             $converged = $this->isHuiJuByFont($god);
 
-            if($converged){
+            if ($converged) {
                 // 如果用神爻被破
-                if( $this->getIsCongByPosition($position) ){
+                if ($this->getIsCongByPosition($position)) {
                     return $this->generalShi();
                 }
 
                 return '';
             }
 
-            if( $this->getIsDongYaoByPosition($position) && ( $this->hasOneKeCongHeRu($position) || $this->getIsKongWangByPosition($position) ) ){
+            if ($this->getIsDongYaoByPosition($position) && ($this->hasOneKeCongHeRu($position) || $this->getIsKongWangByPosition($position))) {
                 return $this->generalShi();
             }
 
 
-            if( ! ($this->getIsStaticTrigram($position) && ( $this->dateGrowEqual($position['wx']) || $this->onlyDongYaoGrowMe($position) ) ) ){
+            if (!($this->getIsStaticTrigram($position) && ($this->dateGrowEqual($position['wx']) || $this->onlyDongYaoGrowMe($position)))) {
                 return $this->generalShi();
             };
 
             return '';
-
         }
 
         return '';
@@ -207,7 +206,7 @@ trait TransformTrait
      */
     protected function getDirectionByDz($dz)
     {
-        $row = collect($this->directions)->where('dz',$dz)->first();
+        $row = collect($this->directions)->where('dz', $dz)->first();
         return $row['direction'];
     }
 
@@ -220,7 +219,7 @@ trait TransformTrait
      */
     protected function getColorByWx($wx)
     {
-        $row = collect($this->wxColor)->where('wx',$wx)->first();
+        $row = collect($this->wxColor)->where('wx', $wx)->first();
         return $row['color'];
     }
 
@@ -233,7 +232,7 @@ trait TransformTrait
      */
     protected function getNumberByWx($wx)
     {
-        $row = collect($this->wxNumber)->where('wx',$wx)->first();
+        $row = collect($this->wxNumber)->where('wx', $wx)->first();
         return $row['number'];
     }
 
@@ -244,9 +243,9 @@ trait TransformTrait
      * @param array $position
      * @return string
      */
-    public function generalCai($god,$position)
+    public function generalCai($god, $position)
     {
-        $str = "建议您在?方用?托盘放?颗?珠子加强财运?。";
+        $str = "建议您在?方，用?托盘，放?颗?珠子，加强财运?。";
 
         $replaces  = [];
 
@@ -260,14 +259,14 @@ trait TransformTrait
         $replaces[] = $this->getNumberByWx($position['wx']);
         $replaces[] = $this->getColorByWx($position['wx']);
 
-        $replaces[] = $god == '财' ? '和个人整体运势' : ( $god == '官' ? '和贵人运' : '');
+        $replaces[] = $god == '财' ? '和个人整体运势' : ($god == '官' ? '和贵人运' : '');
 
         return Str::replaceArray('?', $replaces, $str);
     }
 
-    protected function generalZi($god,$position)
+    protected function generalZi($god, $position)
     {
-        $str = "建议您在?方用?托盘放?颗?珠子加强财源?。";
+        $str = "建议您在?方，用?托盘，放?颗?珠子，加强财源?。";
 
         $replaces  = [];
 
@@ -281,14 +280,14 @@ trait TransformTrait
         $replaces[] = $this->getNumberByWx($another_position['wx']);
         $replaces[] = $this->getColorByWx($another_position['wx']);
 
-        $replaces[] = $god == '子' ? '和个人整体运势' : ( $god == '财' ? '和贵人运' : '');
+        $replaces[] = $god == '子' ? '和个人整体运势' : ($god == '财' ? '和贵人运' : '');
 
         return Str::replaceArray('?', $replaces, $str);
     }
 
-    public function generalFu($god,$position)
+    public function generalFu($god, $position)
     {
-        $str = "建议您在?方用?托盘放?颗?珠子加强事业运?。";
+        $str = "建议您在?方，用?托盘，放?颗?珠子，加强事业运?。";
 
         $replaces  = [];
 
@@ -302,14 +301,14 @@ trait TransformTrait
         $replaces[] = $this->getNumberByWx($another_position['wx']);
         $replaces[] = $this->getColorByWx($another_position['wx']);
 
-        $replaces[] = $god == '父' ? '和个人整体运势' : ( $god == '兄' ? '和贵人运' : '');
+        $replaces[] = $god == '父' ? '和个人整体运势' : ($god == '兄' ? '和贵人运' : '');
 
         return Str::replaceArray('?', $replaces, $str);
     }
 
     public function generalShi()
     {
-        $str = "建议您在?方用?托盘放?颗?珠子加强个人整体运势。";
+        $str = "建议您在?方，用?托盘，放?颗?珠子，加强个人整体运势。";
 
         $positions = $this->getGodPositions('世');
         $position = $positions[0];
