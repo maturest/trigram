@@ -133,7 +133,7 @@ trait WealthTrait
             $is_dong = ($position['is_dong'] ?? '') || ($position['is_an_dong'] ?? '');
             $wx = $position['wx'] ?? '';
             if ($this->isWithKe($wx, false) || ($is_dong && $this->isWithDateKe($wx))) {
-                $str = $str . '要注意和' . $wx . '形脸的人接触，避免会有被劫财的现象。';
+                $str = $str . '要注意和' . $wx . '型脸的人接触，避免会有被劫财的现象。';
             }
 
             //财爻化官，官动爻，财为动并且日月为官
@@ -230,7 +230,6 @@ trait WealthTrait
             ) {
                 $str .= '多个来财渠道会有冲突的情况。';
             }
-
         }
 
         return $str;
@@ -284,6 +283,4 @@ trait WealthTrait
         $dzs = array_unique(array_merge($cai_dzs, $zi_dzs));
         return "财运在" . implode('，', $dzs) . "月以及每月的" . implode('，', $dzs) . "日较旺。";
     }
-
-
 }
