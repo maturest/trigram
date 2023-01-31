@@ -38,7 +38,13 @@ trait CauseTrait
 
         $letters[] = $this->getHelperByDate();
 
-        return array_filter($letters);
+        $res = array_filter($letters);
+
+        if ($is_student) {
+            $res = str_replace('事业', '学业', $res);
+        }
+
+        return $res;
     }
 
     /**
