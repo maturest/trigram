@@ -167,7 +167,7 @@ class DestinyService
      *
      * @return array An array of the values of the variables.
      */
-    public function fortune($god, $year, $is_pregnant = false,$is_student = false)
+    public function fortune($god, $year, $is_pregnant = false, $is_student = false)
     {
 
         $god_positions = $this->getGodPositions($god);
@@ -177,32 +177,33 @@ class DestinyService
 
         $numen = $this->numen();
 
-
-        $good_ill = $this->goodOrIll($god);
-
-
-        $shield = $this->shield();
-
-
-        $acc = $this->acc($god);
-
-
-        $dissolve = $this->dissolve($year, $is_pregnant);
-
-
         $wealth = $this->wealth();
-
 
         $honourable_men = $this->honourableMen();
 
-
         $cause = $this->cause($is_student);
 
+        $good_ill = $this->goodOrIll($god);
+
+        $dissolve = $this->dissolve($year, $is_pregnant);
 
         $transform = $this->transform($god);
 
-        return compact('numen', 'good_ill', 'shield', 'acc',
-            'dissolve', 'wealth', 'honourable_men','cause','transform');
+        $shield = $this->shield();
+
+        $acc = $this->acc($god);
+
+        return compact(
+            'numen',
+            'wealth',
+            'honourable_men',
+            'cause',
+            'good_ill',
+            'dissolve',
+            'transform',
+            'shield',
+            'acc'
+        );
     }
 
 
@@ -213,6 +214,5 @@ class DestinyService
      */
     private function __clone()
     {
-
     }
 }
