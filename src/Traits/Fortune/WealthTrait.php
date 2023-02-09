@@ -273,7 +273,7 @@ trait WealthTrait
             $helper_directions[] = $row['direction'];
         }
 
-        return "多往住家或办公室的" . implode('，', $helper_directions) . "方向走动有助于财运的增长。";
+        return "多往住家或办公室的" . implode('，', array_unique($helper_directions)) . "方向走动有助于财运的增长。";
     }
 
     protected function getHelperDate($cai_positions, $zi_positions)
