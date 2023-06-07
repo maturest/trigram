@@ -2,7 +2,6 @@
 
 为避免在不同的应用中重复书写同样的代码，和后期沉重的维护压力（如果有一个地方需要小的修改，那么各个应用需要同步进行维护），可以考虑将公共部分抽象出来，节省开发周期，减轻维护压力。单独做成一个模块，造一个轮子。
 
-
 ## 安装
 
 ```shell
@@ -96,7 +95,7 @@ $res_lunar = $orientation->getResultByLunar('1990-10-04');
 /*
 array:4 [▼
   "zhi" => "午", //年份的地支
-  "strong" => "坐南朝北", //最强方位 
+  "strong" => "坐南朝北", //最强方位
   "weakness" => "坐北朝南", //最弱方位
   "img" => "orientation/north.png", //朝向图片
 ]
@@ -137,7 +136,7 @@ array:13 [▼
 
 ```
 
->十二神数
+> 十二神数
 
 ```
 use Maturest\Trigram\TwelveGodNums;
@@ -208,32 +207,48 @@ $destiny->getTrigramPic(false);
 $fortune = $destiny->fortune($god, $year, $is_pregnant);
 ```
 
+> 穿衣指南
+
+```
+$clothesGuide = new ClothesGuide();
+
+$res = $clothesGuide->getGuideBySolar('2023-06-10');
+
+/*
+array:4 [▼
+  "wx" => "水"
+  "proposal" => "建议您穿蓝色、黑色为主，绿色、紫色为辅的衣服"
+  "taboo" => "今日不宜穿红色的衣服"
+  "diet" => "今日适宜吃蓝色、黑色的食物，可增强体内的五行能量场"
+]
+*/
+
+```
 
 ## 异常
 
-- InvalidArgumentException 参数不合法
-- ImagesNotFoundException 图片文件未找到
-
+-   InvalidArgumentException 参数不合法
+-   ImagesNotFoundException 图片文件未找到
 
 ## TODO
 
-- [x] 六爻自动装卦
-- [x] 提供 ServiceProvider
-- [x] 增加异常处理
-- [x] 版本语义化
-- [x] 增加钱包密码
-- [x] 增加最强方位
-- [x] 增加神数排盘
-- [x] 增加十二神数
-- [x] 增加手机号调整
-- [x] 增加开机密码
-- [x] 增加财富密码
-- [x] 增加年运势卦
-- [ ] 增加穿衣指南
-- [ ] 单元测试
-- [ ] GitHub Actions 自动化测试
-- [ ] StyleCI 自动化测试
-- [ ] 其他有趣的图标（增加代码的健壮性）
+-   [x] 六爻自动装卦
+-   [x] 提供 ServiceProvider
+-   [x] 增加异常处理
+-   [x] 版本语义化
+-   [x] 增加钱包密码
+-   [x] 增加最强方位
+-   [x] 增加神数排盘
+-   [x] 增加十二神数
+-   [x] 增加手机号调整
+-   [x] 增加开机密码
+-   [x] 增加财富密码
+-   [x] 增加年运势卦
+-   [x] 增加穿衣指南
+-   [ ] 单元测试
+-   [ ] GitHub Actions 自动化测试
+-   [ ] StyleCI 自动化测试
+-   [ ] 其他有趣的图标（增加代码的健壮性）
 
 ## License
 
