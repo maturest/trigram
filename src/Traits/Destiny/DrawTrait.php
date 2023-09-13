@@ -113,9 +113,28 @@ trait DrawTrait
      */
     public function initBgObject()
     {
-        $drawBg = public_path($this->relativePath . 'bg.png');
-        $this->fileExists($drawBg);
-        $this->bgObject = Image::make($drawBg);
+        $image = public_path($this->relativePath . 'bg.png');
+        $this->fileExists($image);
+
+        if ($this->transparent) {
+            $image = imagecreatetruecolor(690, 1010);
+            imagesavealpha($image, true);
+            $transparentColor = imagecolorallocatealpha($image, 0, 0, 0, 127);
+            imagefill($image, 0, 0, $transparentColor);
+        }
+
+        $this->bgObject = Image::make($image);
+
+        if ($this->transparent) {
+            $this->drawHorizontalLine();
+        }
+    }
+
+    public function drawHorizontalLine()
+    {
+        for ($i = 166; $i < 486; $i++) {
+            $this->bgObject->pixel('#333333', $i, 467);
+        }
     }
 
     /**
@@ -417,7 +436,6 @@ trait DrawTrait
                     $y += 18;
                 }
             }
-
         }
 
         if ($this->userName) {

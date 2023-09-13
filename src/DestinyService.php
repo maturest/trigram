@@ -39,19 +39,24 @@ class DestinyService
 
     protected $watermark;
 
+    protected $transparent;
+
     /**
      * DestinyService constructor.
      * @param $date 1996-01-01 05:26:38 阳历的日期
      * @param $gua
      * @param array $extends
+     * @param bool $watermark
+     * @param bool $transparent
      * @throws InvalidArgumentException
      */
-    private function __construct($date, $gua, $extends = [], $watermark = true)
+    private function __construct($date, $gua, $extends = [], $watermark = true, $transparent = false)
     {
         $this->calendar = app('calendar');
         $this->date = $date;
         $this->gua = $gua;
         $this->watermark = $watermark;
+        $this->transparent = $transparent;
 
         if (!empty($extends)) {
             $this->question = $extends['question'] ?? '';
@@ -70,16 +75,16 @@ class DestinyService
      * @param gua The gua number, which is the number of the hexagram.
      * @param extends
      * @param watermark Whether to add a watermark to the image.
-     *
+     * @param transparent whether transparent
      * @return The instance of the class.
      */
-    public static function getInstance($date, $gua, $extends = [], $watermark = true)
+    public static function getInstance($date, $gua, $extends = [], $watermark = true, $transparent = false)
     {
         if (static::$instance instanceof static) {
             return static::$instance;
         }
 
-        static::$instance = new static($date, $gua, $extends, $watermark);
+        static::$instance = new static($date, $gua, $extends, $watermark, $transparent);
 
         return static::$instance;
     }
