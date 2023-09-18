@@ -350,10 +350,10 @@ trait PassJewelry
 
     protected function get_belt(int $start, int $end, int $sex, int $turn, int $count): string
     {
-        if ($count === 2) $basic_statement = $turn === 1 ? '左腰：戴?颗红色珠子，用?色+?色线穿' : '右腰：戴?颗红色珠子，用?色+?色线穿';
-        else $basic_statement = $turn === 1 ? '建议您外裤以?色、?色为主' : '建议您内裤以?色、?色为主';
+        if ($count === 2) $basic_statement = $turn === 1 ? '左腰：戴?颗红色珠子，用?色+?色线穿。' : '右腰：戴?颗红色珠子，用?色+?色线穿。';
+        else $basic_statement = $turn === 1 ? '建议您外裤以?色、?色为主。' : '建议您内裤以?色、?色为主。';
         $content = collect($this->belt)->whereStrict('start', $start)->whereStrict('end', $end)->whereStrict('sex', $sex)->whereStrict('count', $count)->first();
-        return Str::replaceArray('?', ($content ? $content['content'] : ['7', '红', '红', '黄']), $basic_statement);
+        return $content ? Str::replaceArray('?', $content, $basic_statement) : '';
     }
 
     protected function get_anklet(int $start, int $end, int $sex, int $turn): string
@@ -365,7 +365,7 @@ trait PassJewelry
 
     protected function get_mat(int $start, int $end, int $sex): string
     {
-        $basic_statement = '建议您脚垫以?色为主';
+        $basic_statement = '建议您脚垫以?色为主。';
         $content = collect($this->mat)->whereStrict('start', $start)->whereStrict('end', $end)->whereStrict('sex', $sex)->first();
         return Str::replaceArray('?', ($content ? $content['content'] : ['紫']), $basic_statement);
     }
