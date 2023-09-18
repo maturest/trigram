@@ -366,7 +366,7 @@ trait PassJewelry
 
     protected function get_mat(int $start, int $end, int $sex): string
     {
-        $basic_statement = '建议您脚垫以?色为主';
+        $basic_statement = '建议您脚垫以?色为主。';
         $content = collect($this->mat)->whereStrict('start', $start)->whereStrict('end', $end)->whereStrict('sex', $sex)->first();
         return Str::replaceArray('?', ($content ? $content['content'] : ['紫']), $basic_statement);
     }
