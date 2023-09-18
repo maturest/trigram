@@ -184,12 +184,12 @@ trait KindTip
             $end = intval($explode_gram[1]);
             $values[] = $getValueCallback($start, $end);
         }
-
         foreach ($values as $value) {
             $result .= $value[0] . '、' . $value[1] . '、';
         }
 
         if ($getValueCallback[1] === 'get_month') $result = $this->sortChineseMonths(explode('、', rtrim($result, '、')));
+        $result = $this->removeDuplicates($result);
         $original[$index] = str_replace('?', rtrim($result, '、'), $original[$index]);
         return $original;
     }
@@ -222,6 +222,13 @@ trait KindTip
             $result .= $value . '、';
         }
         return $result;
+    }
+
+    protected function removeDuplicates(string $need): string
+    {
+        $result = explode('、', $need);
+
+        return collect($result)->unique()->implode('、');
     }
 
 
