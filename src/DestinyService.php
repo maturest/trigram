@@ -7,10 +7,11 @@ use Illuminate\Support\Str;
 use Maturest\Trigram\Exceptions\InvalidArgumentException;
 use Maturest\Trigram\Traits\DestinyTrait;
 use Maturest\Trigram\Traits\FortuneTrait;
+use Maturest\Trigram\Traits\BodyTrigramTrait;
 
 class DestinyService
 {
-    use DestinyTrait, FortuneTrait;
+    use DestinyTrait, FortuneTrait, BodyTrigramTrait;
 
     private static $instance;
 
@@ -219,5 +220,17 @@ class DestinyService
      */
     private function __clone()
     {
+    }
+
+    /**
+     * Body Trigram
+     *
+     * @return void
+     */
+    public function bodyTrigram()
+    {
+        $qi_blood = $this->qiBlood();
+
+        return array_filter(compact('qi_blood'));
     }
 }
