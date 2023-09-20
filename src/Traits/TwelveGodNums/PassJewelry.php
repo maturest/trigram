@@ -271,7 +271,7 @@ trait PassJewelry
         ['start' => 9, 'end' => 12, 'sex' => 2, 'content' => ['黑', '咖啡']],
     ];
 
-    // 脚垫部分（时-年）
+    // 鞋垫部分（时-年）
     protected $mat = [
         ['start' => 1, 'end' => 6, 'sex' => 1, 'content' => ['紫']],
         ['start' => 2, 'end' => 6, 'sex' => 1, 'content' => ['紫']],
@@ -365,7 +365,7 @@ trait PassJewelry
 
     protected function get_mat(int $start, int $end, int $sex): string
     {
-        $basic_statement = '建议您脚垫以?色为主。';
+        $basic_statement = '建议您鞋垫以?色为主。';
         $content = collect($this->mat)->whereStrict('start', $start)->whereStrict('end', $end)->whereStrict('sex', $sex)->first();
         return $content ? Str::replaceArray('?', $content['content'], $basic_statement) : '';
     }
@@ -432,7 +432,7 @@ trait PassJewelry
             '内裤' => 6,
             '左脚' => 7,
             '右脚' => 8,
-            '脚垫' => 9,
+            '鞋垫' => 9,
         ];
         foreach ($item as $key => $value) {
             foreach ($keywordToSort as $keyword => $sortValue) {
