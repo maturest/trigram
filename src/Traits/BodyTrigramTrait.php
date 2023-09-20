@@ -19,7 +19,7 @@ trait BodyTrigramTrait
     {
         $res = $this->getHeWx();
 
-        if (empty($wxs)) {
+        if (empty($res)) {
             return false;
         }
 
