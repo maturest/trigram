@@ -229,8 +229,9 @@ class DestinyService
      */
     public function bodyTrigram()
     {
-        $qi_blood = $this->qiBlood();
+        $body_he = $this->bodyHe();
+        $body_chong = $this->bodyChong();
 
-        return array_filter(compact('qi_blood'));
+        return array_filter(compact('body_he', 'body_chong'));
     }
 }

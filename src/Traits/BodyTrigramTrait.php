@@ -15,7 +15,7 @@ trait BodyTrigramTrait
      * suggestion to undergo a health check or seek medical attention if there are any discomfort or
      * concerns.
      */
-    public function qiBlood()
+    public function bodyHe()
     {
         $res = $this->getHeWx();
 
@@ -94,5 +94,63 @@ trait BodyTrigramTrait
         }
 
         return $res;
+    }
+
+    public function bodyChong()
+    {
+        $res = [];
+
+        $six_chong = $this->draw['six_chong'];
+
+        //1、merge handel dark on
+        $coords = $this->draw['an_dong']['coords'];
+        foreach ($coords as $coords) {
+            $six_chong[] = '62-' . ($coords - 40);
+        }
+
+        $res = [];
+
+        $allPositions = $this->getAllPosition();
+        foreach ($six_chong as $arr) {
+            $positions = explode('-', $arr);
+
+            //start point
+            $point_a = $positions[0];
+            //end point
+            $point_b = $positions[1];
+
+            $row_a = collect($allPositions)->where('column', $point_a[0])->where('row', $point_a[1])->first();
+
+            // 如果是辰戌、丑未冲
+            if (in_array($row_a['dz'], ['辰', '戌', '丑', '未'])) {
+                $res[] = '注意饮食和脾胃的调理，或有消化不良导致的肠胃胀气现象。';
+            }
+
+            // 如果是子午、巳亥冲，并且动爻对应的地支是午或巳，
+            if (in_array($row_a['dz'], ['子', '午', '巳', '亥'])) {
+                $row_b = collect($allPositions)->where('column', $point_b[0])->where('row', $point_b[1])->first();
+                if (($point_a[0] == 6 && in_array($row_a['dz'], ['午', '巳']))
+                    || ($point_b[0] == 6 && in_array($row_b['dz'], ['午', '巳']))
+                ) {
+                    $res[] = '注意身体的炎症隐患，避免由炎症引起的发热现象。';
+                } else {
+                    $res[] = '身体有炎症的隐患，易有心悸或伤寒发热的现象，注意心脏的养护。';
+                }
+            }
+
+            // 如果是卯酉，寅申冲并且动爻对应的地支是卯或申
+            if (in_array($row_a['dz'], ['卯', '酉', '寅', '申',])) {
+                $row_b = collect($allPositions)->where('column', $point_b[0])->where('row', $point_b[1])->first();
+                if (($point_a[0] == 6 && in_array($row_a['dz'], ['卯', '申']))
+                    || ($point_b[0] == 6 && in_array($row_b['dz'], ['卯', '申']))
+                ) {
+                    $res[] = '注意肝脏的保养，神经性问题的隐患，避免脊柱侧弯或四肢受伤的现象。';
+                } else {
+                    $res[] = '注意或有脊柱侧弯的可能，避免四肢受伤的现象，注意肝胆养护。';
+                }
+            }
+        }
+
+        return array_unique($res);
     }
 }
