@@ -3,6 +3,8 @@
 
 namespace Maturest\Trigram\Traits;
 
+use Illuminate\Support\Str;
+
 trait BodyTrigramTrait
 {
 
@@ -189,6 +191,61 @@ trait BodyTrigramTrait
             $row = collect($letters)->where('wx', $wx[0])->where('ke', $wx[1])->first();
             $res[] = $row['letter'];
         }
+        return $res;
+    }
+
+    public function bodyEmptyDeathOrTomb()
+    {
+        $letters = [
+            ['wx' => '金', 'letter' => '目前肺气偏弱，?经络不通。'],
+            ['wx' => '木', 'letter' => '目前肝胆气偏弱，四肢有乏力的现象。'],
+            ['wx' => '水', 'letter' => '目前肾脏气偏弱，血液循环不通。'],
+            ['wx' => '火', 'letter' => '目前的心脏能量偏弱，内火不足。'],
+            ['wx' => '土', 'letter' => '目前脾胃气偏弱。'],
+        ];
+
+        $positions = collect($this->draw['kong_wang']['coords'])->pluck('position')->toArray();
+        $tmp_positions = $this->draw['ru_mu'];
+        foreach ($tmp_positions as $tmp_position) {
+            $tmp = explode('-', $tmp_position);
+            $positions[] = $tmp[1];
+        }
+
+        $allPositions = $this->getAllPosition();
+
+        $gold = [];
+        $res = [];
+        foreach ($positions as $position) {
+            $row = collect($allPositions)->where('column', $position[0])->where('row', $position[1])->first();
+
+            $wx = $this->getWxByDz($row['dz']);
+
+            if ($wx == '金') {
+                if (in_array($position[1], [1, 2])) {
+                    $gold[] = '头部、颈部';
+                }
+
+                if (in_array($position[1], [3, 4])) {
+                    $gold[] = '背部、腹部';
+                }
+
+                if (in_array($position[1], [5, 6])) {
+                    $gold[] = '腿脚部位';
+                }
+            }
+
+            $letter = collect($letters)->where('wx', $wx)->first();
+
+            $res[] = $letter['letter'];
+        }
+
+        $res = array_unique($res);
+
+        if ($gold) {
+            $str = Str::replaceFirst('?', implode('、', $gold), implode('-', $res));
+            $res = explode('-', $str);
+        }
+
         return $res;
     }
 }
