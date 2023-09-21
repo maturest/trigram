@@ -195,6 +195,7 @@ trait ConvergeSetTrait
 
                     $hg = [
                         'hui_ju' => '汇' . $row['six_qin'] . '局',
+                        'hui_wx' => $hui_ju['hui'] ?? '',
                         'torn' => $torn,
                         'jx' => $hui_ju['jx'],
                         'dzs' => $hui_ju['hui_ju'],
@@ -335,5 +336,4 @@ trait ConvergeSetTrait
         }
         return false;
     }
-
 }

@@ -153,4 +153,42 @@ trait BodyTrigramTrait
 
         return array_unique($res);
     }
+
+    public function getAllKeByDongAsTaiJiPoint()
+    {
+        $dong_wxs = $this->getDongYaoWx();
+        $trans_wxs = $this->getTransYaoWx();
+        $date_wxs = $this->getDateWx();
+        $hui_wxs = $this->getHuiJuWx();
+
+        $dong_ke_dong = $this->getKeRelations($dong_wxs, $dong_wxs);
+        $trans_ke_dong = $this->getKeDongByTrans();
+        $date_ke_dong = $this->getKeRelations($dong_wxs, $date_wxs);
+        $date_ke_trans = $this->getKeRelations($trans_wxs, $date_wxs);
+        $hui_ke_dong = $this->getKeRelations($dong_wxs, $hui_wxs);
+
+        $wxs = array_merge($dong_ke_dong, $trans_ke_dong, $date_ke_dong, $date_ke_trans, $hui_ke_dong);
+        $wxs = collect($wxs)->unique()->toArray();
+        return $wxs;
+    }
+
+    public function bodyKe()
+    {
+        $letters = [
+            ['wx' => '木', 'ke' => '土', 'letter' => '注意肠胃的保养，避免有肠胃息肉的隐患。'],
+            ['wx' => '土', 'ke' => '水', 'letter' => '血液循环有不通畅的现象，或有湿疹的可能性，注意肾脏及泌尿系统的保养。'],
+            ['wx' => '水', 'ke' => '火', 'letter' => '身体有炎症的隐患，易有心悸或伤寒发热的现象，注意心脏的保养。'],
+            ['wx' => '火', 'ke' => '金', 'letter' => '容易有经络不通的情况，注意避免筋骨受损，建议做好肺部的健康保养。'],
+            ['wx' => '金', 'ke' => '木', 'letter' => '注意肝胆的养护，避免四肢的磕磕碰碰。'],
+        ];
+
+        $wxs = $this->getAllKeByDongAsTaiJiPoint();
+
+        $res = [];
+        foreach ($wxs as $wx) {
+            $row = collect($letters)->where('wx', $wx[0])->where('ke', $wx[1])->first();
+            $res[] = $row['letter'];
+        }
+        return $res;
+    }
 }

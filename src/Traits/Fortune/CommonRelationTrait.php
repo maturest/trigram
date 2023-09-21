@@ -727,4 +727,75 @@ trait CommonRelationTrait
             && !$this->getIsTransGrowMe($position);
     }
 
+
+    /**
+     * The function "getKeRelations" takes an array of "wxs" and compares each element with another
+     * array "compare", returning an array of pairs where the element from "wxs" is found in "compare".
+     *
+     * @param wxs An array of values representing "wxs".
+     * @param compare The "compare" parameter is an array that contains the values to compare against
+     * the values in the "" array.
+     *
+     * @return an array of arrays. Each inner array contains two elements: the first element is the
+     * value of `` and the second element is the value of ``.
+     */
+    public function getKeRelations($wxs, $compare)
+    {
+        $res = [];
+
+        foreach ($wxs as $me) {
+            $wx = $this->getWhoKeMe($me);
+            if (in_array($wx, $compare)) {
+                $res[] = [$wx, $me];
+            }
+        }
+
+        return $res;
+    }
+
+    /**
+     * The function "getKeDongByTrans" retrieves pairs of values from two different arrays based on
+     * specific conditions.
+     *
+     * @return an array of arrays. Each inner array contains two elements: the first element is the
+     * value of the variable , and the second element is the value of the variable .
+     */
+    public function getKeDongByTrans()
+    {
+        $res = [];
+
+        $dong_positions = $this->getBenDong();
+
+        $trans_positions = $this->getAllHuaPositions();
+
+        foreach ($dong_positions as $dong_position) {
+            $me = $this->getWxByDz($dong_position['dz']);
+            $trans_position = collect($trans_positions)->where('row', $dong_position['row'])->first();
+            if ($trans_position) {
+                $wx = $this->getWhoKeMe($me);
+                if ($wx == $this->getWxByDz($trans_position['dz'])) {
+                    $res[] = [$wx, $me];
+                }
+            }
+        }
+
+        return $res;
+    }
+
+    /**
+     * The function "getHuiJuWx" returns an array of unique "hui_wx" values from a nested array called
+     * "hui_ju".
+     *
+     * @return an array of unique values from the "hui_wx" key in the "hui_ju" array.
+     */
+    public function getHuiJuWx()
+    {
+        $wxs = [];
+        $hui_jus = $this->draw['hui_ju'];
+        foreach ($hui_jus as $hui_ju) {
+            $wx = collect($hui_ju)->pluck('hui_wx')->toArray();
+            $wxs = array_merge($wxs, $wx);
+        }
+        return array_unique($wxs);
+    }
 }
