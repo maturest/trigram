@@ -227,7 +227,7 @@ class DestinyService
      *
      * @return void
      */
-    public function bodyTrigram()
+    public function bodyTrigram($god, $underageOrPregnant = false)
     {
         $he = $this->bodyHe();
 
@@ -239,6 +239,14 @@ class DestinyService
 
         $sha = $this->bodyKeInnerTrigram();
 
-        return array_filter(compact('he', 'chong', 'ke', 'qi', 'sha'));
+        $god_positions = $this->getGodPositions($god);
+        $this->setGodPositions($god_positions);
+
+        $unborn = '';
+        if (!$underageOrPregnant) {
+            $unborn = $this->bodyUnborn($god);
+        }
+
+        return array_filter(compact('he', 'chong', 'ke', 'qi', 'sha', 'unborn'));
     }
 }

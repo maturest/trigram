@@ -315,4 +315,63 @@ trait BodyTrigramTrait
 
         return $res;
     }
+
+    protected function handleUnborn($wx)
+    {
+        $letters = [
+            ['wx' => '木', 'letter' => '建议您去庙里拜神农大帝，请婴灵去报到。'],
+            ['wx' => '火', 'letter' => '建议您去庙里拜关圣帝君，请婴灵去报到。'],
+            ['wx' => '土', 'letter' => '建议您去庙里拜地藏王菩萨，请婴灵去报到。'],
+            ['wx' => '金', 'letter' => '建议您去庙里拜观世音菩萨，请婴灵去报到。'],
+            ['wx' => '水', 'letter' => '建议您去庙里拜玄天上帝，请婴灵去报到。'],
+        ];
+
+        $letter = collect($letters)->where('wx', $wx)->first();
+
+        return $letter['letter'] . "（to解卦人温馨提醒：请自行谨慎判断不适宜送婴灵的具体情况，或是否可以用直接化煞替代。阅后请自行删除。）";
+    }
+
+    public function bodyUnborn()
+    {
+        $guan_positions = $this->getPositionsWithSixQin('官');
+        $brother_positions = $this->getPositionsWithSixQin('兄');
+        $child_positions = $this->getPositionsWithSixQin('子');
+
+        foreach ($guan_positions as $position) {
+            if ($position['is_dong'] || $position['is_an_dong']) {
+                if ($this->getIsHeByPosition($position)) {
+                    if (
+                        $this->isNeedUnborn($position, $brother_positions, 'six_he')
+                        || $this->isNeedUnborn($position, $child_positions, 'six_he')
+                    ) {
+                        return $this->handleUnborn($child_positions[0]['wx']);
+                    }
+                }
+            }
+
+            if ($this->getIsCongByPosition($position)) {
+                if (
+                    $this->isNeedUnborn($position, $brother_positions, 'six_chong')
+                    || $this->isNeedUnborn($position, $child_positions, 'six_chong')
+                ) {
+                    return $this->handleUnborn($child_positions[0]['wx']);
+                }
+            }
+
+            if ($this->getIsRuByPosition($position)) {
+                if (
+                    $this->isNeedUnborn($position, $brother_positions, 'ru_mu')
+                    || $this->isNeedUnborn($position, $child_positions, 'ru_mu')
+                ) {
+                    return $this->handleUnborn($child_positions[0]['wx']);
+                }
+            }
+        }
+
+        if ($this->getKeRelations([$this->getGodWx()], [$child_positions[0]['wx']])) {
+            return $this->handleUnborn($brother_positions[0]['wx']);
+        }
+
+        return '';
+    }
 }
