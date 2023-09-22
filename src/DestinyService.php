@@ -247,6 +247,6 @@ class DestinyService
             $unborn = $this->bodyUnborn($god);
         }
 
-        return array_filter(compact('he', 'chong', 'ke', 'qi', 'sha', 'unborn'));
+        return compact('he', 'chong', 'ke', 'qi', 'sha', 'unborn');
     }
 }
