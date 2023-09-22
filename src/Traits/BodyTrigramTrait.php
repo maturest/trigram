@@ -248,4 +248,71 @@ trait BodyTrigramTrait
 
         return $res;
     }
+
+    public function bodyKeInnerTrigram()
+    {
+        $res = [];
+
+        $day_dz = $this->getDayDz();
+        $day_wx = $this->getDayWx();
+
+        $month_dz = $this->getMonthDz();
+        $month_wx = $this->getMonthWx();
+
+        $dong_wxs = $this->getDongYaoWx();
+
+        $day_ke = $this->getKeRelations($dong_wxs, [$day_wx]);
+        $month_ke = $this->getKeRelations($dong_wxs, [$month_wx]);
+
+        $directions = [
+            ['dz' => '丑', 'direction' => '东北'],
+            ['dz' => '辰', 'direction' => '东南'],
+            ['dz' => '未', 'direction' => '西南'],
+        ];
+
+        if ($day_ke && !$month_ke) {
+            if (in_array($day_dz, ['戌', '亥'])) {
+                $res[] = '有受到西北方五黄煞能量影响，建议择日化解家中五黄煞对我家运有助。卜卦问句为：何日化解家中五黄煞对我家运有助？';
+            }
+
+            if (in_array($day_dz, ['丑', '辰', '未'])) {
+                $row = collect($directions)->where('dz', $day_dz)->first();
+                $res[] = "有受到{$row[$day_dz]}方位的动土能量影响，建议您择日净化住家磁场有助家运。卜卦问句：何日净化家中磁场对我家运有助？";
+            }
+        }
+
+        if ($month_ke && !$day_ke) {
+            if (in_array($month_dz, ['戌', '亥'])) {
+                $res[] = '有受到西北方五黄煞能量影响，建议择日化解家中五黄煞对我家运有助。卜卦问句为：何日化解家中五黄煞对我家运有助？';
+            }
+
+            if (in_array($month_dz, ['丑', '辰', '未'])) {
+                $row = collect($directions)->where('dz', $month_dz)->first();
+                $res[] = "有受到{$row[$month_dz]}方位的动土能量影响，建议您择日净化住家磁场有助家运。卜卦问句：何日净化家中磁场对我家运有助？";
+            }
+        }
+
+        if ($day_ke && $month_ke) {
+            if (in_array($day_dz, ['戌', '亥']) && in_array($month_dz, ['丑', '辰', '未'])) {
+                $row = collect($directions)->where('dz', $month_dz)->first();
+                $res[] = "有受到{$row[$month_dz]}方位的动土能量影响，及西北方五黄煞能量影响，建议择日净化家中磁场及化解家中五黄煞对我家运有助。卜卦问句为：何日净化家中磁场及化解家中五黄煞对我家运有助？";
+            }
+
+            if (in_array($month_dz, ['戌', '亥']) && in_array($day_dz, ['丑', '辰', '未'])) {
+                $row = collect($directions)->where('dz', $day_dz)->first();
+                $res[] = "有受到{$row[$day_dz]}方位的动土能量影响，及西北方五黄煞能量影响，建议择日净化家中磁场及化解家中五黄煞对我家运有助。卜卦问句为：何日净化家中磁场及化解家中五黄煞对我家运有助？";
+            }
+
+            if (in_array($day_dz, ['戌', '亥']) && in_array($month_dz, ['戌', '亥'])) {
+                $res[] = '有受到西北方五黄煞能量影响，建议择日化解家中五黄煞对我家运有助。卜卦问句为：何日化解家中五黄煞对我家运有助？';
+            }
+
+            if (in_array($day_dz, ['丑', '辰', '未']) && in_array($month_dz, ['丑', '辰', '未'])) {
+                $row = collect($directions)->where('dz', $month_dz)->first();
+                $res[] = "有受到{$row[$month_dz]}方位的动土能量影响，建议您择日净化住家磁场有助家运。卜卦问句：何日净化家中磁场对我家运有助？";
+            }
+        }
+
+        return $res;
+    }
 }

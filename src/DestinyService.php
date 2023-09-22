@@ -237,6 +237,8 @@ class DestinyService
 
         $qi = $this->bodyEmptyDeathOrTomb();
 
-        return array_filter(compact('he', 'chong', 'ke', 'qi'));
+        $sha = $this->bodyKeInnerTrigram();
+
+        return array_filter(compact('he', 'chong', 'ke', 'qi', 'sha'));
     }
 }
