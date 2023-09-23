@@ -237,7 +237,7 @@ class DestinyService
 
         $qi = $this->bodyEmptyDeathOrTomb();
 
-        // 完成一部分
+        // 5、完成一部分
         $sha = $this->bodyKeInnerTrigram();
 
         $god_positions = $this->getGodPositions($god);
@@ -249,6 +249,10 @@ class DestinyService
         }
 
         $ying = $this->bodyYing();
+
+        //7、
+
+        //9、
 
         return compact('he', 'chong', 'ke', 'qi', 'sha', 'unborn', 'ying');
     }
