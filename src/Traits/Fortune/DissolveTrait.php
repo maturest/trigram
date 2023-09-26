@@ -56,9 +56,9 @@ trait DissolveTrait
 
         $res[] = $this->getHuaSha($god_wx);
 
-        $res[] = $this->getWholeFortune();
+        $res[] = $this->getWholeFortune('增强个人整体运势，');
 
-        $res[] = $this->getMagnatePower($god_wx);
+        $res[] = $this->getMagnatePower($god_wx, '加强贵人力量，');
 
         $res[] = $year;
 
@@ -160,27 +160,31 @@ trait DissolveTrait
         return '';
     }
 
-    public function getWholeFortune()
+    public function getWholeFortune(string $statement): string
     {
         $position = $this->god_positions[0];
 
-        if ($this->getIsKongWangByPosition($position)
+        if (
+            $this->getIsKongWangByPosition($position)
             || $this->getIsRuByPosition($position)
-            || $this->getIsHeByPosition($position)) {
-            return '增强个人整体运势，';
+            || $this->getIsHeByPosition($position)
+        ) {
+            return $statement;
         }
 
         return '';
     }
 
-    public function getMagnatePower($god_wx)
+    public function getMagnatePower(string $god_wx, string $statement): string
     {
         $positions = $this->getPositionsWhoGrowMe($god_wx);
         foreach ($positions as $position) {
-            if ($this->getIsKongWangByPosition($position)
+            if (
+                $this->getIsKongWangByPosition($position)
                 || $this->getIsRuByPosition($position)
-                || $this->getIsHeByPosition($position)) {
-                return '加强贵人力量，';
+                || $this->getIsHeByPosition($position)
+            ) {
+                return $statement;
             }
         }
         return '';
@@ -242,22 +246,28 @@ trait DissolveTrait
 
                 if ($position['is_dong'] || $position['is_an_dong']) {
                     if ($this->getIsHeByPosition($position)) {
-                        if ($this->isNeedUnborn($position, $brother_positions, 'six_he')
-                            || $this->isNeedUnborn($position, $child_positions, 'six_he')) {
+                        if (
+                            $this->isNeedUnborn($position, $brother_positions, 'six_he')
+                            || $this->isNeedUnborn($position, $child_positions, 'six_he')
+                        ) {
                             return $this->cleanYinQi();
                         }
                     }
 
                     if ($this->getIsCongByPosition($position)) {
-                        if ($this->isNeedUnborn($position, $brother_positions, 'six_chong')
-                            || $this->isNeedUnborn($position, $child_positions, 'six_chong')) {
+                        if (
+                            $this->isNeedUnborn($position, $brother_positions, 'six_chong')
+                            || $this->isNeedUnborn($position, $child_positions, 'six_chong')
+                        ) {
                             return $this->cleanYinQi();
                         }
                     }
 
                     if ($this->getIsRuByPosition($position)) {
-                        if ($this->isNeedUnborn($position, $brother_positions, 'ru_mu')
-                            || $this->isNeedUnborn($position, $child_positions, 'ru_mu')) {
+                        if (
+                            $this->isNeedUnborn($position, $brother_positions, 'ru_mu')
+                            || $this->isNeedUnborn($position, $child_positions, 'ru_mu')
+                        ) {
                             return $this->cleanYinQi();
                         }
                     }
@@ -308,7 +318,7 @@ trait DissolveTrait
     public function unbornKe($position, $relation_positions)
     {
         $wx = $this->getWxByDz($position['dz']);
-        $wx_ke_me = $this->getWhoKeMe($wx);
+        $wx_ke_me = ($wx);
         foreach ($relation_positions as $relation_position) {
             if ($relation_position['is_dong'] || $relation_position['is_an_dong']) {
                 if ($this->getWxByDz($relation_position['dz']) == $wx_ke_me) {
