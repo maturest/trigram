@@ -228,7 +228,7 @@ class DestinyService
      *
      * @return void
      */
-    public function bodyTrigram($god, $underageOrPregnant = false)
+    public function bodyTrigram($god, $underageOrPregnant = false): array
     {
         $he = $this->bodyHe();
 
@@ -259,10 +259,10 @@ class DestinyService
      *
      * @return void
      */
-    public function GodTrigram(string $god)
+    public function godTrigram(string $god): array
     {
         $god_positions = $this->getGodPositions($god);
         $this->setGodPositions($god_positions);
-        dd($this->getGodResultSet($god));
+        return $this->getGodResultSet($god);
     }
 }

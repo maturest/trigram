@@ -283,12 +283,12 @@ trait BodyTrigramTrait
 
             if (in_array($day_dz, ['丑', '辰', '未']) || in_array($month_dz, ['丑', '辰', '未'])) {
                 $row = collect($directions)->where('dz', $day_dz)->first() ? collect($directions)->where('dz', $day_dz)->first() : collect($directions)->where('dz', $month_dz)->first();
-                $res[] = "有受到{$row[$day_dz]}方位的动土能量影响，建议您择日净化住家磁场有助家运。卜卦问句：何日净化家中磁场对我家运有助？";
+                $res[] = '有受到' . $row['direction'] . '方位的动土能量影响，建议您择日净化住家磁场有助家运。卜卦问句：何日净化家中磁场对我家运有助？';
             }
 
             if ((in_array($day_dz, ['戌', '亥']) && in_array($day_dz, ['丑', '辰', '未'])) || (in_array($month_dz, ['戌', '亥']) && in_array($month_dz, ['丑', '辰', '未']))) {
                 $row = collect($directions)->where('dz', $day_dz)->first() ? collect($directions)->where('dz', $day_dz)->first() : collect($directions)->where('dz', $month_dz)->first();
-                $res[] = "有受到{$row[$month_dz]}方位的动土能量影响，及西北方五黄煞能量影响，建议择日净化家中磁场及化解家中五黄煞对我家运有助。卜卦问句为：何日净化家中磁场及化解家中五黄煞对我家运有助？";
+                $res[] = '有受到' . $row['direction'] . '方位的动土能量影响，及西北方五黄煞能量影响，建议择日净化家中磁场及化解家中五黄煞对我家运有助。卜卦问句为：何日净化家中磁场及化解家中五黄煞对我家运有助？';
             }
         }
 
