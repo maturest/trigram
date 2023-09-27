@@ -223,11 +223,6 @@ class DestinyService
     {
     }
 
-    /**
-     * Body Trigram
-     *
-     * @return void
-     */
     public function bodyTrigram($god, $underageOrPregnant = false): array
     {
         $he = $this->bodyHe();
@@ -254,11 +249,6 @@ class DestinyService
         return compact('he', 'chong', 'ke', 'qi', 'sha', 'unborn', 'ying', 'graves', 'used');
     }
 
-    /**
-     * God Trigram
-     *
-     * @return void
-     */
     public function godTrigram(string $god): array
     {
         $god_positions = $this->getGodPositions($god);
