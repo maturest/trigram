@@ -49,7 +49,7 @@ trait AccTrait
             ['wx' => '火', 'color' => '红色'],
             ['wx' => '土', 'color' => '黄色'],
             ['wx' => '金', 'color' => '白色'],
-            ['wx' => '水', 'color' => '黑色或蓝色'],
+            ['wx' => '水', 'color' => '蓝色'],
         ];
 
         $goods = [
