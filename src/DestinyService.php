@@ -8,10 +8,11 @@ use Maturest\Trigram\Exceptions\InvalidArgumentException;
 use Maturest\Trigram\Traits\DestinyTrait;
 use Maturest\Trigram\Traits\FortuneTrait;
 use Maturest\Trigram\Traits\BodyTrigramTrait;
+use Maturest\Trigram\Traits\GodTrigramTrait;
 
 class DestinyService
 {
-    use DestinyTrait, FortuneTrait, BodyTrigramTrait;
+    use DestinyTrait, FortuneTrait, BodyTrigramTrait, GodTrigramTrait;
 
     private static $instance;
 
@@ -222,12 +223,7 @@ class DestinyService
     {
     }
 
-    /**
-     * Body Trigram
-     *
-     * @return void
-     */
-    public function bodyTrigram($god, $underageOrPregnant = false)
+    public function bodyTrigram($god, $underageOrPregnant = false): array
     {
         $he = $this->bodyHe();
 
@@ -242,18 +238,21 @@ class DestinyService
 
         $god_positions = $this->getGodPositions($god);
         $this->setGodPositions($god_positions);
-
         $unborn = '';
-        if (!$underageOrPregnant) {
-            $unborn = $this->bodyUnborn($god);
-        }
-
+        if (!$underageOrPregnant) $unborn = $this->bodyUnborn($god);
         $ying = $this->bodyYing();
+        // 第七项
+        $graves = $this->bodyAncestralGraves($god_positions);
+        // 第九项
+        $used = $this->bodyGodResult($god);
 
-        //7、
+        return compact('he', 'chong', 'ke', 'qi', 'sha', 'unborn', 'ying', 'graves', 'used');
+    }
 
-        //9、
-
-        return compact('he', 'chong', 'ke', 'qi', 'sha', 'unborn', 'ying');
+    public function godTrigram(string $god): array
+    {
+        $god_positions = $this->getGodPositions($god);
+        $this->setGodPositions($god_positions);
+        return $this->getGodResultSet($god);
     }
 }

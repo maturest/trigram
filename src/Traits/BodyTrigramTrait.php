@@ -252,64 +252,43 @@ trait BodyTrigramTrait
     public function bodyKeInnerTrigram()
     {
         $res = [];
-
         $day_dz = $this->getDayDz();
         $day_wx = $this->getDayWx();
-
         $month_dz = $this->getMonthDz();
         $month_wx = $this->getMonthWx();
-
         $dong_wxs = $this->getDongYaoWx();
+        $trans_wxs = $this->getTransYaoWx();
+        /**=================条件一、日月来克or冲卦内的动爻or卦内有动爻入墓or合到日月=======================***/
+        /**========分解开来意思就是只要(动爻or化爻)和(日令or月令)产生五行生克、六冲、六合、入墓其中任意一个条件都满足条件一=====================***/
 
-        $day_ke = $this->getKeRelations($dong_wxs, [$day_wx]);
-        $month_ke = $this->getKeRelations($dong_wxs, [$month_wx]);
-
+        // 1、(动爻or化爻)和(日令or月令)克
+        $day_ke_dong = !empty($this->getKeRelations($dong_wxs, [$day_wx]));
+        $month_ke_dong = !empty($this->getKeRelations($dong_wxs, [$month_wx]));
+        $day_ke_hua = !empty($this->getKeRelations($trans_wxs, [$day_wx]));
+        $month_ke_hua = !empty($this->getKeRelations($trans_wxs, [$month_wx]));
+        // 2、(动爻or化爻)和(日令or月令)冲
+        $is_chong = $this->getIsRelationByDate($this->draw['six_chong']);
+        // 3、(动爻or化爻)和(日令or月令)合
+        $is_he = $this->getIsRelationByDate($this->draw['six_he']);
+        // 3、(动爻or化爻)和(日令or月令)入
+        $is_ru = $this->getIsRelationByDate($this->draw['ru_mu']);
         $directions = [
             ['dz' => '丑', 'direction' => '东北'],
             ['dz' => '辰', 'direction' => '东南'],
             ['dz' => '未', 'direction' => '西南'],
         ];
 
-        if ($day_ke && !$month_ke) {
-            if (in_array($day_dz, ['戌', '亥'])) {
-                $res[] = '有受到西北方五黄煞能量影响，建议择日化解家中五黄煞对我家运有助。卜卦问句为：何日化解家中五黄煞对我家运有助？';
+        if ($day_ke_dong || $month_ke_dong || $day_ke_hua || $month_ke_hua || $is_chong || $is_he || $is_ru) {
+            if (in_array($day_dz, ['戌', '亥']) || in_array($month_dz, ['戌', '亥'])) $res[] = '有受到西北方五黄煞能量影响，建议择日化解家中五黄煞对我家运有助。卜卦问句为：何日化解家中五黄煞对我家运有助？';
+
+            if (in_array($day_dz, ['丑', '辰', '未']) || in_array($month_dz, ['丑', '辰', '未'])) {
+                $row = collect($directions)->where('dz', $day_dz)->first() ? collect($directions)->where('dz', $day_dz)->first() : collect($directions)->where('dz', $month_dz)->first();
+                $res[] = '有受到' . $row['direction'] . '方位的动土能量影响，建议您择日净化住家磁场有助家运。卜卦问句：何日净化家中磁场对我家运有助？';
             }
 
-            if (in_array($day_dz, ['丑', '辰', '未'])) {
-                $row = collect($directions)->where('dz', $day_dz)->first();
-                $res[] = "有受到{$row[$day_dz]}方位的动土能量影响，建议您择日净化住家磁场有助家运。卜卦问句：何日净化家中磁场对我家运有助？";
-            }
-        }
-
-        if ($month_ke && !$day_ke) {
-            if (in_array($month_dz, ['戌', '亥'])) {
-                $res[] = '有受到西北方五黄煞能量影响，建议择日化解家中五黄煞对我家运有助。卜卦问句为：何日化解家中五黄煞对我家运有助？';
-            }
-
-            if (in_array($month_dz, ['丑', '辰', '未'])) {
-                $row = collect($directions)->where('dz', $month_dz)->first();
-                $res[] = "有受到{$row[$month_dz]}方位的动土能量影响，建议您择日净化住家磁场有助家运。卜卦问句：何日净化家中磁场对我家运有助？";
-            }
-        }
-
-        if ($day_ke && $month_ke) {
-            if (in_array($day_dz, ['戌', '亥']) && in_array($month_dz, ['丑', '辰', '未'])) {
-                $row = collect($directions)->where('dz', $month_dz)->first();
-                $res[] = "有受到{$row[$month_dz]}方位的动土能量影响，及西北方五黄煞能量影响，建议择日净化家中磁场及化解家中五黄煞对我家运有助。卜卦问句为：何日净化家中磁场及化解家中五黄煞对我家运有助？";
-            }
-
-            if (in_array($month_dz, ['戌', '亥']) && in_array($day_dz, ['丑', '辰', '未'])) {
-                $row = collect($directions)->where('dz', $day_dz)->first();
-                $res[] = "有受到{$row[$day_dz]}方位的动土能量影响，及西北方五黄煞能量影响，建议择日净化家中磁场及化解家中五黄煞对我家运有助。卜卦问句为：何日净化家中磁场及化解家中五黄煞对我家运有助？";
-            }
-
-            if (in_array($day_dz, ['戌', '亥']) && in_array($month_dz, ['戌', '亥'])) {
-                $res[] = '有受到西北方五黄煞能量影响，建议择日化解家中五黄煞对我家运有助。卜卦问句为：何日化解家中五黄煞对我家运有助？';
-            }
-
-            if (in_array($day_dz, ['丑', '辰', '未']) && in_array($month_dz, ['丑', '辰', '未'])) {
-                $row = collect($directions)->where('dz', $month_dz)->first();
-                $res[] = "有受到{$row[$month_dz]}方位的动土能量影响，建议您择日净化住家磁场有助家运。卜卦问句：何日净化家中磁场对我家运有助？";
+            if ((in_array($day_dz, ['戌', '亥']) && in_array($day_dz, ['丑', '辰', '未'])) || (in_array($month_dz, ['戌', '亥']) && in_array($month_dz, ['丑', '辰', '未']))) {
+                $row = collect($directions)->where('dz', $day_dz)->first() ? collect($directions)->where('dz', $day_dz)->first() : collect($directions)->where('dz', $month_dz)->first();
+                $res[] = '有受到' . $row['direction'] . '方位的动土能量影响，及西北方五黄煞能量影响，建议择日净化家中磁场及化解家中五黄煞对我家运有助。卜卦问句为：何日净化家中磁场及化解家中五黄煞对我家运有助？';
             }
         }
 
@@ -446,5 +425,143 @@ trait BodyTrigramTrait
         }
 
         return '';
+    }
+
+    // 第七项
+    public function bodyAncestralGraves($god_positions)
+    {
+        $content = '有祖坟能量的影响，关于祖坟详细情况请咨询李氏易学客服处理';
+        // 1、官爻为动爻 and 父爻为动爻 and (官爻or父爻)有被冲、被合、入墓、被克
+        $guan_positions = $this->getPositionsWithSixQin('官');
+        $father_positions = $this->getPositionsWithSixQin('父');
+        $positions = array_merge($guan_positions, $father_positions);
+        if ($this->guanAndFatherIsDong($guan_positions) && $this->guanAndFatherIsDong($father_positions) && $this->guanAndFatherIsKeCongHeRu($positions)) return $content;
+        // 2、(官爻or父爻)冲、克用神的地支 or 用神的地支入墓到(官爻or父爻)
+        if ($this->guanOrFatherIsKeCongGod($positions, $god_positions[0])) return $content;
+        // 3、(官爻是空亡 and 父爻是动爻) or (父爻是空亡 and 官爻是动爻) or (官爻是空亡 and 父爻是空亡)
+        if (
+            ($this->guanIsKong($guan_positions) && $this->guanAndFatherIsDong($father_positions)) ||
+            ($this->guanIsKong($father_positions) && $this->guanAndFatherIsDong($guan_positions)) ||
+            ($this->guanIsKong($guan_positions) && $this->guanIsKong($father_positions))
+        ) {
+            return $content;
+        }
+
+        return '';
+    }
+
+    // 第九项
+    public function bodyGodResult(string $god): string
+    {
+        return $this->bodyGodfirstParagraph($god === '父' ? true : false);
+    }
+
+    private function guanAndFatherIsDong(array $positions): bool
+    {
+        $judge = false;
+        foreach ($positions as $position) {
+            if ($position['trans'] === false) {
+                if ($this->getIsDongYaoByPosition($position)) {
+                    $judge = true;
+                    break;
+                }
+            }
+        }
+
+        return $judge;
+    }
+
+    private function guanAndFatherIsKeCongHeRu(array $positions): bool
+    {
+        $judge = false;
+        foreach ($positions as $position) {
+            if ($position['trans'] === false) {
+                if ($this->hasOneKeCongHeRu($position)) {
+                    $judge = true;
+                    break;
+                }
+            }
+        }
+
+        return $judge;
+    }
+
+    private function guanOrFatherIsKeCongGod(array $positions, array $god): bool
+    {
+        $judge = false;
+        foreach ($positions as $position) {
+            if ($position['trans'] === false) {
+                if (
+                    $this->isCongRelation($position, $god) ||
+                    ($god['wx'] == $this->getWhoKeMe($position)) ||
+                    $this->isRuRelation($position, $god)
+                ) {
+                    $judge = true;
+                    break;
+                }
+            }
+        }
+
+        return $judge;
+    }
+
+    private function guanIsKong(array $positions): bool
+    {
+        $judge = false;
+        foreach ($positions as $position) {
+            if ($position['trans'] === false) {
+                if ($this->getIsKongWangByPosition($position)) {
+                    $judge = true;
+                    break;
+                }
+            }
+        }
+
+        return $judge;
+    }
+
+    private function bodyGodfirstParagraph(bool $is_bi_wang): string
+    {
+        $letters = [
+            ['wx' => '火', 'is_cong' => false, 'bai' => '朝东拜神农大帝，????'],
+            ['wx' => '土', 'is_cong' => false, 'bai' => '朝南拜关圣帝君，????'],
+            ['wx' => '金', 'is_cong' => false, 'bai' => '朝西拜地藏王菩萨，????'],
+            ['wx' => '金', 'is_cong' => true, 'bai' => '朝西拜观世音菩萨，????'],
+            ['wx' => '水', 'is_cong' => false, 'bai' => '朝西拜观世音菩萨，????'],
+            ['wx' => '水', 'is_cong' => true, 'bai' => '朝北拜玄天上帝，????'],
+            ['wx' => '木', 'is_cong' => false, 'bai' => '朝北拜玄天上帝，????'],
+        ];
+        $wx = $this->getGodWx();
+        $grow_me_wx = $is_bi_wang ? $wx : $this->getWhoGrowMe($wx);
+        $is_cong = false;
+        if (in_array($wx, ['金', '水']))  $is_cong = $this->getIsCongByPosition($this->god_positions[0]);
+        $row = collect($letters)->where('wx', $grow_me_wx)->where('is_cong', $is_cong)->first();
+        return Str::replaceArray('?', $this->getbodyGodConditions(), $row['bai']);
+    }
+
+    private function getbodyGodConditions()
+    {
+        $res = [];
+        $god_wx = $this->getGodWx();
+        $res[] = $this->getHuaSha($god_wx);
+        $res[] = $this->getWholeFortune('找回魂魄，');
+        if (Str::contains($this->question, ['身体', '健康'])) $statement = ['找回元神，', '化解元神受制，'];
+        else $statement = ['', ''];
+        $res[] = $this->getMagnatePower($god_wx, $statement[0]);
+        $res[] = $this->getDissolveRoad($god_wx, $statement[1]);
+
+        return $res;
+    }
+
+    private function getIsRelationByDate(array $needle): bool
+    {
+        foreach ($needle as $arr) {
+            if (!empty($arr)) {
+                $positions = explode('-', $arr);
+                // 如果日令或者月令在里面就代表他必定满足
+                if (in_array(61, $positions) || in_array(62, $positions)) return true;
+            }
+        }
+        return false;
     }
 }
