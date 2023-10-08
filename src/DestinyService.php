@@ -246,13 +246,29 @@ class DestinyService
         // 第九项
         $used = $this->bodyGodResult($god);
 
-        return compact('he', 'chong', 'ke', 'qi', 'sha', 'unborn', 'ying', 'graves', 'used');
+        $result = compact('he', 'chong', 'ke', 'qi', 'sha', 'unborn', 'ying', 'graves', 'used');
+        return $this->replaceLastSymbol($result);
     }
 
     public function godTrigram(string $god): array
     {
         $god_positions = $this->getGodPositions($god);
         $this->setGodPositions($god_positions);
-        return $this->getGodResultSet($god);
+        return $this->replaceLastSymbol($this->getGodResultSet($god));
+    }
+
+    public function replaceLastSymbol(array $result): array
+    {
+        foreach ($result as $key => $value) {
+            if (empty($value)) continue;
+            if (is_array($value)) {
+                foreach ($value as $k => $v) {
+                    if (substr($v, -3) == '，') $result[$key][$k] = Str::replaceLast('，', '。', $v);;
+                }
+            } else {
+                if (substr($value, -3) == '，')$result[$key] =  Str::replaceLast('，', '。', $value);
+            }
+        }
+        return $result;
     }
 }

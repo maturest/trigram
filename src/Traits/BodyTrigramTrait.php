@@ -430,7 +430,7 @@ trait BodyTrigramTrait
     // 第七项
     public function bodyAncestralGraves($god_positions)
     {
-        $content = '有祖坟能量的影响，关于祖坟详细情况请咨询李氏易学客服处理';
+        $content = '有祖坟能量的影响，关于祖坟详细情况请咨询李氏易学客服处理。';
         // 1、官爻为动爻 and 父爻为动爻 and (官爻or父爻)有被冲、被合、入墓、被克
         $guan_positions = $this->getPositionsWithSixQin('官');
         $father_positions = $this->getPositionsWithSixQin('父');
