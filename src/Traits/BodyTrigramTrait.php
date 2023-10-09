@@ -131,24 +131,24 @@ trait BodyTrigramTrait
             // 如果是子午、巳亥冲，并且动爻对应的地支是午或巳，
             if (in_array($row_a['dz'], ['子', '午', '巳', '亥'])) {
                 $row_b = collect($allPositions)->where('column', $point_b[0])->where('row', $point_b[1])->first();
-                if (($point_a[0] == 6 && in_array($row_a['dz'], ['午', '巳']))
-                    || ($point_b[0] == 6 && in_array($row_b['dz'], ['午', '巳']))
+                if (($point_a[0] == 6 && in_array($row_a['dz'], ['子', '午', '巳', '亥']))
+                    || ($point_b[0] == 6 && in_array($row_b['dz'], ['子', '午', '巳', '亥']))
                 ) {
                     $res[] = '注意身体的炎症隐患，避免由炎症引起的发热现象。';
                 } else {
-                    $res[] = '身体有炎症的隐患，易有心悸或伤寒发热的现象，注意心脏的养护。';
+                    $res[] = '身体有炎症的现象，易有心悸或伤寒发热的情况出现，注意心脏的养护。';
                 }
             }
 
             // 如果是卯酉，寅申冲并且动爻对应的地支是卯或申
             if (in_array($row_a['dz'], ['卯', '酉', '寅', '申',])) {
                 $row_b = collect($allPositions)->where('column', $point_b[0])->where('row', $point_b[1])->first();
-                if (($point_a[0] == 6 && in_array($row_a['dz'], ['卯', '申']))
-                    || ($point_b[0] == 6 && in_array($row_b['dz'], ['卯', '申']))
+                if (($point_a[0] == 6 && in_array($row_a['dz'], ['卯', '酉', '寅', '申',]))
+                    || ($point_b[0] == 6 && in_array($row_b['dz'], ['卯', '酉', '寅', '申',]))
                 ) {
                     $res[] = '注意肝脏的保养，神经性问题的隐患，避免脊柱侧弯或四肢受伤的现象。';
                 } else {
-                    $res[] = '注意或有脊柱侧弯的可能，避免四肢受伤的现象，注意肝胆养护。';
+                    $res[] = '注意或有脊柱侧弯的情况，避免四肢受伤的现象，注意肝胆养护。';
                 }
             }
         }
