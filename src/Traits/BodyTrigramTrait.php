@@ -197,11 +197,11 @@ trait BodyTrigramTrait
     public function bodyEmptyDeathOrTomb()
     {
         $letters = [
-            ['wx' => '金', 'letter' => '目前肺气偏弱，?经络不通。'],
-            ['wx' => '木', 'letter' => '目前肝胆气偏弱，四肢有乏力的现象。'],
-            ['wx' => '水', 'letter' => '目前肾脏气偏弱，血液循环不通。'],
-            ['wx' => '火', 'letter' => '目前的心脏能量偏弱，内火不足。'],
-            ['wx' => '土', 'letter' => '目前脾胃气偏弱。'],
+            ['wx' => '金', 'letter' => '肺气偏弱，?经络不通。'],
+            ['wx' => '木', 'letter' => '肝胆气偏弱，四肢有乏力的现象。'],
+            ['wx' => '水', 'letter' => '肾脏气偏弱，血液循环不通。'],
+            ['wx' => '火', 'letter' => '心脏能量偏弱，内火不足。'],
+            ['wx' => '土', 'letter' => '脾胃气偏弱。'],
         ];
 
         $positions = collect($this->draw['kong_wang']['coords'])->pluck('position')->toArray();
@@ -245,6 +245,7 @@ trait BodyTrigramTrait
             $str = Str::replaceFirst('?', implode('、', $gold), implode('-', $res));
             $res = explode('-', $str);
         }
+        if (!empty($res)) array_unshift($res, ['目前']);
 
         return $res;
     }
