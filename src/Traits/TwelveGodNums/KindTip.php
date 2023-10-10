@@ -7,18 +7,18 @@ trait KindTip
     // 项链部分（年-月）
     protected $default_content = [
         0 => '<div>' . '1. 关于大成局摆放方式的演示，我们有录制好说明视频，请您用自己的微信登录“易智荟” —查看演示视频。' . '</div>',
-        1 => '<div>' . '2. 大成局摆放位置的重点：<span style="color: blue;font-weight:bold;">客厅或办公室以自己常坐的位置为太极点，去找相应方位的摆放方位；卧室以两枕头中间的位置为太极点，去找相应方位的摆放方位；</span>如仍有不清楚的可以联系客服微信“李氏易学客服 1”或“李氏易学客服 2”，我们会给到您精准的学术回答。' . '</div>',
+        1 => '<div>' . '2. 大成局摆放位置的重点：<span style="color: #0247ac;font-weight:bold;">客厅或办公室以自己常坐的位置为太极点，去找相应方位的摆放方位；卧室以两枕头中间的位置为太极点，去找相应方位的摆放方位；</span>如仍有不清楚的可以联系客服微信“李氏易学客服 1”或“李氏易学客服 2”，我们会给到您精准的学术回答。' . '</div>',
         2 => '<div>' . '3. 温馨提醒十二神数调整中的地时通关（大成局的摆放到位）比人时通关（身上通关饰品的佩戴）更重要。' . '</div>',
-        3 => '<div>' . '4. 温馨提醒您<span style="color: blue;font-weight:bold;"> 2023 年的五黄煞在西北方</span>，留意住家及办公室的西北方是否有动土，如有，需及时进行化解五黄煞的处理。' . '</div>',
+        3 => '<div>' . '4. 温馨提醒您<span style="color: #0247ac;font-weight:bold;"> 2023 年的五黄煞在西北方</span>，留意住家及办公室的西北方是否有动土，如有，需及时进行化解五黄煞的处理。' . '</div>',
         4 => '<div>' . '5. 若有出远门，建议您在出行前三天卜出行卦；如果能更早确定行程，也可提前至出行前1 个月左右卜出行卦化煞，并在出行前三天再次卜出行卦确认。出行卦请务必化至无煞后再出行。' . '</div>',
-        5 => '<div>' . '6. 建议您每年年初正月初一到十五，卜当年的年运势卦。温馨提醒您尤其在<span style="background-color: yellow;color:red;font-weight:bold;">?</span>的正月十五日前最好要卜【年运势卦】。' . '</div>',
-        6 => '<div>' . '7. 建议您在<span style="background-color: yellow;color:red;font-weight:bold;">阴历的?</span>卜【月运势卦】。' . '</div>',
-        7 => '<div>' . '8. 建议您在<span style="background-color: yellow;color:red;font-weight:bold;">每日的?</span>尽量不做重大决定，开车或者外出请注意安全。' . '</div>',
-        8 => '<div>' . '9. 温馨提醒您<span style="background-color: yellow;color:red;font-weight:bold;">尽量少去?，</span>若一定需要去，提前卜出行卦，若有出远门，建议您一定在出行前三天卜出行卦。' . '</div>',
+        5 => '<div>' . '6. 建议您每年年初正月初一到十五，卜当年的年运势卦。温馨提醒您尤其在<span style="color:#ff0000;font-weight:bold;">?</span>的正月十五日前最好要卜【年运势卦】。' . '</div>',
+        6 => '<div>' . '7. 建议您在<span style="color: #ff0000;font-weight:bold;">阴历的?</span>卜【月运势卦】。' . '</div>',
+        7 => '<div>' . '8. 建议您在<span style="color: #ff0000;font-weight:bold;">每日的?</span>尽量不做重大决定，开车或者外出请注意安全。' . '</div>',
+        8 => '<div>' . '9. 温馨提醒您<span style="color: #ff0000;font-weight:bold;">尽量少去?，</span>若一定需要去，提前卜出行卦，若有出远门，建议您一定在出行前三天卜出行卦。' . '</div>',
         9 => '<div>' . '10. 建议您检查祖坟能量磁场。' . '</div>',
-        10 => '<div>' . '11. 建议您根据以上个人十二神数的通关调整，先行购买齐全大成局通关摆件及通关饰品后，可先卜您本人的身体卦，调整好自身的身体能量磁场，有煞化煞；在身体能量调整好后，再卜卦择日摆放大成局及佩戴通关饰品，并在择日卦给出的吉日吉时中，进行通关物品的摆放及佩戴，<span style="color: blue;font-weight:bold;">建议卜卦问句如下：</span>' . '</div>',
-        11 => '<div style="color: blue;font-weight:bold;">' . '1、我目前身体如何？' . '</div>',
-        12 => '<div style="color: blue;font-weight:bold;">' . '2、何日摆放大成局及佩戴通关饰品对我未来有助？（温馨提醒：以上是择日卦是一个完整的卜卦问句，卜卦时要观想您摆放大成局的位置及摆放的物品，通关饰品佩戴的是什么及佩戴位置）' . '</div>',
+        10 => '<div>' . '11. 建议您根据以上个人十二神数的通关调整，先行购买齐全大成局通关摆件及通关饰品后，可先卜您本人的身体卦，调整好自身的身体能量磁场，有煞化煞；在身体能量调整好后，再卜卦择日摆放大成局及佩戴通关饰品，并在择日卦给出的吉日吉时中，进行通关物品的摆放及佩戴，<span style="color: #2544ff;font-weight:bold;">建议卜卦问句如下：</span>' . '</div>',
+        11 => '<div>' . '1、我目前身体如何？' . '</div>',
+        12 => '<div>' . '2、何日摆放大成局及佩戴通关饰品对我未来有助？（温馨提醒：以上是择日卦是一个完整的卜卦问句，卜卦时要观想您摆放大成局的位置及摆放的物品，通关饰品佩戴的是什么及佩戴位置）' . '</div>',
     ];
 
     protected $year = [
@@ -187,7 +187,7 @@ trait KindTip
         foreach ($values as $value) {
             $result .= $value[0] . '、' . $value[1] . '、';
         }
-
+        if ($getValueCallback[1] === 'get_hour' && !empty($result)) $result = $this->sortChineseHours($result);
         if ($getValueCallback[1] === 'get_month') $result = $this->sortChineseMonths(explode('、', rtrim($result, '、')));
         $result = $this->removeDuplicates($result);
         $original[$index] = str_replace('?', rtrim($result, '、'), $original[$index]);
@@ -222,6 +222,33 @@ trait KindTip
             $result .= $value . '、';
         }
         return $result;
+    }
+
+    protected function sortChineseHours(string $content): string
+    {
+        $original = array_filter(explode('、', $content));
+        // 定义一个月份与数字的映射关系数组
+        $hourMapping = [
+            '子时（23:00-1:00）' => 1,
+            '丑时（1:00-3:00）' => 2,
+            '寅时（3:00-5:00）' => 3,
+            '卯时（5:00-7:00）' => 4,
+            '辰时（7:00-9:00）' => 5,
+            '巳时（9:00-11:00）' => 6,
+            '午时（11:00-13:00）' => 7,
+            '未时（13:00-15:00）' => 8,
+            '申时（15:00-17:00）' => 9,
+            '酉时（17:00-19:00）' => 10,
+            '戌时（19:00-21:00）' => 11,
+            '亥时（21:00-23:00）' => 12,
+        ];
+        usort($original, function ($a, $b) use ($hourMapping) {
+            $monthA = $hourMapping[$a];
+            $monthB = $hourMapping[$b];
+            return $monthA - $monthB;
+        });
+
+        return implode('、', $original);
     }
 
     protected function removeDuplicates(string $need): string
