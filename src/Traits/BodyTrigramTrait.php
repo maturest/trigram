@@ -245,7 +245,7 @@ trait BodyTrigramTrait
             $str = Str::replaceFirst('?', implode('、', $gold), implode('-', $res));
             $res = explode('-', $str);
         }
-        if (!empty($res)) array_unshift($res, ['目前']);
+        if (!empty($res)) array_unshift($res, '目前');
 
         return $res;
     }
