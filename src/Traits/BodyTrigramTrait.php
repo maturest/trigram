@@ -348,7 +348,7 @@ trait BodyTrigramTrait
             }
         }
 
-        if ($this->getKeRelations([$this->getGodWx()], [$child_positions[0]['wx']])) {
+        if ((!empty($brother_positions)) && $this->getKeRelations([$this->getGodWx()], [$child_positions[0]['wx']])) {
             return $this->handleUnborn($brother_positions[0]['wx']);
         }
 
