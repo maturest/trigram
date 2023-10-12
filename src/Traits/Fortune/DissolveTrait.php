@@ -121,8 +121,8 @@ trait DissolveTrait
         }
 
         $shi_position = $this->getShiOrYingPosition();
-        $is_cong = $this->getIsCongByPosition($shi_position['position']);
-        $is_ke = $this->getIsKeByPosition($shi_position['position']);
+        $is_cong = $this->getIsCongByPosition($shi_position);
+        $is_ke = $this->getIsKeByPosition($shi_position);
 
         $row = collect($letters)->where('wx', $god_wx)->where('ke', $is_ke)->where('cong', $is_cong)->first();
 

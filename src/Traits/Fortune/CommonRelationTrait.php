@@ -255,7 +255,13 @@ trait CommonRelationTrait
         $positions = [];
         foreach ($this->getDongYao() as $yao) {
             if ($wx_grow_me == $this->getWxByDz($yao['dz'])) {
-                $positions[] = ['position' => $yao['column'] . $yao['row']];
+                $positions[] = [
+                    'position' => $yao['column'] . $yao['row'],
+                    'is_dong' => $yao['is_dong'],
+                    'is_an_dong' => $yao['is_an_dong'],
+                    'dz' => $yao['dz'],
+                    'wx' => $this->getWxByDz($yao['dz']),
+                ];
             }
         }
 

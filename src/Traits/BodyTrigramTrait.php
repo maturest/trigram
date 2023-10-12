@@ -452,9 +452,9 @@ trait BodyTrigramTrait
     }
 
     // 第九项
-    public function bodyGodResult(string $god): string
+    public function bodyGodResult(): string
     {
-        return $this->bodyGodfirstParagraph($god === '父' ? true : false);
+        return $this->bodyGodfirstParagraph();
     }
 
     private function guanAndFatherIsDong(array $positions): bool
@@ -521,7 +521,7 @@ trait BodyTrigramTrait
         return $judge;
     }
 
-    private function bodyGodfirstParagraph(bool $is_bi_wang): string
+    private function bodyGodfirstParagraph(): string
     {
         $letters = [
             ['wx' => '火', 'is_cong' => false, 'bai' => '朝东拜神农大帝，????'],
@@ -533,10 +533,9 @@ trait BodyTrigramTrait
             ['wx' => '木', 'is_cong' => false, 'bai' => '朝北拜玄天上帝，????'],
         ];
         $wx = $this->getGodWx();
-        $grow_me_wx = $is_bi_wang ? $wx : $this->getWhoGrowMe($wx);
         $is_cong = false;
         if (in_array($wx, ['金', '水']))  $is_cong = $this->getIsCongByPosition($this->god_positions[0]);
-        $row = collect($letters)->where('wx', $grow_me_wx)->where('is_cong', $is_cong)->first();
+        $row = collect($letters)->where('wx', $wx)->where('is_cong', $is_cong)->first();
         return Str::replaceArray('?', $this->getbodyGodConditions(), $row['bai']);
     }
 
