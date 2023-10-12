@@ -185,7 +185,9 @@ trait KindTip
             $values[] = $getValueCallback($start, $end);
         }
         foreach ($values as $value) {
-            $result .= $value[0] . '、' . $value[1] . '、';
+            if (isset($value[0])) {
+                $result .= $value[0] . '、' . $value[1] . '、';
+            }
         }
         if ($getValueCallback[1] === 'get_hour' && !empty($result)) $result = $this->sortChineseHours($result);
         if ($getValueCallback[1] === 'get_month') $result = $this->sortChineseMonths(explode('、', rtrim($result, '、')));
