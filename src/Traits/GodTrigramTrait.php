@@ -10,7 +10,7 @@ trait GodTrigramTrait
     /**
      * e.g.:朝东拜神农大帝，化金煞，找回魂魄，找回元神，化解元神受制，请神农大帝加持护佑。
      */
-    public function firstParagraph(bool $is_bi_wang): string
+    public function firstParagraph(): string
     {
         $letters = [
             ['wx' => '火', 'is_cong' => false, 'bai' => '朝东拜神农大帝，????请神农大帝加持护佑。'],
@@ -22,11 +22,9 @@ trait GodTrigramTrait
             ['wx' => '木', 'is_cong' => false, 'bai' => '朝北拜玄天上帝，????请玄天上帝加持护佑。'],
         ];
         $wx = $this->getGodWx();
-        $grow_me_wx = $is_bi_wang ? $wx : $this->getWhoGrowMe($wx);
         $is_cong = false;
         if (in_array($wx, ['金', '水']))  $is_cong = $this->getIsCongByPosition($this->god_positions[0]);
-
-        $row = collect($letters)->where('wx', $grow_me_wx)->where('is_cong', $is_cong)->first();
+        $row = collect($letters)->where('wx', $wx)->where('is_cong', $is_cong)->first();
 
         return Str::replaceArray('?', $this->getGodConditions(), $row['bai']);
     }
@@ -61,7 +59,7 @@ trait GodTrigramTrait
     public function getGodResultSet(string $god): array
     {
         $result = [];
-        $result[] = $this->firstParagraph($god === '父' ? true : false);
+        $result[] = $this->firstParagraph();
         $result[] = $this->acc($god);
         return $result;
     }

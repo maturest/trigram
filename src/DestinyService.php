@@ -244,7 +244,7 @@ class DestinyService
         // 第七项
         $graves = $this->bodyAncestralGraves($god_positions);
         // 第九项
-        $used = $this->bodyGodResult($god);
+        $used = $this->bodyGodResult();
 
         $result = compact('he', 'chong', 'ke', 'qi', 'sha', 'unborn', 'ying', 'graves', 'used');
         return $this->replaceLastSymbol($result);
