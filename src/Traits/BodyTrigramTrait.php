@@ -250,9 +250,9 @@ trait BodyTrigramTrait
         return $res;
     }
 
-    public function bodyKeInnerTrigram()
+    public function bodyKeInnerTrigram(): string
     {
-        $res = [];
+        $res = '';
         $day_dz = $this->getDayDz();
         $day_wx = $this->getDayWx();
         $month_dz = $this->getMonthDz();
@@ -279,18 +279,22 @@ trait BodyTrigramTrait
             ['dz' => '未', 'direction' => '西南'],
         ];
 
+        $first = 1;
         if ($day_ke_dong || $month_ke_dong || $day_ke_hua || $month_ke_hua || $is_chong || $is_he || $is_ru) {
-            if (in_array($day_dz, ['戌', '亥']) || in_array($month_dz, ['戌', '亥'])) $res[] = '有受到西北方五黄煞能量影响，建议择日化解家中五黄煞对我家运有助。卜卦问句为：何日化解家中五黄煞对我家运有助？';
+            if (in_array($day_dz, ['戌', '亥']) || in_array($month_dz, ['戌', '亥'])) {
+                $res = '有受到西北方五黄煞能量影响，建议择日化解家中五黄煞对我家运有助。卜卦问句为：何日化解家中五黄煞对我家运有助？';
+                $first++;
+            }
 
             if (in_array($day_dz, ['丑', '辰', '未']) || in_array($month_dz, ['丑', '辰', '未'])) {
                 $row = collect($directions)->where('dz', $day_dz)->first() ? collect($directions)->where('dz', $day_dz)->first() : collect($directions)->where('dz', $month_dz)->first();
-                $res[] = '有受到' . $row['direction'] . '方位的动土能量影响，建议您择日净化住家磁场有助家运。卜卦问句：何日净化家中磁场对我家运有助？';
+                $res = '有受到' . $row['direction'] . '方位的动土能量影响，建议您择日净化住家磁场有助家运。卜卦问句：何日净化家中磁场对我家运有助？';
+                $first++;
             }
-
-            if ((in_array($day_dz, ['戌', '亥']) && in_array($day_dz, ['丑', '辰', '未'])) || (in_array($month_dz, ['戌', '亥']) && in_array($month_dz, ['丑', '辰', '未']))) {
-                $row = collect($directions)->where('dz', $day_dz)->first() ? collect($directions)->where('dz', $day_dz)->first() : collect($directions)->where('dz', $month_dz)->first();
-                $res[] = '有受到' . $row['direction'] . '方位的动土能量影响，及西北方五黄煞能量影响，建议择日净化家中磁场及化解家中五黄煞对我家运有助。卜卦问句为：何日净化家中磁场及化解家中五黄煞对我家运有助？';
-            }
+        }
+        if ($first === 3) {
+            $row = collect($directions)->where('dz', $day_dz)->first() ? collect($directions)->where('dz', $day_dz)->first() : collect($directions)->where('dz', $month_dz)->first();
+            $res = '有受到' . $row['direction'] . '方位的动土能量影响，及西北方五黄煞能量影响，建议择日净化家中磁场及化解家中五黄煞对我家运有助。卜卦问句为：何日净化家中磁场及化解家中五黄煞对我家运有助？';
         }
 
         return $res;
@@ -298,6 +302,7 @@ trait BodyTrigramTrait
 
     protected function handleUnborn($wx)
     {
+        if (!is_string($wx) && !empty($wx)) return '';
         $letters = [
             ['wx' => '木', 'letter' => '建议您去庙里拜神农大帝，请婴灵去报到。'],
             ['wx' => '火', 'letter' => '建议您去庙里拜关圣帝君，请婴灵去报到。'],
@@ -317,6 +322,8 @@ trait BodyTrigramTrait
         $brother_positions = $this->getPositionsWithSixQin('兄');
         $child_positions = $this->getPositionsWithSixQin('子');
 
+        // FIX:$guan_positions、$brother_positions、$child_positions都可能是空数组
+
         foreach ($guan_positions as $position) {
             if ($position['is_dong'] || $position['is_an_dong']) {
                 if ($this->getIsHeByPosition($position)) {
@@ -324,7 +331,8 @@ trait BodyTrigramTrait
                         $this->isNeedUnborn($position, $brother_positions, 'six_he')
                         || $this->isNeedUnborn($position, $child_positions, 'six_he')
                     ) {
-                        return $this->handleUnborn($child_positions[0]['wx']);
+
+                        return $this->handleUnborn($child_positions[0]['wx'] ?? '');
                     }
                 }
             }
@@ -334,7 +342,7 @@ trait BodyTrigramTrait
                     $this->isNeedUnborn($position, $brother_positions, 'six_chong')
                     || $this->isNeedUnborn($position, $child_positions, 'six_chong')
                 ) {
-                    return $this->handleUnborn($child_positions[0]['wx']);
+                    return $this->handleUnborn($child_positions[0]['wx'] ?? '');
                 }
             }
 
@@ -343,24 +351,22 @@ trait BodyTrigramTrait
                     $this->isNeedUnborn($position, $brother_positions, 'ru_mu')
                     || $this->isNeedUnborn($position, $child_positions, 'ru_mu')
                 ) {
-                    return $this->handleUnborn($child_positions[0]['wx']);
+                    return $this->handleUnborn($child_positions[0]['wx'] ?? '');
                 }
             }
         }
 
-        if ((!empty($brother_positions)) && $this->getKeRelations([$this->getGodWx()], [$child_positions[0]['wx']])) {
-            return $this->handleUnborn($brother_positions[0]['wx']);
+        if ((!empty($brother_positions)) && $this->getKeRelations([$this->getGodWx()], [$child_positions[0]['wx'] ?? ''])) {
+            return $this->handleUnborn($brother_positions[0]['wx'] ?? '');
         }
 
         return '';
     }
 
-    public function bodyYing()
+    public function bodyYing(): string
     {
         $six_qin_ying = $this->getSixQinByShiOrYing('应');
         $six_qin_shi = $this->getSixQinByShiOrYing('世');
-
-
         $day_dz = $this->getDayDz();
         $day_wx = $this->getDayWx();
         $month_dz = $this->getMonthDz();
@@ -368,63 +374,40 @@ trait BodyTrigramTrait
         $dong_wxs = $this->getDongYaoWx();
         $day_ke = $this->getKeRelations($dong_wxs, [$day_wx]);
         $month_ke = $this->getKeRelations($dong_wxs, [$month_wx]);
-
         $str1 = '住家门口磁场有扬升空间，建议您择日净化住家磁场有助家运。卜卦问句：何日净化家中磁场对我家运有助？';
-        $str2 = '家门口能量场有扬升空间，或有受到外部磁场能量影响，建议您择日讲话住家磁场有助家运。卜卦问句：何日净化家中磁场对我家运有助？';
-        $str3 = '家门口能量场有扬升空间，position方位的动土能量影响，建议您择日净化住家磁场有助家运。卜卦问句：何日净化家中磁场对我家运有助？';
+        $str2 = '家门口能量场有扬升空间，有受到外部?方位的动土能量影响，建议您择日净化住家磁场有助家运。卜卦问句：何日净化家中磁场对我家运有助？';
+        $str3 = '有受到外部?方位的动土能量影响，建议您择日净化住家磁场有助家运。卜卦问句：何日净化家中磁场对我家运有助？';
         $directions = [
             ['dz' => '丑', 'direction' => '东北'],
             ['dz' => '辰', 'direction' => '东南'],
             ['dz' => '未', 'direction' => '西南'],
         ];
-        $positions = [];
 
-        if ($six_qin_ying == '官') {
-            if (in_array($six_qin_shi, ['兄', '子', '财', '父'])) {
-                return $str1;
-            }
-
-            if ($day_ke && in_array($day_dz, ['丑', '辰', '未'])) {
-                $row = collect($directions)->where('dz', $day_dz)->first();
-                $positions[] = $row['direction'];
-            }
-
-            if ($month_ke && in_array($month_dz, ['丑', '辰', '未'])) {
-                $row = collect($directions)->where('dz', $month_dz)->first();
-                $positions[] = $row['direction'];
-            }
-
-            if ($day_ke || $month_ke) {
-                if ($positions) {
-                    return Str::replaceFirst('position', implode('、', $positions), $str3);
+        if ($six_qin_ying == '官' || $six_qin_ying == '兄') {
+            if (in_array($six_qin_shi, ['兄', '子', '财', '官', '父'])) {
+                if (
+                    ($day_ke || $month_ke) &&
+                    (in_array($day_dz, ['丑', '辰', '未']) || in_array($month_dz, ['丑', '辰', '未']))
+                ) {
+                    $row = collect($directions)->where('dz', $month_dz)->first() ?
+                        collect($directions)->where('dz', $month_dz)->first() :
+                        collect($directions)->where('dz', $day_dz)->first();
+                    return Str::replaceFirst('?', ($row['direction'] ?? '东北'), $str2);
+                } else {
+                    return $str1;
                 }
-                return $str2;
             }
         }
 
-        if ($six_qin_ying == '兄') {
-            if (in_array($six_qin_shi, ['兄', '财', '父'])) {
-                return $str1;
-            }
-
-            if ($day_ke && in_array($day_dz, ['丑', '辰', '未'])) {
-                $row = collect($directions)->where('dz', $day_dz)->first();
-                $positions[] = $row['direction'];
-            }
-
-            if ($month_ke && in_array($month_dz, ['丑', '辰', '未'])) {
-                $row = collect($directions)->where('dz', $month_dz)->first();
-                $positions[] = $row['direction'];
-            }
-
-            if ($day_ke || $month_ke) {
-                if ($positions) {
-                    return Str::replaceFirst('position', implode('、', $positions), $str3);
-                }
-                return $str2;
-            }
+        if (
+            ($day_ke || $month_ke) &&
+            (in_array($day_dz, ['丑', '辰', '未']) || in_array($month_dz, ['丑', '辰', '未']))
+        ) {
+            $row = collect($directions)->where('dz', $month_dz)->first() ?
+                collect($directions)->where('dz', $month_dz)->first() :
+                collect($directions)->where('dz', $day_dz)->first();
+            return Str::replaceFirst('?', ($row['direction'] ?? '东北'), $str3);
         }
-
         return '';
     }
 
