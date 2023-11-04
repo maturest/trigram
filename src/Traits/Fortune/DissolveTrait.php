@@ -85,17 +85,22 @@ trait DissolveTrait
         $position = $this->god_positions[0];
 
         $is_ke_god = $this->getIsKeByPosition($position);
-
         if ($is_ke_god) {
-            $shi_position = $this->getShiOrYingPosition();
-            if ($this->getIsDongYaoGrowMe($god_wx) && $this->withoutHeOrRuByGrowMe($shi_position['wx'])) {
-                return '';
-            } else {
-                return $this->getHuaShaByWx($god_wx);
-            }
-        } else {
             return $this->getHuaShaByWx($god_wx);
         }
+
+        return '';
+
+        // if ($is_ke_god) {
+        //     $shi_position = $this->getShiOrYingPosition();
+        //     if ($this->getIsDongYaoGrowMe($god_wx) && $this->withoutHeOrRuByGrowMe($shi_position['wx'])) {
+        //         return '';
+        //     } else {
+        //         return $this->getHuaShaByWx($god_wx);
+        //     }
+        // } else {
+        //     return $this->getHuaShaByWx($god_wx);
+        // }
     }
 
     public function getHuaShaByWx($god_wx)

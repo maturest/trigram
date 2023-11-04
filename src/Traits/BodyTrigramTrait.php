@@ -250,9 +250,9 @@ trait BodyTrigramTrait
         return $res;
     }
 
-    public function bodyKeInnerTrigram(): string
+    public function bodyKeInnerTrigram(): array
     {
-        $res = '';
+        $res = ['str' => '', 'key' => 0, 'direction' => ''];
         $day_dz = $this->getDayDz();
         $day_wx = $this->getDayWx();
         $month_dz = $this->getMonthDz();
@@ -282,19 +282,19 @@ trait BodyTrigramTrait
         $first = 1;
         if ($day_ke_dong || $month_ke_dong || $day_ke_hua || $month_ke_hua || $is_chong || $is_he || $is_ru) {
             if (in_array($day_dz, ['戌', '亥']) || in_array($month_dz, ['戌', '亥'])) {
-                $res = '有受到西北方五黄煞能量影响，建议择日化解家中五黄煞对我家运有助。卜卦问句为：何日化解家中五黄煞对我家运有助？';
+                $res = ['str' => '有受到西北方五黄煞能量影响，建议择日化解家中五黄煞对我家运有助。卜卦问句为：何日化解家中五黄煞对我家运有助？', 'key' => 1, 'direction' => ''];
                 $first++;
             }
 
             if (in_array($day_dz, ['丑', '辰', '未']) || in_array($month_dz, ['丑', '辰', '未'])) {
                 $row = collect($directions)->where('dz', $day_dz)->first() ? collect($directions)->where('dz', $day_dz)->first() : collect($directions)->where('dz', $month_dz)->first();
-                $res = '有受到' . $row['direction'] . '方位的动土能量影响，建议您择日净化住家磁场有助家运。卜卦问句：何日净化家中磁场对我家运有助？';
+                $res = ['str' => '有受到' . $row['direction'] . '方位的动土能量影响，建议您择日净化住家磁场有助家运。卜卦问句：何日净化家中磁场对我家运有助？', 'key' => 2, 'direction' => $row['direction']];
                 $first++;
             }
         }
         if ($first === 3) {
             $row = collect($directions)->where('dz', $day_dz)->first() ? collect($directions)->where('dz', $day_dz)->first() : collect($directions)->where('dz', $month_dz)->first();
-            $res = '有受到' . $row['direction'] . '方位的动土能量影响，及西北方五黄煞能量影响，建议择日净化家中磁场及化解家中五黄煞对我家运有助。卜卦问句为：何日净化家中磁场及化解家中五黄煞对我家运有助？';
+            $res = ['str' => '有受到' . $row['direction'] . '方位的动土能量影响，及西北方五黄煞能量影响，建议择日净化家中磁场及化解家中五黄煞对我家运有助。卜卦问句为：何日净化家中磁场及化解家中五黄煞对我家运有助？', 'key' => 3, 'direction' => $row['direction']];
         }
 
         return $res;
@@ -363,7 +363,7 @@ trait BodyTrigramTrait
         return '';
     }
 
-    public function bodyYing(): string
+    public function bodyYing(): array
     {
         $six_qin_ying = $this->getSixQinByShiOrYing('应');
         $six_qin_shi = $this->getSixQinByShiOrYing('世');
@@ -392,9 +392,9 @@ trait BodyTrigramTrait
                     $row = collect($directions)->where('dz', $month_dz)->first() ?
                         collect($directions)->where('dz', $month_dz)->first() :
                         collect($directions)->where('dz', $day_dz)->first();
-                    return Str::replaceFirst('?', ($row['direction'] ?? '东北'), $str2);
+                    return ['str' => Str::replaceFirst('?', ($row['direction'] ?? '东北'), $str2), 'key' => 2, 'direction' => $row['direction'] ?? '东北'];
                 } else {
-                    return $str1;
+                    return ['str' => $str1, 'key' => 1, 'direction' => ''];
                 }
             }
         }
@@ -406,9 +406,9 @@ trait BodyTrigramTrait
             $row = collect($directions)->where('dz', $month_dz)->first() ?
                 collect($directions)->where('dz', $month_dz)->first() :
                 collect($directions)->where('dz', $day_dz)->first();
-            return Str::replaceFirst('?', ($row['direction'] ?? '东北'), $str3);
+            return ['str' => Str::replaceFirst('?', ($row['direction'] ?? '东北'), $str3), 'key' => 3, 'direction' => $row['direction'] ?? '东北'];
         }
-        return '';
+        return ['str' => '', 'key' => 0, 'direction' => ''];
     }
 
     // 第七项

@@ -246,7 +246,13 @@ class DestinyService
         // 第九项
         $used = $this->bodyGodResult();
 
-        $result = compact('he', 'chong', 'ke', 'qi', 'sha', 'unborn', 'ying', 'graves', 'used');
+        $energy = $this->mergeSimilar($sha, $ying);
+
+        $result = compact('he', 'chong', 'ke', 'qi', 'unborn', 'graves', 'energy', 'used');
+
+        //应罗师姐要求，身体卦结果最多出现4条
+        $result = $this->getBodyLimitResult($result);
+
         return $this->replaceLastSymbol($result);
     }
 
@@ -266,9 +272,104 @@ class DestinyService
                     if (substr($v, -3) == '，') $result[$key][$k] = Str::replaceLast('，', '。', $v);;
                 }
             } else {
-                if (substr($value, -3) == '，')$result[$key] =  Str::replaceLast('，', '。', $value);
+                if (substr($value, -3) == '，') $result[$key] =  Str::replaceLast('，', '。', $value);
             }
         }
         return $result;
+    }
+
+    protected function mergeSimilar($sha, $ying): string
+    {
+        //0-x
+        if (empty($ying['str'])) {
+            return $sha['str'];
+        }
+
+        //x-0
+        if (empty($sha['str'])) {
+            return $ying['str'];
+        }
+
+        /**ying
+         *   $str1 = '住家门口磁场有扬升空间，建议您择日净化住家磁场有助家运。卜卦问句：何日净化家中磁场对我家运有助？';
+         *   $str2 = '家门口能量场有扬升空间，有受到外部?方位的动土能量影响，建议您择日净化住家磁场有助家运。卜卦问句：何日净化家中磁场对我家运有助？';
+         *   $str3 = '有受到外部?方位的动土能量影响，建议您择日净化住家磁场有助家运。卜卦问句：何日净化家中磁场对我家运有助？';
+         *
+         *ke
+            有受到西北方五黄煞能量影响，建议择日化解家中五黄煞对我家运有助。卜卦问句为：何日化解家中五黄煞对我家运有助？
+            有受到' . $row['direction'] . '方位的动土能量影响，建议您择日净化住家磁场有助家运。卜卦问句：何日净化家中磁场对我家运有助？
+            有受到' . $row['direction'] . '方位的动土能量影响，及西北方五黄煞能量影响，建议择日净化家中磁场及化解家中五黄煞对我家运有助。卜卦问句为：何日净化家中磁场及化解家中五黄煞对我家运有助
+         */
+
+        $default = '建议择日净化家中磁场及化解家中五黄煞对我家运有助。卜卦问句为：何日净化家中磁场及化解家中五黄煞对我家运有助？';
+
+        //1-1 1-2 1-3
+        if ($ying['key'] == 1 && $sha['key'] == 1) {
+            return '住家门口磁场有扬升空间,有受到西北方五黄煞能量影响,' . $default;
+        }
+
+        if ($ying['key'] == 1 && $sha['key'] == 2) {
+            return '住家门口磁场有扬升空间，' . $sha['str'];
+        }
+
+        if ($ying['key'] == 1 && $sha['key'] == 3) {
+            return '住家门口磁场有扬升空间，' . $sha['str'];
+        }
+
+        //2-1 2-2 2-3
+        if ($ying['key'] == 2 && $sha['key'] == 1) {
+            return '家门口能量场有扬升空间，有受到外部' . $ying['direction'] . '方位的动土能量影响，' . '及西北方五黄煞能量影响，' . $default;
+        }
+
+        if ($ying['key'] == 2 && $sha['key'] == 2) {
+            return '家门口能量场有扬升空间，' . '有受到' . implode('，', array_unique($ying['direction'], $sha['direction'])) . '方位的动土能量影响，建议您择日净化住家磁场有助家运。卜卦问句：何日净化家中磁场对我家运有助？';
+        }
+
+        if ($ying['key'] == 2 && $sha['key'] == 3) {
+            return '家门口能量场有扬升空间，' . '有受到' . implode('，', array_unique($ying['direction'], $sha['direction'])) . '方位的动土能量影响，' . $default;
+        }
+
+        //3-1 3-2 3-3
+        if ($ying['key'] == 3 && $sha['key'] == 1) {
+            return '有受到外部' . $ying['direction'] . '方位的动土能量影响，' . '及西北方五黄煞能量影响，' . $default;
+        }
+
+        if ($ying['key'] == 3 && $sha['key'] == 2) {
+            return '有受到' . implode('，', array_unique($ying['direction'], $sha['direction'])) . '方位的动土能量影响，' . '建议您择日净化住家磁场有助家运。卜卦问句：何日净化家中磁场对我家运有助？';
+        }
+
+        if ($ying['key'] == 3 && $sha['key'] == 3) {
+            return '有受到' . implode('，', array_unique($ying['direction'], $sha['direction'])) . '方位的动土能量影响，' . '及西北方五黄煞能量影响，' . $default;
+        }
+
+        return '';
+    }
+
+    protected function getBodyLimitResult($result, $limit = 4)
+    {
+        $data = [];
+        if (!empty($result['energy'])) {
+            $data[] = $result['energy'];
+        }
+        if (!empty($result['used'])) {
+            $data[] = $result['used'];
+        }
+
+        unset($result['energy'], $result['used']);
+
+        $result = array_filter(array_values($result));
+
+        $offset = $limit - count($data);
+
+        if ($offset >= count($result)) {
+            return array_merge($result, $data);
+        }
+
+        $random_keys = array_rand($result, $offset);
+        foreach ($random_keys as $key) {
+            array_unshift($data, $result[$key]);
+        }
+
+        return $data;
     }
 }
