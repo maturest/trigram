@@ -322,11 +322,11 @@ class DestinyService
         }
 
         if ($ying['key'] == 2 && $sha['key'] == 2) {
-            return '家门口能量场有扬升空间，' . '有受到' . implode('，', array_unique($ying['direction'], $sha['direction'])) . '方位的动土能量影响，建议您择日净化住家磁场有助家运。卜卦问句：何日净化家中磁场对我家运有助？';
+            return '家门口能量场有扬升空间，' . '有受到' . implode('，', array_unique([$ying['direction'], $sha['direction']])) . '方位的动土能量影响，建议您择日净化住家磁场有助家运。卜卦问句：何日净化家中磁场对我家运有助？';
         }
 
         if ($ying['key'] == 2 && $sha['key'] == 3) {
-            return '家门口能量场有扬升空间，' . '有受到' . implode('，', array_unique($ying['direction'], $sha['direction'])) . '方位的动土能量影响，' . $default;
+            return '家门口能量场有扬升空间，' . '有受到' . implode('，', array_unique([$ying['direction'], $sha['direction']])) . '方位的动土能量影响，' . $default;
         }
 
         //3-1 3-2 3-3
@@ -335,11 +335,11 @@ class DestinyService
         }
 
         if ($ying['key'] == 3 && $sha['key'] == 2) {
-            return '有受到' . implode('，', array_unique($ying['direction'], $sha['direction'])) . '方位的动土能量影响，' . '建议您择日净化住家磁场有助家运。卜卦问句：何日净化家中磁场对我家运有助？';
+            return '有受到' . implode('，', array_unique([$ying['direction'], $sha['direction']])) . '方位的动土能量影响，' . '建议您择日净化住家磁场有助家运。卜卦问句：何日净化家中磁场对我家运有助？';
         }
 
         if ($ying['key'] == 3 && $sha['key'] == 3) {
-            return '有受到' . implode('，', array_unique($ying['direction'], $sha['direction'])) . '方位的动土能量影响，' . '及西北方五黄煞能量影响，' . $default;
+            return '有受到' . implode('，', array_unique([$ying['direction'], $sha['direction']])) . '方位的动土能量影响，' . '及西北方五黄煞能量影响，' . $default;
         }
 
         return '';
