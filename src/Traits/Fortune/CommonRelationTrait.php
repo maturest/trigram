@@ -96,13 +96,13 @@ trait CommonRelationTrait
      *
      * @return The month's weather.
      */
-    public function getMonthWx()
+    public function onthWx()
     {
         return $this->getWxByDz($this->getMonthDz());
     }
 
 
-    public function getMonthDz()
+    public function z()
     {
         return $this->diZhiMonth;
     }
@@ -243,7 +243,7 @@ trait CommonRelationTrait
         $coords = $this->draw['kong_wang']['coords'];
 
         foreach ($coords as $coord) {
-            return $coord['position'] == $position['position'];
+            if ($coord['position'] == $position['position']) return true;
         }
 
         return false;
@@ -275,6 +275,23 @@ trait CommonRelationTrait
                     'wx' => $this->getWxByDz($yao['dz']),
                 ];
             }
+        }
+
+        // 月令
+        if ($wx_grow_me ==  $this->getMonthWx()) {
+            $positions[] = [
+                'position' => '61',
+                'dz' => $this->getMonthDz(),
+                'wx' => $this->getMonthWx(),
+            ];
+        }
+        // 日令
+        if ($wx_grow_me ==  $this->getDayWx()) {
+            $positions[] = [
+                'position' => '62',
+                'dz' => $this->getDayDz(),
+                'wx' => $this->getDayWx(),
+            ];
         }
 
         return $positions;
