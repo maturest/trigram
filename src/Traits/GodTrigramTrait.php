@@ -38,7 +38,7 @@ trait GodTrigramTrait
         $res[] = $this->getWholeFortune('找回魂魄，');
         if (Str::contains($this->question, ['身体', '健康'])) $statement = ['找回元神，', '化解元神受制，'];
         else $statement = ['找回贵人助力，', '化解贵人受制，'];
-        $res[] = $this->agnatePower($god_wx, $statement[0]);
+        $res[] = $this->getMagnatePower($god_wx, $statement[0]);
         $res[] = $this->getDissolveRoad($god_wx, $statement[1]);
 
         return $res;
