@@ -96,13 +96,13 @@ trait CommonRelationTrait
      *
      * @return The month's weather.
      */
-    public function onthWx()
+    public function getMonthWx()
     {
         return $this->getWxByDz($this->getMonthDz());
     }
 
 
-    public function z()
+    public function getMonthDz()
     {
         return $this->diZhiMonth;
     }
