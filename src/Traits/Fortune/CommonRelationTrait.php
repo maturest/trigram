@@ -558,6 +558,7 @@ trait CommonRelationTrait
     {
         foreach ($this->draw['ru_mu'] as $ru_mu) {
             $tmp_arr = explode('-',$ru_mu);
+            $start = $tmp_arr[0];
             $end = $tmp_arr[1];
 
             // if (Str::contains($ru_mu, $position['position'])) {
@@ -571,9 +572,9 @@ trait CommonRelationTrait
             // }
 
             // 判断入墓条件更换，入墓表示当前的位置必须是墓库
-            if($end == $position['position']){
+            if($start == $position['position']){
                 if ($only_date) {
-                    if (Str::startsWith($end, '6')) {
+                    if (Str::startsWith($start, '6')) {
                         return true;
                     }
                 }else{
