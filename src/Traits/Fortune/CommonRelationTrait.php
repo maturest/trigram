@@ -557,16 +557,31 @@ trait CommonRelationTrait
     public function getIsRuByPosition($position, $only_date = false)
     {
         foreach ($this->draw['ru_mu'] as $ru_mu) {
-            if (Str::contains($ru_mu, $position['position'])) {
+            $tmp_arr = explode('-',$ru_mu);
+            $end = $tmp_arr[1];
+
+            // if (Str::contains($ru_mu, $position['position'])) {
+            //     if ($only_date) {
+            //         if ($this->judgeRelationIsContainsDate($ru_mu)) {
+            //             return true;
+            //         }
+            //     } else {
+            //         return true;
+            //     }
+            // }
+
+            // 判断入墓条件更换，入墓表示当前的位置必须是墓库
+            if($end == $position['position']){
                 if ($only_date) {
-                    if ($this->judgeRelationIsContainsDate($ru_mu)) {
+                    if (Str::startsWith($end, '6')) {
                         return true;
                     }
-                } else {
+                }else{
                     return true;
                 }
             }
         }
+
         return false;
     }
 
