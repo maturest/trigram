@@ -4,6 +4,7 @@
 namespace Maturest\Trigram\Traits\Fortune;
 
 use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 
 trait CommonRelationTrait
 {
@@ -249,10 +250,44 @@ trait CommonRelationTrait
         return false;
     }
 
+    /**
+     * 获取静爻
+     *
+     * @return array
+     */
+    public function getStaticTrigams()
+    {
+        $static_trigrams = array_values(Arr::where($this->benGuaDetail, function ($item, $key) {
+            return $item['is_dong'] == false && $item['is_an_dong'] == false;
+        }));
+        return array_reverse($static_trigrams);
+    }
+
+    /**
+     * 获取生我的位置(静爻，动爻，化爻，日令，月令)
+     *
+     * @param string $wx 五行
+     * @return array
+     */
     public function getPositionsWhoGrowMe($wx)
     {
         $wx_grow_me = $this->getWhoGrowMe($wx);
         $positions = [];
+
+        // 静爻
+        foreach($this->getStaticTrigams() as $static){
+            if ($wx_grow_me == $this->getWxByDz($static['dz'])) {
+                $positions[] = [
+                    'position' => $static['column'] . $static['row'],
+                    'is_dong' => $static['is_dong'],
+                    'is_an_dong' => $static['is_an_dong'],
+                    'dz' => $static['dz'],
+                    'wx' => $this->getWxByDz($static['dz']),
+                ];
+            }
+        }
+
+        // 动爻
         foreach ($this->getDongYao() as $yao) {
             if ($wx_grow_me == $this->getWxByDz($yao['dz'])) {
                 $positions[] = [
@@ -265,6 +300,7 @@ trait CommonRelationTrait
             }
         }
 
+        // 化爻
         foreach ($this->getTransDetail() as $yao) {
             if ($wx_grow_me == $this->getWxByDz($yao['dz'])) {
                 $positions[] = [
@@ -281,14 +317,19 @@ trait CommonRelationTrait
         if ($wx_grow_me ==  $this->getMonthWx()) {
             $positions[] = [
                 'position' => '61',
+                'is_dong' => false,
+                'is_an_dong' => false,
                 'dz' => $this->getMonthDz(),
                 'wx' => $this->getMonthWx(),
             ];
         }
+
         // 日令
         if ($wx_grow_me ==  $this->getDayWx()) {
             $positions[] = [
                 'position' => '62',
+                'is_dong' => false,
+                'is_an_dong' => false,
                 'dz' => $this->getDayDz(),
                 'wx' => $this->getDayWx(),
             ];
