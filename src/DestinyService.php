@@ -14,42 +14,114 @@ class DestinyService
 {
     use DestinyTrait, FortuneTrait, BodyTrigramTrait, GodTrigramTrait;
 
+    /**
+     * 实例对象
+     *
+     * @var self
+     */
     private static $instance;
 
+    /**
+     * 装卦单上的关系网
+     *
+     * @var array
+     */
     public $draw = [
-        'kong_wang' => ['coords' => [], 'radius' => 20],
-        'an_dong' => ['coords' => [], 'img' => 'dark_on/dark_on.png'],
+        // 空亡坐标，以及半径
+        'kong_wang' => [
+            'coords' => [],
+            'radius' => 20
+        ],
+
+        // 暗动坐标，与图片
+        'an_dong' => [
+            'coords' => [],
+            'img' => 'dark_on/dark_on.png'
+        ],
+
+        // 六冲，有方向，起始坐标，月令为破，其余为冲，本爻之间的冲为双箭头，其余为单箭头
         'six_chong' => [],
+
+        // 六合，日历月令单箭头，本爻，化爻是双箭头
         'six_he' => [],
+
+        // 汇局
         'hui_ju' => [],
+
+        // 入墓，单箭头
         'ru_mu' => [],
+
+        // 进退神
         'jin_tui' => [],
+
+        // 伏爻
         'fu_yao' => [],
     ];
 
+    /**
+     * 日历对象
+     *
+     * @var object
+     */
     protected $calendar;
 
+    /**
+     * 卦符记录
+     *
+     * @var string
+     */
     protected $gua;
 
+    /**
+     * 卜卦问句
+     *
+     * @var string
+     */
     protected $question;
 
+    /**
+     * 用户姓名
+     *
+     * @var string
+     */
     protected $userName;
 
+    /**
+     * 卜卦类型
+     *
+     * @var string
+     */
     protected $trigramType;
 
+    /**
+     * 归属人
+     *
+     * @var string
+     */
     protected $owner;
 
+    /**
+     * 是否需要水印
+     *
+     * @var bool
+     */
     protected $watermark;
 
+    /**
+     * 是否需要透明背景
+     *
+     * @var bool
+     */
     protected $transparent;
 
     /**
-     * DestinyService constructor.
-     * @param $date 1996-01-01 05:26:38 阳历的日期
-     * @param $gua
-     * @param array $extends
-     * @param bool $watermark
-     * @param bool $transparent
+     * 单例模式获取实例
+     *
+     * @param string $date 1996-01-01 05:26:38 阳历的日期
+     * @param string $gua 六爻
+     * @param array $extends 扩展字段
+     * @param bool $watermark 是否需要水印
+     * @param bool $transparent 是否需要透明背景
      * @throws InvalidArgumentException
      */
     private function __construct($date, $gua, $extends = [], $watermark = true, $transparent = false)
@@ -71,14 +143,14 @@ class DestinyService
     }
 
     /**
-     * A singleton pattern.
+     * 实例对象
      *
-     * @param date The date of birth of the person.
-     * @param gua The gua number, which is the number of the hexagram.
-     * @param extends
-     * @param watermark Whether to add a watermark to the image.
-     * @param transparent whether transparent
-     * @return The instance of the class.
+     * @param string $date 1996-01-01 05:26:38 阳历的日期
+     * @param string $gua 六爻
+     * @param array $extends 扩展字段
+     * @param bool $watermark 是否需要水印
+     * @param bool $transparent 是否需要透明背景
+     * @return self 实例对象
      */
     public static function getInstance($date, $gua, $extends = [], $watermark = true, $transparent = false)
     {
@@ -93,9 +165,9 @@ class DestinyService
 
 
     /**
-     * > If the gua contains 3 or 4, it's available. If the gua doesn't exist in the totalGua array,
-     * it's not available. If the gua's diZhi is in the day's cong, it's available. Otherwise, it's not
-     * available
+     * 判断是否显卦
+     *
+     * @return boolean
      */
     public function isAvailable()
     {

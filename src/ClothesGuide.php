@@ -15,19 +15,44 @@ class ClothesGuide extends BaseService
     ];
 
     protected $letters = [
-        ['wx' => '金', 'proposal' => '建议您穿白色、银灰色为主，黑色、蓝色为辅的衣服', 'taboo' => '今日不宜穿绿色、紫色的衣服', 'diet' => '今日适宜吃白色、银灰色的食物，可增强体内的五行能量场'],
-        ['wx' => '木', 'proposal' => '建议您穿绿色、紫色为主，红色为辅的衣服', 'taboo' => '今日不宜穿黄色的衣服', 'diet' => '今日适宜吃绿色、紫色的食物，可增强体内的五行能量场'],
-        ['wx' => '水', 'proposal' => '建议您穿蓝色、黑色为主，绿色、紫色为辅的衣服', 'taboo' => '今日不宜穿红色的衣服', 'diet' => '今日适宜吃蓝色、黑色的食物，可增强体内的五行能量场'],
-        ['wx' => '火', 'proposal' => '建议您穿红色为主，黄色为辅的衣服', 'taboo' => '今日不宜穿白色、银灰色的衣服', 'diet' => '今日适宜吃红色的食物，可增强体内的五行能量场'],
-        ['wx' => '土', 'proposal' => '建议您穿黄色为主，白色、银灰色为辅的衣服', 'taboo' => '今日不宜穿黑色、蓝色的衣服', 'diet' => '今日适宜吃黄色的食物，可增强体内的五行能量场'],
+        [
+            'wx' => '金',
+            'proposal' => '建议您穿白色、银灰色为主，黑色、蓝色为辅的衣服',
+            'taboo' => '今日不宜穿绿色、紫色的衣服',
+            'diet' => '今日适宜吃白色、银灰色的食物，可增强体内的五行能量场'
+        ],
+        [
+            'wx' => '木',
+            'proposal' => '建议您穿绿色、紫色为主，红色为辅的衣服',
+            'taboo' => '今日不宜穿黄色的衣服',
+            'diet' => '今日适宜吃绿色、紫色的食物，可增强体内的五行能量场'
+        ],
+        [
+            'wx' => '水',
+            'proposal' => '建议您穿蓝色、黑色为主，绿色、紫色为辅的衣服',
+            'taboo' => '今日不宜穿红色的衣服',
+            'diet' => '今日适宜吃蓝色、黑色的食物，可增强体内的五行能量场'
+        ],
+        [
+            'wx' => '火',
+            'proposal' => '建议您穿红色为主，黄色为辅的衣服',
+            'taboo' => '今日不宜穿白色、银灰色的衣服',
+            'diet' => '今日适宜吃红色的食物，可增强体内的五行能量场'
+        ],
+        [
+            'wx' => '土',
+            'proposal' => '建议您穿黄色为主，白色、银灰色为辅的衣服',
+            'taboo' => '今日不宜穿黑色、蓝色的衣服',
+            'diet' => '今日适宜吃黄色的食物，可增强体内的五行能量场'
+        ],
     ];
 
     /**
      * This function retrieves a guide based on a given solar date.
-     * 
+     *
      * @param date The input parameter "date" is a date string in the format of "YYYY-MM-DD"
      * representing the date for which the guide is to be retrieved.
-     * 
+     *
      * @return a collection of letters that correspond to a specific guide based on a given solar date.
      */
     public function getGuideBySolar($date)
